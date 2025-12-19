@@ -9,11 +9,11 @@ import {
   MessageCircle,
   Car,
   Route,
-  Fuel,
   ThermometerSun,
   Shield,
   Zap
 } from 'lucide-react';
+import { JourneyMap } from './JourneyMap';
 
 interface JourneyTrackerProps {
   isVisible?: boolean;
@@ -53,8 +53,15 @@ export const JourneyTracker = ({ isVisible = true, onClose }: JourneyTrackerProp
   const [eta, setEta] = useState(journeyData.route.duration);
   const [progress, setProgress] = useState(journeyData.route.currentProgress);
   const [currentLocation, setCurrentLocation] = useState(journeyData.route.currentLocation);
-  const [isPulsing, setIsPulsing] = useState(true);
+  const [mapboxToken, setMapboxToken] = useState<string | null>(null);
 
+  // Load Mapbox token from localStorage
+  useEffect(() => {
+    const token = localStorage.getItem('mapbox_token');
+    if (token) {
+      setMapboxToken(token);
+    }
+  }, []);
   // Simulate journey progress
   useEffect(() => {
     const interval = setInterval(() => {
@@ -283,96 +290,12 @@ export const JourneyTracker = ({ isVisible = true, onClose }: JourneyTrackerProp
               </motion.div>
             </div>
 
-            {/* Mini Map Placeholder */}
+            {/* Real Mapbox Map */}
             <div className="px-4 pb-4">
-              <div className="relative h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-muted to-muted/50">
-                {/* Simulated Map Grid */}
-                <div className="absolute inset-0 opacity-30">
-                  {[...Array(10)].map((_, i) => (
-                    <div
-                      key={`h-${i}`}
-                      className="absolute h-px bg-border/50"
-                      style={{ top: `${i * 10}%`, left: 0, right: 0 }}
-                    />
-                  ))}
-                  {[...Array(10)].map((_, i) => (
-                    <div
-                      key={`v-${i}`}
-                      className="absolute w-px bg-border/50"
-                      style={{ left: `${i * 10}%`, top: 0, bottom: 0 }}
-                    />
-                  ))}
-                </div>
-
-                {/* Route Line */}
-                <svg className="absolute inset-0 w-full h-full">
-                  <motion.path
-                    d="M 30 100 Q 80 80 120 60 T 200 40 T 300 30"
-                    stroke="url(#routeGradient)"
-                    strokeWidth="4"
-                    fill="none"
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 2, ease: "easeInOut" }}
-                  />
-                  <defs>
-                    <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="hsl(var(--accent))" />
-                      <stop offset="100%" stopColor="hsl(var(--primary))" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-
-                {/* Start Point */}
-                <motion.div 
-                  className="absolute left-6 bottom-4"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <div className="w-4 h-4 rounded-full bg-green-500 shadow-lg" />
-                </motion.div>
-
-                {/* Current Position */}
-                <motion.div 
-                  className="absolute"
-                  style={{ 
-                    left: `${15 + progress * 70}%`, 
-                    bottom: `${30 + progress * 50}%` 
-                  }}
-                  animate={{ 
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  <div className="relative">
-                    <motion.div
-                      animate={{ scale: [1, 2, 1], opacity: [0.5, 0, 0.5] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                      className="absolute inset-0 w-8 h-8 -m-2 rounded-full bg-primary/30"
-                    />
-                    <div className="w-4 h-4 rounded-full bg-primary shadow-glow flex items-center justify-center">
-                      <Car className="w-2.5 h-2.5 text-primary-foreground" />
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* End Point */}
-                <motion.div 
-                  className="absolute right-8 top-4"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <MapPin className="w-6 h-6 text-primary drop-shadow-lg" />
-                </motion.div>
-
-                {/* Map Label */}
-                <div className="absolute bottom-2 right-2 px-2 py-1 rounded-lg bg-card/80 backdrop-blur text-xs text-muted-foreground">
-                  Canlı Harita
-                </div>
-              </div>
+              <JourneyMap 
+                progress={progress} 
+                mapboxToken={mapboxToken || undefined}
+              />
             </div>
           </div>
         </motion.div>
