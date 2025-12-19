@@ -8,8 +8,10 @@ import { QRReward } from '@/components/tablet/QRReward';
 import { WifiAdScreen } from '@/components/tablet/WifiAdScreen';
 import { WifiLoginScreen } from '@/components/tablet/WifiLoginScreen';
 import { WifiSuccessScreen } from '@/components/tablet/WifiSuccessScreen';
+import { GamesHub, Game } from '@/components/tablet/GamesHub';
+import { GamePlayer } from '@/components/tablet/GamePlayer';
 
-type Screen = 'hero' | 'swipe' | 'feed';
+type Screen = 'hero' | 'swipe' | 'feed' | 'games';
 type GameType = 'spin' | 'scratch' | null;
 type WifiStep = null | 'login' | 'ad' | 'success';
 
@@ -22,10 +24,24 @@ const Index = () => {
   const [currentOffer, setCurrentOffer] = useState('');
   const [wifiStep, setWifiStep] = useState<WifiStep>(null);
   const [userData, setUserData] = useState<{ email: string; name: string } | null>(null);
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null);
 
   const handleGoHome = () => {
     setCurrentScreen('hero');
     setWifiStep(null);
+    setSelectedGame(null);
+  };
+
+  const handleOpenGames = () => {
+    setCurrentScreen('games');
+  };
+
+  const handlePlayMiniGame = (game: Game) => {
+    setSelectedGame(game);
+  };
+
+  const handleBackToGames = () => {
+    setSelectedGame(null);
   };
 
   const handleStartExperience = () => {
@@ -85,6 +101,24 @@ const Index = () => {
         <HeroScreen 
           onStart={handleStartExperience} 
           onWifiRequest={handleWifiRequest}
+          onGames={handleOpenGames}
+        />
+      )}
+      
+      {/* Games Hub */}
+      {currentScreen === 'games' && !selectedGame && (
+        <GamesHub 
+          onBack={handleGoHome}
+          onPlayGame={handlePlayMiniGame}
+        />
+      )}
+      
+      {/* Game Player */}
+      {currentScreen === 'games' && selectedGame && (
+        <GamePlayer 
+          game={selectedGame}
+          onBack={handleBackToGames}
+          onHome={handleGoHome}
         />
       )}
       

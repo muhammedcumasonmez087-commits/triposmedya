@@ -1,13 +1,14 @@
-import { ChevronRight, MapPin, Utensils, Wifi } from 'lucide-react';
+import { ChevronRight, MapPin, Utensils, Wifi, Gamepad2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/hero-cyprus.jpg';
 
 interface HeroScreenProps {
   onStart: () => void;
   onWifiRequest: () => void;
+  onGames: () => void;
 }
 
-export const HeroScreen = ({ onStart, onWifiRequest }: HeroScreenProps) => {
+export const HeroScreen = ({ onStart, onWifiRequest, onGames }: HeroScreenProps) => {
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* Background Image */}
@@ -87,6 +88,17 @@ export const HeroScreen = ({ onStart, onWifiRequest }: HeroScreenProps) => {
               <span className="flex items-center gap-3">
                 <Wifi className="w-5 h-5 text-accent group-hover:text-accent-foreground" />
                 İnternete Bağlan
+              </span>
+            </Button>
+            
+            {/* Games CTA */}
+            <Button 
+              onClick={onGames}
+              className="text-lg px-8 py-6 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 shadow-lg group"
+            >
+              <span className="flex items-center gap-3">
+                <Gamepad2 className="w-5 h-5" />
+                Oyun Oyna
               </span>
             </Button>
           </div>
