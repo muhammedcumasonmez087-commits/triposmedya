@@ -1,12 +1,13 @@
-import { ChevronRight, MapPin, Utensils } from 'lucide-react';
+import { ChevronRight, MapPin, Utensils, Wifi } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/hero-cyprus.jpg';
 
 interface HeroScreenProps {
   onStart: () => void;
+  onWifiRequest: () => void;
 }
 
-export const HeroScreen = ({ onStart }: HeroScreenProps) => {
+export const HeroScreen = ({ onStart, onWifiRequest }: HeroScreenProps) => {
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* Background Image */}
@@ -35,9 +36,15 @@ export const HeroScreen = ({ onStart }: HeroScreenProps) => {
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/20 backdrop-blur-md">
               <span className="text-card/90 text-sm font-medium">14:30</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-accent/30 backdrop-blur-md">
-              <span className="text-card text-sm font-medium">Free WiFi</span>
-            </div>
+            
+            {/* WiFi Button - Prominent */}
+            <button 
+              onClick={onWifiRequest}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent backdrop-blur-md text-accent-foreground font-medium shadow-glow hover:scale-105 transition-all animate-pulse-soft"
+            >
+              <Wifi className="w-4 h-4" />
+              <span className="text-sm">Free WiFi</span>
+            </button>
           </div>
         </header>
         
@@ -59,15 +66,30 @@ export const HeroScreen = ({ onStart }: HeroScreenProps) => {
             Tarihi dokusu, eşsiz plajları ve lezzet duraklarıyla Kuzey Kıbrıs sizi bekliyor.
           </p>
           
-          <Button 
-            onClick={onStart}
-            className="btn-primary-gradient text-lg px-10 py-6 rounded-2xl shadow-elevated group"
-          >
-            <span className="flex items-center gap-3">
-              İlgi Alanlarınızı Seçin
-              <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </Button>
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button 
+              onClick={onStart}
+              className="btn-primary-gradient text-lg px-10 py-6 rounded-2xl shadow-elevated group"
+            >
+              <span className="flex items-center gap-3">
+                İlgi Alanlarınızı Seçin
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Button>
+            
+            {/* Prominent WiFi CTA */}
+            <Button 
+              onClick={onWifiRequest}
+              variant="outline"
+              className="text-lg px-8 py-6 rounded-2xl bg-card/90 backdrop-blur border-2 border-accent text-foreground hover:bg-accent hover:text-accent-foreground group"
+            >
+              <span className="flex items-center gap-3">
+                <Wifi className="w-5 h-5 text-accent group-hover:text-accent-foreground" />
+                İnternete Bağlan
+              </span>
+            </Button>
+          </div>
           
           {/* Quick Categories */}
           <div className="flex gap-4 mt-8">
