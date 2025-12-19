@@ -1,6 +1,8 @@
-import { ChevronRight, MapPin, Utensils, Wifi, Gamepad2 } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronRight, MapPin, Utensils, Wifi, Gamepad2, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/hero-cyprus.jpg';
+import { JourneyTracker } from './JourneyTracker';
 
 interface HeroScreenProps {
   onStart: () => void;
@@ -9,6 +11,8 @@ interface HeroScreenProps {
 }
 
 export const HeroScreen = ({ onStart, onWifiRequest, onGames }: HeroScreenProps) => {
+  const [showJourney, setShowJourney] = useState(true);
+
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* Background Image */}
@@ -37,6 +41,22 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames }: HeroScreenProps)
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/20 backdrop-blur-md">
               <span className="text-card/90 text-sm font-medium">14:30</span>
             </div>
+            
+            {/* Journey Toggle Button */}
+            <button 
+              onClick={() => setShowJourney(!showJourney)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-md font-medium transition-all ${
+                showJourney 
+                  ? 'bg-green-500 text-white shadow-glow' 
+                  : 'bg-card/20 text-card hover:bg-card/30'
+              }`}
+            >
+              <Navigation className="w-4 h-4" />
+              <span className="text-sm">Yolculuk</span>
+              {showJourney && (
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+              )}
+            </button>
             
             {/* WiFi Button - Prominent */}
             <button 
@@ -121,6 +141,9 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames }: HeroScreenProps)
             </div>
           </div>
         </div>
+        
+        {/* Journey Tracker */}
+        <JourneyTracker isVisible={showJourney} onClose={() => setShowJourney(false)} />
         
         {/* Bottom Bar */}
         <div className="flex items-center justify-between px-8 py-6">
