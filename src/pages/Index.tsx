@@ -5,9 +5,13 @@ import { OfferFeed } from '@/components/tablet/OfferFeed';
 import { SpinWheel } from '@/components/tablet/SpinWheel';
 import { ScratchCard } from '@/components/tablet/ScratchCard';
 import { QRReward } from '@/components/tablet/QRReward';
+import { WifiAdScreen } from '@/components/tablet/WifiAdScreen';
+import { WifiLoginScreen } from '@/components/tablet/WifiLoginScreen';
+import { WifiSuccessScreen } from '@/components/tablet/WifiSuccessScreen';
 
 type Screen = 'hero' | 'swipe' | 'feed';
 type GameType = 'spin' | 'scratch' | null;
+type WifiStep = null | 'login' | 'ad' | 'success';
 
 const Index = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('hero');
@@ -16,6 +20,8 @@ const Index = () => {
   const [showQR, setShowQR] = useState(false);
   const [currentPrize, setCurrentPrize] = useState('');
   const [currentOffer, setCurrentOffer] = useState('');
+  const [wifiStep, setWifiStep] = useState<WifiStep>(null);
+  const [userData, setUserData] = useState<{ email: string; name: string } | null>(null);
 
   const handleStartExperience = () => {
     setCurrentScreen('swipe');
@@ -27,7 +33,6 @@ const Index = () => {
   };
 
   const handlePlayGame = () => {
-    // Randomly choose between spin wheel and scratch card
     const games: GameType[] = ['spin', 'scratch'];
     setActiveGame(games[Math.floor(Math.random() * games.length)]);
   };
@@ -45,18 +50,44 @@ const Index = () => {
     setShowQR(true);
   };
 
+  // WiFi Flow Handlers
+  const handleWifiRequest = () => {
+    setWifiStep('login');
+  };
+
+  const handleWifiLogin = (data: { email: string; name: string }) => {
+    setUserData(data);
+    setWifiStep('ad');
+  };
+
+  const handleWifiLoginSkip = () => {
+    setWifiStep('ad');
+  };
+
+  const handleAdComplete = () => {
+    setWifiStep('success');
+  };
+
+  const handleWifiContinue = () => {
+    setWifiStep(null);
+    setCurrentScreen('swipe');
+  };
+
   return (
     <div className="min-h-screen bg-background overflow-hidden">
       {/* Main Screens */}
-      {currentScreen === 'hero' && (
-        <HeroScreen onStart={handleStartExperience} />
+      {currentScreen === 'hero' && !wifiStep && (
+        <HeroScreen 
+          onStart={handleStartExperience} 
+          onWifiRequest={handleWifiRequest}
+        />
       )}
       
-      {currentScreen === 'swipe' && (
+      {currentScreen === 'swipe' && !wifiStep && (
         <SwipeInterestSelector onComplete={handleSwipeComplete} />
       )}
       
-      {currentScreen === 'feed' && (
+      {currentScreen === 'feed' && !wifiStep && (
         <OfferFeed 
           selectedInterests={selectedInterests}
           onPlayGame={handlePlayGame}
@@ -64,7 +95,29 @@ const Index = () => {
         />
       )}
       
-      {/* Modals */}
+      {/* WiFi Flow */}
+      {wifiStep === 'login' && (
+        <WifiLoginScreen 
+          onComplete={handleWifiLogin}
+          onSkip={handleWifiLoginSkip}
+        />
+      )}
+      
+      {wifiStep === 'ad' && (
+        <WifiAdScreen 
+          onComplete={handleAdComplete}
+          sponsorName="Eziç Restaurant"
+        />
+      )}
+      
+      {wifiStep === 'success' && (
+        <WifiSuccessScreen 
+          onContinue={handleWifiContinue}
+          userName={userData?.name}
+        />
+      )}
+      
+      {/* Game Modals */}
       {activeGame === 'spin' && (
         <SpinWheel 
           onClose={() => setActiveGame(null)}
