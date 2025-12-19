@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Wifi, Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { Wifi, Play, Pause, Volume2, VolumeX, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import categoryFood from '@/assets/category-food.jpg';
@@ -8,9 +8,10 @@ interface WifiAdScreenProps {
   onComplete: () => void;
   sponsorName: string;
   sponsorLogo?: string;
+  onHome: () => void;
 }
 
-export const WifiAdScreen = ({ onComplete, sponsorName }: WifiAdScreenProps) => {
+export const WifiAdScreen = ({ onComplete, sponsorName, onHome }: WifiAdScreenProps) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -37,13 +38,23 @@ export const WifiAdScreen = ({ onComplete, sponsorName }: WifiAdScreenProps) => 
     <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between px-8 py-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-            <Wifi className="w-5 h-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="font-bold text-white text-lg">KKTC Taksi Wi-Fi</h1>
-            <p className="text-xs text-white/60">Ücretsiz İnternet Hizmeti</p>
+        <div className="flex items-center gap-4">
+          {/* Home Button */}
+          <button 
+            onClick={onHome}
+            className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+          >
+            <Home className="w-5 h-5 text-white" />
+          </button>
+          
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+              <Wifi className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="font-bold text-white text-lg">KKTC Taksi Wi-Fi</h1>
+              <p className="text-xs text-white/60">Ücretsiz İnternet Hizmeti</p>
+            </div>
           </div>
         </div>
         
