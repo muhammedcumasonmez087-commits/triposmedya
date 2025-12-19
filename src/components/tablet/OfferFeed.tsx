@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Star, MapPin, Percent, Gift, ChevronRight, Navigation, Info, Anchor, Building2, Ship } from 'lucide-react';
+import { Star, MapPin, Percent, Gift, ChevronRight, Navigation, Anchor, Building2, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Header } from './Header';
 import categoryBeach from '@/assets/category-beach.jpg';
@@ -89,9 +89,10 @@ interface OfferFeedProps {
   selectedInterests: string[];
   onPlayGame: () => void;
   onClaimOffer: (offerId: string) => void;
+  onHome: () => void;
 }
 
-export const OfferFeed = ({ selectedInterests, onPlayGame, onClaimOffer }: OfferFeedProps) => {
+export const OfferFeed = ({ selectedInterests, onPlayGame, onClaimOffer, onHome }: OfferFeedProps) => {
   const [activeTab, setActiveTab] = useState('all');
   
   const interestLabels = selectedInterests.length > 0 
@@ -118,18 +119,28 @@ export const OfferFeed = ({ selectedInterests, onPlayGame, onClaimOffer }: Offer
       <main className="px-8 py-6">
         {/* Page Header */}
         <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Sizin İçin Önerilen Fırsatlar</h1>
-            <p className="text-muted-foreground">
-              {interestLabels.length > 0 ? (
-                <>
-                  <span className="text-primary font-medium">{interestLabels.join(', ')}</span>
-                  {' '}sevenler için özel seçtilerimiz
-                </>
-              ) : (
-                'En popüler mekanları keşfedin'
-              )}
-            </p>
+          <div className="flex items-center gap-4">
+            {/* Home Button */}
+            <button 
+              onClick={onHome}
+              className="w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors shadow-lg"
+            >
+              <Home className="w-6 h-6 text-foreground" />
+            </button>
+            
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Sizin İçin Önerilen Fırsatlar</h1>
+              <p className="text-muted-foreground">
+                {interestLabels.length > 0 ? (
+                  <>
+                    <span className="text-primary font-medium">{interestLabels.join(', ')}</span>
+                    {' '}sevenler için özel seçtilerimiz
+                  </>
+                ) : (
+                  'En popüler mekanları keşfedin'
+                )}
+              </p>
+            </div>
           </div>
           
           <Button 

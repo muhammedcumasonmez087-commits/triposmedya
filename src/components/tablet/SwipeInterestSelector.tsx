@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { X, Heart, ChevronRight, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { X, Heart, ChevronRight, Sparkles, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence, PanInfo, useMotionValue, useTransform } from 'framer-motion';
 import categoryBeach from '@/assets/category-beach.jpg';
@@ -64,6 +64,7 @@ const categories: Category[] = [
 
 interface SwipeInterestSelectorProps {
   onComplete: (selected: string[]) => void;
+  onHome: () => void;
 }
 
 interface SwipeCardProps {
@@ -137,7 +138,7 @@ const SwipeCard = ({ category, onSwipe, isAnimating }: SwipeCardProps) => {
   );
 };
 
-export const SwipeInterestSelector = ({ onComplete }: SwipeInterestSelectorProps) => {
+export const SwipeInterestSelector = ({ onComplete, onHome }: SwipeInterestSelectorProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [exitDirection, setExitDirection] = useState<'left' | 'right' | null>(null);
@@ -211,6 +212,14 @@ export const SwipeInterestSelector = ({ onComplete }: SwipeInterestSelectorProps
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background px-6">
+      {/* Home Button */}
+      <button 
+        onClick={onHome}
+        className="absolute top-6 left-6 w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors shadow-lg"
+      >
+        <Home className="w-6 h-6 text-foreground" />
+      </button>
+      
       {/* Header */}
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-foreground mb-4">

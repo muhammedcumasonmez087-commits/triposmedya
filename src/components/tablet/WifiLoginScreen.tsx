@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Wifi, Mail, User, ChevronRight, Globe } from 'lucide-react';
+import { Wifi, Mail, User, ChevronRight, Globe, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 interface WifiLoginScreenProps {
   onComplete: (userData: { email: string; name: string }) => void;
   onSkip: () => void;
+  onHome: () => void;
 }
 
 const socialButtons = [
@@ -15,7 +16,7 @@ const socialButtons = [
   { id: 'instagram', icon: '📷', label: 'Instagram' },
 ];
 
-export const WifiLoginScreen = ({ onComplete, onSkip }: WifiLoginScreenProps) => {
+export const WifiLoginScreen = ({ onComplete, onSkip, onHome }: WifiLoginScreenProps) => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -35,6 +36,14 @@ export const WifiLoginScreen = ({ onComplete, onSkip }: WifiLoginScreenProps) =>
 
   return (
     <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center px-6">
+      {/* Home Button */}
+      <button 
+        onClick={onHome}
+        className="absolute top-6 left-6 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+      >
+        <Home className="w-6 h-6 text-white" />
+      </button>
+      
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

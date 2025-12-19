@@ -23,6 +23,11 @@ const Index = () => {
   const [wifiStep, setWifiStep] = useState<WifiStep>(null);
   const [userData, setUserData] = useState<{ email: string; name: string } | null>(null);
 
+  const handleGoHome = () => {
+    setCurrentScreen('hero');
+    setWifiStep(null);
+  };
+
   const handleStartExperience = () => {
     setCurrentScreen('swipe');
   };
@@ -84,7 +89,10 @@ const Index = () => {
       )}
       
       {currentScreen === 'swipe' && !wifiStep && (
-        <SwipeInterestSelector onComplete={handleSwipeComplete} />
+        <SwipeInterestSelector 
+          onComplete={handleSwipeComplete}
+          onHome={handleGoHome}
+        />
       )}
       
       {currentScreen === 'feed' && !wifiStep && (
@@ -92,6 +100,7 @@ const Index = () => {
           selectedInterests={selectedInterests}
           onPlayGame={handlePlayGame}
           onClaimOffer={handleClaimOffer}
+          onHome={handleGoHome}
         />
       )}
       
@@ -100,6 +109,7 @@ const Index = () => {
         <WifiLoginScreen 
           onComplete={handleWifiLogin}
           onSkip={handleWifiLoginSkip}
+          onHome={handleGoHome}
         />
       )}
       
@@ -107,12 +117,14 @@ const Index = () => {
         <WifiAdScreen 
           onComplete={handleAdComplete}
           sponsorName="Eziç Restaurant"
+          onHome={handleGoHome}
         />
       )}
       
       {wifiStep === 'success' && (
         <WifiSuccessScreen 
           onContinue={handleWifiContinue}
+          onHome={handleGoHome}
           userName={userData?.name}
         />
       )}
