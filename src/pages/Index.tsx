@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import { HeroScreen } from '@/components/tablet/HeroScreen';
-import { InterestSelector } from '@/components/tablet/InterestSelector';
+import { SwipeInterestSelector } from '@/components/tablet/SwipeInterestSelector';
 import { OfferFeed } from '@/components/tablet/OfferFeed';
 import { SpinWheel } from '@/components/tablet/SpinWheel';
 import { ScratchCard } from '@/components/tablet/ScratchCard';
 import { QRReward } from '@/components/tablet/QRReward';
 
-type Screen = 'hero' | 'feed';
+type Screen = 'hero' | 'swipe' | 'feed';
 type GameType = 'spin' | 'scratch' | null;
 
 const Index = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('hero');
-  const [showInterestSelector, setShowInterestSelector] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [activeGame, setActiveGame] = useState<GameType>(null);
   const [showQR, setShowQR] = useState(false);
@@ -19,12 +18,11 @@ const Index = () => {
   const [currentOffer, setCurrentOffer] = useState('');
 
   const handleStartExperience = () => {
-    setShowInterestSelector(true);
+    setCurrentScreen('swipe');
   };
 
-  const handleInterestComplete = (interests: string[]) => {
+  const handleSwipeComplete = (interests: string[]) => {
     setSelectedInterests(interests);
-    setShowInterestSelector(false);
     setCurrentScreen('feed');
   };
 
@@ -54,6 +52,10 @@ const Index = () => {
         <HeroScreen onStart={handleStartExperience} />
       )}
       
+      {currentScreen === 'swipe' && (
+        <SwipeInterestSelector onComplete={handleSwipeComplete} />
+      )}
+      
       {currentScreen === 'feed' && (
         <OfferFeed 
           selectedInterests={selectedInterests}
@@ -63,13 +65,6 @@ const Index = () => {
       )}
       
       {/* Modals */}
-      {showInterestSelector && (
-        <InterestSelector 
-          onClose={() => setShowInterestSelector(false)}
-          onComplete={handleInterestComplete}
-        />
-      )}
-      
       {activeGame === 'spin' && (
         <SpinWheel 
           onClose={() => setActiveGame(null)}
