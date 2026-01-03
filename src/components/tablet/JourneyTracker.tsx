@@ -100,8 +100,20 @@ export const JourneyTracker = ({ isVisible = true, onClose }: JourneyTrackerProp
           className="absolute bottom-24 left-4 right-4 z-20"
         >
           <div className="bg-card/95 backdrop-blur-xl rounded-3xl shadow-elevated border border-border/50 overflow-hidden">
+            {/* Close Button */}
+            {onClose && (
+              <motion.button
+                onClick={onClose}
+                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center hover:bg-white/20 transition-colors border border-white/20"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="text-foreground text-lg">✕</span>
+              </motion.button>
+            )}
+
             {/* GPS Pulse Effect */}
-            <div className="absolute top-4 right-4 z-10">
+            <div className="absolute top-4 right-16 z-10">
               <div className="relative">
                 <motion.div
                   animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }}
