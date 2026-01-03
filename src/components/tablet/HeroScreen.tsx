@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronRight, ChevronLeft, Wifi, Gamepad2, Compass, X, Tag, Clock, Phone, MapPin, Star, Globe, Volume2, VolumeX } from 'lucide-react';
+import { ChevronRight, Wifi, Gamepad2, Compass, X, Tag, MapPin, Home, Music, Info, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import QRCode from 'react-qr-code';
@@ -12,82 +12,109 @@ interface HeroScreenProps {
   onExplore: () => void;
 }
 
-// Premium reklamlar - yüksek kaliteli içerik
+// Premium reklamlar - farklı kategorilerde 6 reklam
 const premiumAds = [
   {
-    id: 'merit-crystal',
-    name: 'Merit Crystal Cove',
-    logo: '🏨',
-    tagline: 'Akdeniz\'in Eşsiz Lüksü',
-    description: 'KKTC\'nin en prestijli 5 yıldızlı oteli. Özel plaj, dünya mutfağı ve spa deneyimi ile unutulmaz bir konaklama.',
-    offer: 'İlk gece %30 indirim',
-    couponCode: 'CRYSTAL30',
-    rating: 4.9,
-    reviews: 2847,
-    location: 'Alsancak, Girne',
-    category: 'Konaklama',
+    id: 'salamis-bay',
+    brand: 'SALAMIS BAY',
+    subtitle: 'RESORT HOTEL & CONTİ',
+    campaignTag: '01-16 ŞUBAT ÖZEL',
+    headline: 'KKTC HALKINA',
+    subHeadline: 'Özel Fırsat',
+    priceLabel: 'Kişi Başı Gecelik',
+    price: '3.750',
+    currency: '₺',
+    priceNote: 'ULTRA HER ŞEY DAHİL',
+    category: 'Otel',
+    image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1920&q=80',
+    couponCode: 'SALAMIS2024',
+    location: 'Gazimağusa',
+    description: 'Kuzey Kıbrıs\'ın en prestijli tatil köyü. Özel plaj, 5 yıldızlı hizmet ve eşsiz Akdeniz manzarası.'
+  },
+  {
+    id: 'merit-royal',
+    brand: 'MERIT ROYAL',
+    subtitle: 'PREMIUM HOTEL & SPA',
+    campaignTag: 'SINIRLI TEKLİF',
+    headline: 'TATİLİN',
+    subHeadline: 'Lüks Adresi',
+    priceLabel: 'Çift Kişi Gecelik',
+    price: '5.200',
+    currency: '₺',
+    priceNote: 'TAM PANSİYON PLUS',
+    category: 'Otel',
     image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80',
-    accent: 'from-blue-600 to-cyan-500'
+    couponCode: 'MERIT2024',
+    location: 'Girne',
+    description: 'Dünya standartlarında lüks konaklama. Casino, spa ve fine dining deneyimi bir arada.'
   },
   {
     id: 'camelot-beach',
-    name: 'Camelot Beach Club',
-    logo: '🏖️',
-    tagline: 'Gündüzleri Cennet, Geceleri Eğlence',
-    description: 'Altın sarısı kumsalda beach party\'ler, canlı DJ performansları ve enfes deniz ürünleri. Yaz hiç bitmesin.',
-    offer: 'Ücretsiz şezlong + içecek',
-    couponCode: 'CAMELOT2024',
-    rating: 4.7,
-    reviews: 1523,
-    location: 'Escape Beach, Girne',
-    category: 'Beach & Eğlence',
+    brand: 'CAMELOT',
+    subtitle: 'BEACH CLUB',
+    campaignTag: 'YAZ SEZONU',
+    headline: 'SAHİLİN EN',
+    subHeadline: 'Cool Noktası',
+    priceLabel: 'Giriş + Şezlong',
+    price: '450',
+    currency: '₺',
+    priceNote: '1 İÇECEK DAHİL',
+    category: 'Beach Club',
     image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80',
-    accent: 'from-amber-500 to-orange-500'
+    couponCode: 'CAMELOT24',
+    location: 'Escape Beach, Girne',
+    description: 'Altın kumsalda beach party, canlı DJ ve enfes deniz lezzetleri. Yazın kalbi burada atıyor.'
   },
   {
-    id: 'bellapais-gardens',
-    name: 'Bellapais Gardens',
-    logo: '🌿',
-    tagline: 'Tarihin İçinde Huzur',
-    description: 'Bellapais Manastırı manzaralı butik otel. Organik bahçe restoranı, yoga seansları ve doğayla iç içe konaklama.',
-    offer: 'Kahvaltı dahil konaklama',
-    couponCode: 'BELLA25',
-    rating: 4.8,
-    reviews: 892,
-    location: 'Bellapais, Girne',
-    category: 'Butik Otel',
-    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80',
-    accent: 'from-emerald-600 to-teal-500'
-  },
-  {
-    id: 'niazi-kebab',
-    name: 'Niazi\'s Restaurant',
-    logo: '🍖',
-    tagline: 'Efsanevi Kıbrıs Lezzetleri',
-    description: '50 yıllık geleneğiyle KKTC\'nin en ünlü restoranı. Şeftali kebabı, hellim ve otantik Kıbrıs mutfağı.',
-    offer: 'Tatlı ikramı',
-    couponCode: 'NIAZI50',
-    rating: 4.6,
-    reviews: 3241,
-    location: 'Girne Limanı',
+    id: 'niaziis-restaurant',
+    brand: 'NİAZİ\'S',
+    subtitle: 'AUTHENTIC CYPRUS CUISINE',
+    campaignTag: 'LEZZETİN ADRESİ',
+    headline: 'ŞEFTALİ KEBABI',
+    subHeadline: 'Efsanesi Burada',
+    priceLabel: '2 Kişilik Menü',
+    price: '780',
+    currency: '₺',
+    priceNote: 'TATLI İKRAMI HEDİYE',
     category: 'Restoran',
     image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1920&q=80',
-    accent: 'from-red-600 to-rose-500'
+    couponCode: 'NIAZI50',
+    location: 'Girne Limanı',
+    description: '50 yıllık geleneğiyle KKTC\'nin en ünlü restoranı. Otantik Kıbrıs mutfağının en iyi hali.'
   },
   {
-    id: 'salamis-tours',
-    name: 'Salamis Antik Kent',
-    logo: '🏛️',
-    tagline: '3000 Yıllık Tarih',
-    description: 'Akdeniz\'in en iyi korunmuş antik kentlerinden biri. Profesyonel rehberli turlarla tarihe yolculuk.',
-    offer: 'Rehberli tur %20 indirim',
-    couponCode: 'SALAMIS20',
-    rating: 4.9,
-    reviews: 1876,
-    location: 'Gazimağusa',
-    category: 'Kültür & Tarih',
-    image: 'https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=1920&q=80',
-    accent: 'from-stone-600 to-amber-600'
+    id: 'colony-garden',
+    brand: 'COLONY GARDEN',
+    subtitle: 'BOUTIQUE HOTEL',
+    campaignTag: 'HUZURUN ADRESİ',
+    headline: 'DOĞAYLA İÇ İÇE',
+    subHeadline: 'Butik Konaklama',
+    priceLabel: 'Kişi Başı Gecelik',
+    price: '2.100',
+    currency: '₺',
+    priceNote: 'KAHVALTI DAHİL',
+    category: 'Butik Otel',
+    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80',
+    couponCode: 'COLONY25',
+    location: 'Bellapais, Girne',
+    description: 'Bellapais Manastırı manzaralı butik otel. Organik bahçe ve yoga ile huzur dolu konaklama.'
+  },
+  {
+    id: 'elexus-hotel',
+    brand: 'ELEXUS',
+    subtitle: 'HOTEL RESORT & SPA',
+    campaignTag: 'VIP FIRSAT',
+    headline: 'AKDENİZ\'İN',
+    subHeadline: 'İncisi',
+    priceLabel: 'Kişi Başı Gecelik',
+    price: '4.500',
+    currency: '₺',
+    priceNote: 'ULTRA HER ŞEY DAHİL',
+    category: 'Otel',
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1920&q=80',
+    couponCode: 'ELEXUS2024',
+    location: 'Çatalköy, Girne',
+    description: 'Akdeniz\'in en güzel sahilinde 5 yıldızlı tatil. Aquapark, spa ve dünya mutfağı.'
   }
 ];
 
@@ -124,14 +151,14 @@ const AdDetailModal = ({
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${ad.image})` }}
           />
-          <div className={`absolute inset-0 bg-gradient-to-t ${ad.accent} opacity-40`} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
           
           <div className="absolute inset-0 p-8 flex flex-col justify-end">
-            <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center mb-4">
-              <span className="text-5xl">{ad.logo}</span>
-            </div>
-            <h2 className="text-3xl font-black text-white mb-1">{ad.name}</h2>
-            <p className="text-white/80">{ad.tagline}</p>
+            <Badge className="self-start mb-3 bg-orange-500 text-white border-none">
+              {ad.campaignTag}
+            </Badge>
+            <h2 className="text-3xl font-black text-white mb-1">{ad.brand}</h2>
+            <p className="text-white/80">{ad.subtitle}</p>
           </div>
         </div>
         
@@ -148,6 +175,10 @@ const AdDetailModal = ({
             {ad.category}
           </Badge>
           
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            {ad.headline} <span className="text-orange-500 italic">{ad.subHeadline}</span>
+          </h3>
+          
           <p className="text-gray-600 text-lg leading-relaxed mb-6 flex-1">
             {ad.description}
           </p>
@@ -159,18 +190,19 @@ const AdDetailModal = ({
               <span className="text-gray-700">{ad.location}</span>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50">
-              <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-              <span className="text-gray-700">{ad.rating} ({ad.reviews.toLocaleString()} değerlendirme)</span>
+              <Calendar className="w-5 h-5 text-gray-400" />
+              <span className="text-gray-700">{ad.campaignTag}</span>
             </div>
           </div>
           
           {/* Offer Box */}
-          <div className={`bg-gradient-to-r ${ad.accent} rounded-2xl p-6`}>
+          <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-6">
             <div className="flex items-center gap-4">
               <div className="flex-1">
-                <p className="text-white/70 text-sm mb-1">ÖZEL TEKLİF</p>
-                <p className="text-white font-bold text-xl mb-2">{ad.offer}</p>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20">
+                <p className="text-white/70 text-sm mb-1">{ad.priceLabel}</p>
+                <p className="text-white font-black text-3xl mb-1">{ad.price}<span className="text-lg">{ad.currency}</span></p>
+                <p className="text-white/80 text-sm">{ad.priceNote}</p>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 mt-3">
                   <Tag className="w-4 h-4 text-white" />
                   <span className="text-white font-mono font-bold text-sm">{ad.couponCode}</span>
                 </div>
@@ -191,7 +223,7 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames, onExplore }: HeroS
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [showAdDetail, setShowAdDetail] = useState<typeof premiumAds[0] | null>(null);
   const [adProgress, setAdProgress] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
+  const [activeNav, setActiveNav] = useState('home');
 
   // 10 saniyede bir reklam değiştir
   useEffect(() => {
@@ -201,22 +233,12 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames, onExplore }: HeroS
           setCurrentAdIndex(i => (i + 1) % premiumAds.length);
           return 0;
         }
-        return prev + 1; // 10 saniye
+        return prev + 1;
       });
     }, 100);
     
     return () => clearInterval(progressInterval);
   }, []);
-
-  const handlePrevAd = () => {
-    setCurrentAdIndex(prev => (prev - 1 + premiumAds.length) % premiumAds.length);
-    setAdProgress(0);
-  };
-
-  const handleNextAd = () => {
-    setCurrentAdIndex(prev => (prev + 1) % premiumAds.length);
-    setAdProgress(0);
-  };
 
   const currentAd = premiumAds[currentAdIndex];
 
@@ -227,7 +249,7 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames, onExplore }: HeroS
         <motion.div
           key={currentAd.id}
           className="absolute inset-0"
-          initial={{ opacity: 0, scale: 1.05 }}
+          initial={{ opacity: 0, scale: 1.02 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.98 }}
           transition={{ duration: 0.8 }}
@@ -236,187 +258,210 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames, onExplore }: HeroS
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${currentAd.image})` }}
           />
-          <div className={`absolute inset-0 bg-gradient-to-r ${currentAd.accent} opacity-30`} />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
         </motion.div>
       </AnimatePresence>
-      
-      {/* Navigation Arrows - Minimal */}
-      <button 
-        onClick={handlePrevAd}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 backdrop-blur flex items-center justify-center hover:bg-white/20 transition-all"
-      >
-        <ChevronLeft className="w-6 h-6 text-white" />
-      </button>
-      <button 
-        onClick={handleNextAd}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 backdrop-blur flex items-center justify-center hover:bg-white/20 transition-all"
-      >
-        <ChevronRight className="w-6 h-6 text-white" />
-      </button>
 
-      {/* Minimal Header */}
-      <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 py-5">
-        <motion.div 
-          className="flex items-center gap-3"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-        >
-          <div className="w-11 h-11 rounded-xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center">
-            <span className="text-white font-black text-lg">T</span>
-          </div>
-          <div>
-            <h1 className="font-bold text-white text-lg">TripOS</h1>
-            <p className="text-white/50 text-xs">Hoş Geldiniz</p>
-          </div>
-        </motion.div>
-        
-        <motion.div 
-          className="flex items-center gap-2"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-        >
-          <button 
-            onClick={() => setShowJourney(true)}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-green-500/20 backdrop-blur border border-green-500/30 text-white hover:bg-green-500/30 transition-all"
+      {/* Brand Header - Top Left */}
+      <header className="absolute top-0 left-0 right-0 z-20 px-8 py-6">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentAd.id}
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-xs font-medium">Yolculuk</span>
-          </button>
-          
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 backdrop-blur border border-white/10">
-            <span className="text-white text-sm">28°C</span>
-            <span className="text-sm">☀️</span>
-          </div>
-          
-          <button className="px-3 py-2 rounded-xl bg-white/10 backdrop-blur border border-white/10 text-white hover:bg-white/20 transition-all">
-            <Globe className="w-4 h-4" />
-          </button>
-          
-          <button 
-            onClick={() => setIsMuted(!isMuted)}
-            className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
-          >
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-          </button>
-        </motion.div>
+            <h1 className="text-3xl font-light tracking-wider text-white">
+              {currentAd.brand}
+            </h1>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="w-1 h-5 bg-orange-500 rounded-full" />
+              <p className="text-white/70 text-sm tracking-widest">{currentAd.subtitle}</p>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </header>
 
-      {/* Main Content - Left Side */}
-      <div className="absolute left-0 top-0 bottom-0 w-[55%] flex items-center px-12">
+      {/* Campaign Tag - Left Side */}
+      <div className="absolute left-8 top-32 z-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentAd.id}
             initial={{ x: -30, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 30, opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-xl"
+            exit={{ x: -30, opacity: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
-            {/* Brand */}
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center">
-                <span className="text-4xl">{currentAd.logo}</span>
-              </div>
-              <div>
-                <Badge className="bg-white/20 text-white border-none text-xs mb-1">
-                  {currentAd.category}
-                </Badge>
-                <h2 className="text-4xl font-black text-white">{currentAd.name}</h2>
-              </div>
-            </div>
-            
-            {/* Tagline */}
-            <p className="text-white/60 text-xl mb-4">{currentAd.tagline}</p>
-            
-            {/* Description */}
-            <p className="text-white/80 text-lg leading-relaxed mb-6">
-              {currentAd.description}
-            </p>
-            
-            {/* Rating */}
-            <div className="flex items-center gap-4 mb-8">
-              <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-                <span className="text-white font-bold">{currentAd.rating}</span>
-                <span className="text-white/50">({currentAd.reviews.toLocaleString()})</span>
-              </div>
-              <div className="flex items-center gap-2 text-white/60">
-                <MapPin className="w-4 h-4" />
-                <span className="text-sm">{currentAd.location}</span>
-              </div>
-            </div>
-            
-            {/* CTA */}
-            <button 
-              onClick={() => setShowAdDetail(currentAd)}
-              className={`group flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r ${currentAd.accent} text-white font-bold text-lg shadow-2xl hover:scale-[1.02] transition-transform`}
-            >
-              <span>{currentAd.offer}</span>
-              <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            <Badge className="bg-black/50 backdrop-blur-sm text-white border-white/20 px-4 py-2 text-sm">
+              <Calendar className="w-4 h-4 mr-2" />
+              {currentAd.campaignTag}
+            </Badge>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Progress Dots - Right Side Center */}
-      <div className="absolute right-8 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-3">
+      {/* Main Headline - Left Center */}
+      <div className="absolute left-8 top-1/2 -translate-y-1/2 z-20 max-w-lg">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentAd.id}
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 50, opacity: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-6xl font-black text-white leading-tight mb-2">
+              {currentAd.headline}
+            </h2>
+            <p className="text-5xl font-light italic text-orange-400">
+              {currentAd.subHeadline}
+            </p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Price Card - Right Side */}
+      <div className="absolute right-8 top-1/2 -translate-y-1/2 z-20">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentAd.id}
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 50, opacity: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-black/40 backdrop-blur-xl rounded-2xl p-6 border border-white/10 min-w-[200px]"
+          >
+            <p className="text-white/70 text-sm mb-2">{currentAd.priceLabel}</p>
+            <div className="flex items-baseline gap-1 mb-2">
+              <span className="text-4xl font-black text-white">{currentAd.price}</span>
+              <span className="text-orange-400 text-xl font-bold">{currentAd.currency}</span>
+            </div>
+            <p className="text-white/60 text-xs tracking-wider">{currentAd.priceNote}</p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* More Info Button - Below Price Card */}
+      <div className="absolute right-8 top-[65%] z-20">
+        <AnimatePresence mode="wait">
+          <motion.button
+            key={currentAd.id}
+            onClick={() => setShowAdDetail(currentAd)}
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 50, opacity: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex items-center gap-3 px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold transition-all shadow-lg hover:shadow-orange-500/30"
+          >
+            <Info className="w-5 h-5" />
+            <span>Daha Fazla Bilgi</span>
+            <ChevronRight className="w-4 h-4" />
+          </motion.button>
+        </AnimatePresence>
+      </div>
+
+      {/* Ad Progress Dots - Right Side */}
+      <div className="absolute right-8 top-1/4 z-20 flex flex-col gap-2">
         {premiumAds.map((ad, index) => (
           <button
             key={ad.id}
             onClick={() => { setCurrentAdIndex(index); setAdProgress(0); }}
-            className={`relative w-3 h-3 rounded-full transition-all ${
-              index === currentAdIndex ? 'bg-white scale-125' : 'bg-white/30 hover:bg-white/50'
+            className={`relative w-2.5 h-2.5 rounded-full transition-all ${
+              index === currentAdIndex ? 'bg-orange-500 scale-125' : 'bg-white/30 hover:bg-white/50'
             }`}
           >
             {index === currentAdIndex && (
               <motion.div
-                className="absolute inset-0 rounded-full border-2 border-white"
+                className="absolute inset-0 rounded-full border-2 border-orange-400"
                 initial={{ scale: 1.5, opacity: 0 }}
-                animate={{ scale: 2, opacity: 0.5 }}
-                transition={{ duration: 1, repeat: Infinity }}
+                animate={{ scale: 2.5, opacity: 0 }}
+                transition={{ duration: 1.5, repeat: Infinity }}
               />
             )}
           </button>
         ))}
       </div>
 
-      {/* Bottom Bar - Clean & Minimal */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-6">
+      {/* Bottom Bar */}
+      <div className="absolute bottom-0 left-0 right-0 z-20">
         {/* Progress Bar */}
-        <div className="w-full h-1 bg-white/10 rounded-full mb-4 overflow-hidden">
+        <div className="w-full h-0.5 bg-white/10">
           <motion.div
-            className={`h-full bg-gradient-to-r ${currentAd.accent}`}
+            className="h-full bg-gradient-to-r from-orange-500 to-amber-400"
             style={{ width: `${adProgress}%` }}
             transition={{ duration: 0.1 }}
           />
         </div>
         
-        {/* Bottom Actions */}
-        <div className="flex items-center justify-center gap-4">
-          <button 
-            onClick={onWifiRequest}
-            className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-white/10 backdrop-blur border border-white/10 text-white font-medium hover:bg-white/20 transition-all"
-          >
-            <Wifi className="w-5 h-5" />
-            <span>Free WiFi</span>
-          </button>
-          
-          <button 
-            onClick={onGames}
-            className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-white/10 backdrop-blur border border-white/10 text-white font-medium hover:bg-white/20 transition-all"
-          >
-            <Gamepad2 className="w-5 h-5" />
-            <span>Oyunlar</span>
-          </button>
-          
+        {/* Bottom Navigation */}
+        <div className="flex items-center justify-between px-6 py-4 bg-black/40 backdrop-blur-xl">
+          {/* Left - Location & Weather */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-white/70">
+              <span className="text-lg">☀️</span>
+              <div>
+                <p className="text-white text-sm font-medium">LEFKOŞA</p>
+                <p className="text-white/60 text-xs">24°C</p>
+              </div>
+            </div>
+            <div className="w-px h-8 bg-white/20" />
+            <div className="flex items-center gap-2 text-white/70">
+              <span className="text-lg">🚕</span>
+              <div>
+                <p className="text-white text-sm font-medium">KALKIŞ</p>
+                <p className="text-white/60 text-xs">12 dk</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Center - Navigation */}
+          <div className="flex items-center gap-2 bg-black/50 rounded-2xl p-1.5">
+            <button 
+              onClick={() => setActiveNav('home')}
+              className={`flex flex-col items-center gap-1 px-5 py-2 rounded-xl transition-all ${
+                activeNav === 'home' ? 'bg-orange-500 text-white' : 'text-white/60 hover:text-white'
+              }`}
+            >
+              <Home className="w-5 h-5" />
+              <span className="text-[10px] font-medium">ANA SAYFA</span>
+            </button>
+            <button 
+              onClick={() => { setActiveNav('games'); onGames(); }}
+              className={`flex flex-col items-center gap-1 px-5 py-2 rounded-xl transition-all ${
+                activeNav === 'games' ? 'bg-orange-500 text-white' : 'text-white/60 hover:text-white'
+              }`}
+            >
+              <Gamepad2 className="w-5 h-5" />
+              <span className="text-[10px] font-medium">OYUNLAR</span>
+            </button>
+            <button 
+              onClick={() => setActiveNav('music')}
+              className={`flex flex-col items-center gap-1 px-5 py-2 rounded-xl transition-all ${
+                activeNav === 'music' ? 'bg-orange-500 text-white' : 'text-white/60 hover:text-white'
+              }`}
+            >
+              <Music className="w-5 h-5" />
+              <span className="text-[10px] font-medium">MÜZİK</span>
+            </button>
+            <button 
+              onClick={() => { setActiveNav('wifi'); onWifiRequest(); }}
+              className={`flex flex-col items-center gap-1 px-5 py-2 rounded-xl transition-all ${
+                activeNav === 'wifi' ? 'bg-orange-500 text-white' : 'text-white/60 hover:text-white'
+              }`}
+            >
+              <Wifi className="w-5 h-5" />
+              <span className="text-[10px] font-medium">WIFI</span>
+            </button>
+          </div>
+
+          {/* Right - Explore Button */}
           <button 
             onClick={onExplore}
-            className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-gray-900 font-bold text-lg hover:bg-gray-100 transition-all shadow-xl"
+            className="flex items-center gap-3 px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition-all shadow-lg hover:shadow-orange-500/30"
           >
-            <Compass className="w-5 h-5" />
-            <span>Keşfet</span>
+            <span>KEŞFET</span>
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>
