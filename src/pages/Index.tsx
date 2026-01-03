@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { HeroScreen } from '@/components/tablet/HeroScreen';
-import { SwipeInterestSelector } from '@/components/tablet/SwipeInterestSelector';
+import { ExploreScreen } from '@/components/tablet/ExploreScreen';
 import { OfferFeed } from '@/components/tablet/OfferFeed';
 import { SpinWheel } from '@/components/tablet/SpinWheel';
 import { ScratchCard } from '@/components/tablet/ScratchCard';
@@ -11,7 +11,7 @@ import { WifiSuccessScreen } from '@/components/tablet/WifiSuccessScreen';
 import { GamesHub, Game } from '@/components/tablet/GamesHub';
 import { GamePlayer } from '@/components/tablet/GamePlayer';
 
-type Screen = 'hero' | 'swipe' | 'feed' | 'games';
+type Screen = 'hero' | 'explore' | 'feed' | 'games';
 type GameType = 'spin' | 'scratch' | null;
 type WifiStep = null | 'login' | 'ad' | 'success';
 
@@ -42,6 +42,17 @@ const Index = () => {
 
   const handleBackToGames = () => {
     setSelectedGame(null);
+  };
+
+  // Yeni: Keşfetmeye Başla - ExploreScreen'e git
+  const handleExplore = () => {
+    setCurrentScreen('explore');
+  };
+
+  // ExploreScreen tamamlandığında
+  const handleExploreComplete = (interests: string[]) => {
+    setSelectedInterests(interests);
+    setCurrentScreen('feed');
   };
 
   const handleStartExperience = (interests?: string[]) => {
@@ -91,7 +102,7 @@ const Index = () => {
 
   const handleWifiContinue = () => {
     setWifiStep(null);
-    setCurrentScreen('swipe');
+    setCurrentScreen('explore');
   };
 
   return (
@@ -102,6 +113,15 @@ const Index = () => {
           onStart={handleStartExperience} 
           onWifiRequest={handleWifiRequest}
           onGames={handleOpenGames}
+          onExplore={handleExplore}
+        />
+      )}
+
+      {/* Explore Screen - Yeni yaratıcı ilgi alanı seçici */}
+      {currentScreen === 'explore' && !wifiStep && (
+        <ExploreScreen 
+          onComplete={handleExploreComplete}
+          onHome={handleGoHome}
         />
       )}
       
@@ -121,8 +141,6 @@ const Index = () => {
           onHome={handleGoHome}
         />
       )}
-      
-      {/* SwipeInterestSelector artık modal olarak HeroScreen içinde */}
       
       {currentScreen === 'feed' && !wifiStep && (
         <OfferFeed 

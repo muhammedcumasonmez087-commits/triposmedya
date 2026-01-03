@@ -1,99 +1,25 @@
-import { useState } from 'react';
-import { Star, MapPin, Gift, ChevronRight, Navigation, Anchor, Building2, Home, Clock, ExternalLink } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Star, MapPin, Gift, ChevronRight, Crown, Medal, Award, Home, Clock, Tag, QrCode, X, Sparkles, TrendingUp, Eye, Phone, Timer, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Header } from './Header';
-import categoryBeach from '@/assets/category-beach.jpg';
-import categoryHistory from '@/assets/category-history.jpg';
-import categoryFood from '@/assets/category-food.jpg';
-
-interface Offer {
-  id: string;
-  type: 'featured' | 'regular' | 'sponsor';
-  category: string;
-  categoryLabel: string;
-  title: string;
-  description: string;
-  location: string;
-  distance: string;
-  duration?: string;
-  isOpen?: boolean;
-  rating: number;
-  image: string;
-  discount?: string;
-  perks?: string[];
-  sponsored?: boolean;
-}
-
-const offers: Offer[] = [
-  {
-    id: '1',
-    type: 'featured',
-    category: 'beach',
-    categoryLabel: 'GÜNÜN FIRSATI',
-    title: 'Escape Beach Club',
-    description: 'Altın kumlarda eşsiz bir gün geçirin. Bu taksiye özel %10 indirim.',
-    location: 'Alsancak, Girne',
-    distance: '12 km',
-    duration: '~18 dk',
-    isOpen: true,
-    rating: 4.9,
-    image: categoryBeach,
-    discount: '%10 İndirim',
-    perks: ['Şezlong Dahil'],
-    sponsored: true,
-  },
-  {
-    id: '2',
-    type: 'regular',
-    category: 'food',
-    categoryLabel: 'RESTORAN',
-    title: 'Bellapais Garden',
-    description: 'Manastır manzaralı romantik akşam yemeği.',
-    location: 'Girne Merkez',
-    distance: '5 km',
-    duration: '~8 dk',
-    isOpen: true,
-    rating: 4.8,
-    image: categoryFood,
-  },
-  {
-    id: '3',
-    type: 'regular',
-    category: 'history',
-    categoryLabel: 'TARİHİ YER',
-    title: 'St. Hilarion Kalesi',
-    description: 'Beşparmak dağlarının zirvesinde masalsı manzara.',
-    location: 'Dağ Yolu',
-    distance: '8 km',
-    duration: '~12 dk',
-    isOpen: true,
-    rating: 4.7,
-    image: categoryHistory,
-  },
-  {
-    id: '4',
-    type: 'sponsor',
-    category: 'activity',
-    categoryLabel: 'SPONSORLU',
-    title: 'Girne Yat Turu',
-    description: "Akdeniz'in maviliklerini keşfedin. Gün batımı turları.",
-    location: 'Eski Liman',
-    distance: '2 km',
-    duration: '~4 dk',
-    isOpen: true,
-    rating: 4.6,
-    image: categoryBeach,
-    sponsored: true,
-    discount: '%15 İndirim',
-  },
-];
+import { motion, AnimatePresence } from 'framer-motion';
+import QRCode from 'react-qr-code';
+import { 
+  contextualAds, 
+  getContextualAds, 
+  tierConfig, 
+  SponsorBadge, 
+  AdDetailModal,
+  ContextualAd,
+  SponsorTier
+} from './ContextualAdEngine';
 
 const filterTabs = [
-  { id: 'all', label: 'Tümü', icon: null },
-  { id: 'food', label: 'Yeme & İçme', icon: <Building2 className="w-4 h-4" /> },
-  { id: 'beach', label: 'Deniz & Plaj', icon: <Anchor className="w-4 h-4" /> },
-  { id: 'nightlife', label: 'Gece Hayatı', icon: <Star className="w-4 h-4" /> },
-  { id: 'history', label: 'Tarihi Yerler', icon: <Building2 className="w-4 h-4" /> },
+  { id: 'all', label: 'Tümü', icon: <Sparkles className="w-4 h-4" /> },
+  { id: 'platinum', label: 'Platinum', icon: <Crown className="w-4 h-4" />, color: 'text-purple-400' },
+  { id: 'gold', label: 'Gold', icon: <Medal className="w-4 h-4" />, color: 'text-amber-400' },
+  { id: 'bronze', label: 'Bronze', icon: <Award className="w-4 h-4" />, color: 'text-orange-400' },
 ];
 
 interface OfferFeedProps {
@@ -103,8 +29,190 @@ interface OfferFeedProps {
   onHome: () => void;
 }
 
+// Offer Card Component
+const OfferCard = ({ 
+  ad, 
+  variant = 'compact',
+  onDetails,
+  onClaim 
+}: { 
+  ad: ContextualAd; 
+  variant?: 'featured' | 'compact' | 'sponsor';
+  onDetails: (ad: ContextualAd) => void;
+  onClaim: (ad: ContextualAd) => void;
+}) => {
+  const config = tierConfig[ad.tier];
+  const TierIcon = config.icon;
+
+  if (variant === 'featured') {
+    return (
+      <motion.div 
+        className={`card-offer overflow-hidden ${config.borderColor} border-2`}
+        whileHover={{ y: -4 }}
+        transition={{ type: 'spring', stiffness: 300 }}
+      >
+        <div className="flex">
+          <div className="flex-1 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <SponsorBadge tier={ad.tier} size="md" />
+              <span className="px-2 py-1 rounded-full bg-green-500/20 text-green-500 text-xs font-medium">
+                Açık
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-4xl">{ad.logo}</span>
+              <div>
+                <h2 className="text-xl font-bold text-foreground">{ad.name}</h2>
+                <p className="text-muted-foreground text-sm">{ad.slogan}</p>
+              </div>
+            </div>
+            
+            {/* Quick Info Row */}
+            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-3">
+              {ad.metrics && (
+                <>
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    <span className="font-medium text-foreground">{ad.metrics.rating}</span>
+                  </div>
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground" />
+                </>
+              )}
+              <div className="flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5" />
+                <span>{ad.location}</span>
+              </div>
+              <span className="w-1 h-1 rounded-full bg-muted-foreground" />
+              <div className="flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5" />
+                <span>{ad.validUntil}'e kadar</span>
+              </div>
+            </div>
+            
+            <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+              {ad.description}
+            </p>
+
+            {/* Offer Badge */}
+            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r ${config.gradient} text-white font-bold mb-4`}>
+              <Gift className="w-4 h-4" />
+              {ad.offer}
+            </div>
+            
+            {/* CTAs - Haritada Aç kaldırıldı, taksi içinde kullanılamaz */}
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => onClaim(ad)}
+                className={`btn-primary-gradient rounded-xl flex items-center gap-2`}
+              >
+                <QrCode className="w-4 h-4" />
+                Kuponu Al
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => onDetails(ad)}
+                className="rounded-xl flex items-center gap-2"
+              >
+                Detaylar
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+          
+          <div className="relative w-64 shrink-0">
+            <img 
+              src={ad.image} 
+              alt={ad.name}
+              className="w-full h-full object-cover"
+            />
+            <div className={`absolute inset-0 bg-gradient-to-l ${config.bgGradient} opacity-30`} />
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Compact variant
+  return (
+    <motion.div 
+      className={`card-offer overflow-hidden group cursor-pointer ${config.borderColor} border`}
+      whileHover={{ y: -4, scale: 1.02 }}
+      transition={{ type: 'spring', stiffness: 300 }}
+      onClick={() => onDetails(ad)}
+    >
+      <div className="relative aspect-[4/3]">
+        <img 
+          src={ad.image} 
+          alt={ad.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className={`absolute inset-0 bg-gradient-to-t ${config.bgGradient} opacity-50`} />
+        
+        {/* Tier Badge */}
+        <div className="absolute top-2 left-2">
+          <div className={`flex items-center gap-1 px-2 py-1 rounded-lg ${config.badge} text-white`}>
+            <TierIcon className="w-3 h-3" />
+            <span className="text-xs font-semibold">{ad.tier}</span>
+          </div>
+        </div>
+        
+        {/* Rating */}
+        {ad.metrics && (
+          <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-lg bg-black/50 backdrop-blur">
+            <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+            <span className="text-xs font-semibold text-white">{ad.metrics.rating}</span>
+          </div>
+        )}
+      </div>
+      
+      <div className="p-3">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-2xl">{ad.logo}</span>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-foreground text-sm truncate">{ad.name}</h3>
+            <p className="text-xs text-muted-foreground truncate">{ad.category}</p>
+          </div>
+        </div>
+        
+        {/* Quick Info */}
+        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+          <MapPin className="w-3 h-3" />
+          <span className="truncate">{ad.location}</span>
+        </div>
+
+        {/* Offer Badge */}
+        <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-gradient-to-r ${config.gradient} text-white text-xs font-semibold mb-3`}>
+          <Tag className="w-3 h-3" />
+          {ad.offer}
+        </div>
+        
+        {/* CTA */}
+        <div className="flex gap-2">
+          <Button 
+            size="sm" 
+            className="flex-1 rounded-lg bg-primary hover:bg-primary/90 text-xs"
+            onClick={(e) => { e.stopPropagation(); onClaim(ad); }}
+          >
+            <QrCode className="w-3 h-3 mr-1" />
+            Kupon Al
+          </Button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 export const OfferFeed = ({ selectedInterests, onPlayGame, onClaimOffer, onHome }: OfferFeedProps) => {
   const [activeTab, setActiveTab] = useState('all');
+  const [selectedAd, setSelectedAd] = useState<ContextualAd | null>(null);
+  const [personalizedAds, setPersonalizedAds] = useState<{ platinum: ContextualAd[]; gold: ContextualAd[]; bronze: ContextualAd[] }>({ platinum: [], gold: [], bronze: [] });
+
+  // Kişiselleştirilmiş reklamları al
+  useEffect(() => {
+    const ads = getContextualAds(selectedInterests);
+    setPersonalizedAds(ads);
+  }, [selectedInterests]);
   
   const interestLabels = selectedInterests.length > 0 
     ? selectedInterests.map(i => {
@@ -120,10 +228,24 @@ export const OfferFeed = ({ selectedInterests, onPlayGame, onClaimOffer, onHome 
       })
     : [];
 
-  const featuredOffer = offers.find(o => o.type === 'featured');
-  // Top 3 regular + 1 sponsor (max 4 cards)
-  const regularOffers = offers.filter(o => o.type === 'regular').slice(0, 3);
-  const sponsorOffer = offers.find(o => o.type === 'sponsor');
+  // Aktif filtreye göre reklamları filtrele
+  const getFilteredAds = () => {
+    const allAds = [...personalizedAds.platinum, ...personalizedAds.gold, ...personalizedAds.bronze];
+    
+    if (activeTab === 'all') return allAds;
+    if (activeTab === 'platinum') return personalizedAds.platinum;
+    if (activeTab === 'gold') return personalizedAds.gold;
+    if (activeTab === 'bronze') return personalizedAds.bronze;
+    
+    return allAds;
+  };
+
+  const filteredAds = getFilteredAds();
+  const featuredAd = personalizedAds.platinum[0];
+
+  const handleClaimAd = (ad: ContextualAd) => {
+    setSelectedAd(ad);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -142,17 +264,39 @@ export const OfferFeed = ({ selectedInterests, onPlayGame, onClaimOffer, onHome 
             </button>
             
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Sizin İçin Önerilen</h1>
+              <div className="flex items-center gap-2 mb-1">
+                <h1 className="text-2xl font-bold text-foreground">Sizin İçin Önerilen</h1>
+                <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/20 text-green-500 text-xs font-medium">
+                  <TrendingUp className="w-3 h-3" />
+                  Kişiselleştirildi
+                </div>
+              </div>
               <p className="text-muted-foreground text-sm">
                 {interestLabels.length > 0 ? (
                   <>
                     <span className="text-primary font-medium">{interestLabels.join(', ')}</span>
-                    {' '}kategorisinde
+                    {' '}kategorisinde {filteredAds.length} teklif
                   </>
                 ) : (
-                  'En popüler mekanlar'
+                  `${filteredAds.length} sponsor teklifi mevcut`
                 )}
               </p>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20">
+              <Crown className="w-4 h-4 text-purple-400" />
+              <span className="text-sm font-medium text-purple-400">{personalizedAds.platinum.length} Platinum</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
+              <Medal className="w-4 h-4 text-amber-400" />
+              <span className="text-sm font-medium text-amber-400">{personalizedAds.gold.length} Gold</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500/10 border border-orange-500/20">
+              <Award className="w-4 h-4 text-orange-400" />
+              <span className="text-sm font-medium text-orange-400">{personalizedAds.bronze.length} Bronze</span>
             </div>
           </div>
         </div>
@@ -165,202 +309,77 @@ export const OfferFeed = ({ selectedInterests, onPlayGame, onClaimOffer, onHome 
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all ${
                 activeTab === tab.id
-                  ? 'bg-primary text-primary-foreground'
+                  ? tab.id === 'platinum' ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white'
+                  : tab.id === 'gold' ? 'bg-gradient-to-r from-amber-400 to-orange-400 text-white'
+                  : tab.id === 'bronze' ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white'
+                  : 'bg-primary text-primary-foreground'
                   : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary/50'
               }`}
             >
-              {tab.icon}
+              <span className={activeTab !== tab.id ? tab.color : ''}>{tab.icon}</span>
               {tab.label}
             </button>
           ))}
         </div>
         
-        {/* Featured Offer - Compact */}
-        {featuredOffer && (
-          <div className="card-offer mb-6 overflow-hidden">
-            <div className="flex">
-              <div className="flex-1 p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="px-2 py-1 rounded-full bg-highlight/20 text-highlight text-xs font-semibold">
-                    {featuredOffer.categoryLabel}
-                  </span>
-                  {featuredOffer.sponsored && (
-                    <span className="px-2 py-1 rounded-full bg-accent/20 text-accent text-xs font-medium">
-                      Özel Teklif
-                    </span>
-                  )}
-                </div>
-                
-                <h2 className="text-xl font-bold text-foreground mb-2">{featuredOffer.title}</h2>
-                
-                {/* Quick Info Row */}
-                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-3">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-reward fill-reward" />
-                    <span className="font-medium text-foreground">{featuredOffer.rating}</span>
-                  </div>
-                  <span className="w-1 h-1 rounded-full bg-muted-foreground" />
-                  <span>{featuredOffer.distance}</span>
-                  <span className="w-1 h-1 rounded-full bg-muted-foreground" />
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span>{featuredOffer.duration}</span>
-                  </div>
-                  {featuredOffer.isOpen && (
-                    <>
-                      <span className="w-1 h-1 rounded-full bg-muted-foreground" />
-                      <span className="text-green-500 font-medium">Açık</span>
-                    </>
-                  )}
-                </div>
-                
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                  {featuredOffer.description}
-                </p>
-                
-                {/* Standardized CTAs */}
-                <div className="flex gap-3">
-                  <Button 
-                    variant="outline" 
-                    className="rounded-xl flex items-center gap-2"
-                  >
-                    <Navigation className="w-4 h-4" />
-                    Haritada Aç
-                  </Button>
-                  <Button 
-                    onClick={() => onClaimOffer(featuredOffer.id)}
-                    className="btn-primary-gradient rounded-xl flex items-center gap-2"
-                  >
-                    <Gift className="w-4 h-4" />
-                    Teklifi Al
-                  </Button>
-                </div>
-              </div>
-              
-              <div className="relative w-64 shrink-0">
-                <img 
-                  src={featuredOffer.image} 
-                  alt={featuredOffer.title}
-                  className="w-full h-full object-cover"
-                />
-                {featuredOffer.discount && (
-                  <div className="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-highlight text-highlight-foreground text-sm font-bold">
-                    {featuredOffer.discount}
-                  </div>
-                )}
-              </div>
-            </div>
+        {/* Featured Platinum Offer */}
+        {activeTab === 'all' && featuredAd && (
+          <div className="mb-6">
+            <OfferCard 
+              ad={featuredAd} 
+              variant="featured" 
+              onDetails={setSelectedAd}
+              onClaim={handleClaimAd}
+            />
           </div>
         )}
         
-        {/* Regular Offers Grid - Max 3 + 1 Sponsor */}
+        {/* Offers Grid */}
         <div className="grid grid-cols-4 gap-4 mb-6">
-          {regularOffers.map(offer => (
-            <div key={offer.id} className="card-offer overflow-hidden group">
-              <div className="relative aspect-[4/3]">
-                <img 
-                  src={offer.image} 
-                  alt={offer.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          {filteredAds
+            .filter(ad => activeTab === 'all' ? ad.id !== featuredAd?.id : true)
+            .slice(0, 8)
+            .map((ad, index) => (
+              <motion.div
+                key={ad.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <OfferCard 
+                  ad={ad} 
+                  variant="compact"
+                  onDetails={setSelectedAd}
+                  onClaim={handleClaimAd}
                 />
-                <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 rounded-lg bg-card/90 backdrop-blur">
-                  <Star className="w-3 h-3 text-reward fill-reward" />
-                  <span className="text-xs font-semibold text-foreground">{offer.rating}</span>
-                </div>
-              </div>
-              
-              <div className="p-3">
-                <p className="text-xs font-semibold text-muted-foreground mb-1">{offer.categoryLabel}</p>
-                <h3 className="font-bold text-foreground text-sm mb-1 truncate">{offer.title}</h3>
-                
-                {/* Quick Info */}
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                  <span>{offer.distance}</span>
-                  <span>•</span>
-                  <span>{offer.duration}</span>
-                  {offer.isOpen && (
-                    <>
-                      <span>•</span>
-                      <span className="text-green-500">Açık</span>
-                    </>
-                  )}
-                </div>
-                
-                {/* Standardized CTAs */}
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1 rounded-lg text-xs">
-                    <Navigation className="w-3 h-3 mr-1" />
-                    Harita
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    className="flex-1 rounded-lg bg-primary hover:bg-primary/90 text-xs"
-                    onClick={() => onClaimOffer(offer.id)}
-                  >
-                    <Gift className="w-3 h-3 mr-1" />
-                    Teklif Al
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ))}
-          
-          {/* Sponsor Card */}
-          {sponsorOffer && (
-            <div className="card-offer overflow-hidden group border-2 border-accent/30">
-              <div className="relative aspect-[4/3]">
-                <img 
-                  src={sponsorOffer.image} 
-                  alt={sponsorOffer.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-2 left-2 px-2 py-1 rounded-lg bg-accent text-accent-foreground text-xs font-medium">
-                  Sponsorlu
-                </div>
-                {sponsorOffer.discount && (
-                  <div className="absolute top-2 right-2 px-2 py-1 rounded-lg bg-highlight text-highlight-foreground text-xs font-bold">
-                    {sponsorOffer.discount}
-                  </div>
-                )}
-              </div>
-              
-              <div className="p-3">
-                <h3 className="font-bold text-foreground text-sm mb-1 truncate">{sponsorOffer.title}</h3>
-                
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                  <span>{sponsorOffer.distance}</span>
-                  <span>•</span>
-                  <span>{sponsorOffer.duration}</span>
-                </div>
-                
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1 rounded-lg text-xs">
-                    <Navigation className="w-3 h-3 mr-1" />
-                    Harita
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    className="flex-1 rounded-lg bg-accent hover:bg-accent/90 text-xs"
-                    onClick={() => onClaimOffer(sponsorOffer.id)}
-                  >
-                    <Gift className="w-3 h-3 mr-1" />
-                    Teklif Al
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
+              </motion.div>
+            ))}
         </div>
         
-        {/* See More Link */}
-        <div className="text-center mb-6">
-          <button className="text-primary hover:text-primary/80 text-sm font-medium flex items-center gap-1 mx-auto">
-            Daha Fazla Göster
-            <ExternalLink className="w-4 h-4" />
-          </button>
-        </div>
+        {/* Contextual Ad Info Banner */}
+        <motion.div 
+          className="p-4 rounded-2xl bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-pink-500/10 border border-purple-500/20 mb-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
+              <Zap className="w-6 h-6 text-purple-400" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-foreground">Bağlamsal Reklamcılık Aktif</h3>
+              <p className="text-sm text-muted-foreground">
+                Teklifler ilgi alanlarınıza, günün saatine ve konumunuza göre özelleştirildi
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-purple-400 text-sm">
+              <Eye className="w-4 h-4" />
+              <span>Akıllı Hedefleme</span>
+            </div>
+          </div>
+        </motion.div>
         
-        {/* Reward Banner - Small */}
+        {/* Reward Banner */}
         <div 
           onClick={onPlayGame}
           className="p-4 rounded-2xl bg-gradient-to-r from-highlight/10 via-reward/10 to-accent/10 border border-highlight/20 cursor-pointer hover:border-highlight/40 transition-colors"
@@ -371,8 +390,8 @@ export const OfferFeed = ({ selectedInterests, onPlayGame, onClaimOffer, onHome 
                 <Gift className="w-6 h-6 text-highlight" />
               </div>
               <div>
-                <h3 className="font-bold text-foreground">🎁 Ödül Kazan</h3>
-                <p className="text-sm text-muted-foreground">Şans çarkını çevir</p>
+                <h3 className="font-bold text-foreground">🎁 Ekstra Ödül Kazan</h3>
+                <p className="text-sm text-muted-foreground">Şans çarkını çevir, kupon kazan</p>
               </div>
             </div>
             <Button size="sm" className="btn-reward rounded-xl">
@@ -382,6 +401,20 @@ export const OfferFeed = ({ selectedInterests, onPlayGame, onClaimOffer, onHome 
           </div>
         </div>
       </main>
+
+      {/* Ad Detail Modal */}
+      <AnimatePresence>
+        {selectedAd && (
+          <AdDetailModal 
+            ad={selectedAd} 
+            onClose={() => setSelectedAd(null)}
+            onClaim={(ad) => {
+              onClaimOffer(ad.id);
+              setSelectedAd(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
