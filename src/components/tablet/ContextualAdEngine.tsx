@@ -286,7 +286,7 @@ export const contextualAds: ContextualAd[] = [
 export const tierConfig = {
   platinum: {
     icon: Crown,
-    label: 'Platinum Sponsor',
+    label: 'Öne Çıkan Sponsor',
     gradient: 'from-purple-500 via-violet-500 to-indigo-600',
     bgGradient: 'from-purple-900/95 via-violet-900/90 to-indigo-900/95',
     borderColor: 'border-purple-400/50',
@@ -295,7 +295,7 @@ export const tierConfig = {
   },
   gold: {
     icon: Medal,
-    label: 'Gold Sponsor',
+    label: 'Özel Teklifler',
     gradient: 'from-amber-400 via-yellow-500 to-orange-400',
     bgGradient: 'from-amber-900/95 via-yellow-900/90 to-orange-900/95',
     borderColor: 'border-amber-400/50',
@@ -304,7 +304,7 @@ export const tierConfig = {
   },
   bronze: {
     icon: Award,
-    label: 'Bronze Sponsor',
+    label: 'Yakınındaki Seçenekler',
     gradient: 'from-orange-600 via-amber-700 to-yellow-700',
     bgGradient: 'from-orange-900/95 via-amber-900/90 to-yellow-900/95',
     borderColor: 'border-orange-400/30',

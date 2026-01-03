@@ -463,45 +463,19 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames, onExplore }: HeroS
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ delay: 0.6 }}
                         >
-                          <div className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r ${config.gradient} text-white font-bold text-lg`}>
-                            <Gift className="w-5 h-5" />
+                          <button 
+                            className={`flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r ${config.gradient} text-white font-bold text-lg hover:scale-105 transition-all shadow-lg`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setShowAdDetail(currentAd);
+                            }}
+                          >
+                            <Gift className="w-6 h-6" />
                             {currentAd.offer}
-                          </div>
-                          
-                          <button 
-                            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white font-medium hover:bg-white/20 transition-all"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setShowAdDetail(currentAd);
-                            }}
-                          >
-                            <Info className="w-5 h-5" />
-                            Detayları Gör
-                          </button>
-                          
-                          <button 
-                            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white font-medium hover:bg-white/20 transition-all"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setShowAdDetail(currentAd);
-                            }}
-                          >
-                            <QrCode className="w-5 h-5" />
-                            Kuponu Al
+                            <ChevronRight className="w-5 h-5" />
                           </button>
                         </motion.div>
                       </div>
-                      
-                      {/* Mini QR */}
-                      <motion.div 
-                        className="bg-white p-4 rounded-2xl shadow-2xl"
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.7, type: 'spring' }}
-                      >
-                        <QRCode value={`https://tripos.app/coupon/${currentAd.couponCode}`} size={100} />
-                        <p className="text-center text-gray-600 text-sm font-mono mt-2">{currentAd.couponCode}</p>
-                      </motion.div>
                     </div>
                   </div>
                   
