@@ -1,17 +1,41 @@
 import { useState } from 'react';
-import { ChevronRight, MapPin, Utensils, Wifi, Gamepad2, Navigation } from 'lucide-react';
+import { ChevronRight, MapPin, Wifi, Gamepad2, Navigation, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import heroImage from '@/assets/hero-cyprus.jpg';
 import { JourneyTracker } from './JourneyTracker';
+import { InterestChipSelector } from './InterestChipSelector';
 
 interface HeroScreenProps {
-  onStart: () => void;
+  onStart: (interests?: string[]) => void;
   onWifiRequest: () => void;
   onGames: () => void;
 }
 
 export const HeroScreen = ({ onStart, onWifiRequest, onGames }: HeroScreenProps) => {
   const [showJourney, setShowJourney] = useState(true);
+  const [showInterestModal, setShowInterestModal] = useState(false);
+
+  const handleExplore = () => {
+    // İlk kullanımda modal göster (localStorage ile kontrol edilebilir)
+    const hasSeenOnboarding = localStorage.getItem('tripOS_onboarding_done');
+    if (!hasSeenOnboarding) {
+      setShowInterestModal(true);
+    } else {
+      onStart([]);
+    }
+  };
+
+  const handleInterestComplete = (interests: string[]) => {
+    localStorage.setItem('tripOS_onboarding_done', 'true');
+    setShowInterestModal(false);
+    onStart(interests);
+  };
+
+  const handleSkipInterests = () => {
+    localStorage.setItem('tripOS_onboarding_done', 'true');
+    setShowInterestModal(false);
+    onStart([]);
+  };
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
@@ -37,34 +61,28 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames }: HeroScreenProps)
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/20 backdrop-blur-md">
               <span className="text-card/90 text-sm font-medium">14:30</span>
             </div>
             
-            {/* Journey Toggle Button */}
+            {/* Journey Toggle - Chip Style */}
             <button 
               onClick={() => setShowJourney(!showJourney)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-md font-medium transition-all ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-full backdrop-blur-md text-sm transition-all ${
                 showJourney 
-                  ? 'bg-green-500 text-white shadow-glow' 
+                  ? 'bg-green-500 text-white' 
                   : 'bg-card/20 text-card hover:bg-card/30'
               }`}
             >
               <Navigation className="w-4 h-4" />
-              <span className="text-sm">Yolculuk</span>
-              {showJourney && (
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-              )}
+              {showJourney && <span className="w-2 h-2 rounded-full bg-white animate-pulse" />}
             </button>
             
-            {/* WiFi Button - Prominent */}
-            <button 
-              onClick={onWifiRequest}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent backdrop-blur-md text-accent-foreground font-medium shadow-glow hover:scale-105 transition-all animate-pulse-soft"
-            >
-              <Wifi className="w-4 h-4" />
-              <span className="text-sm">Free WiFi</span>
+            {/* Language Chip */}
+            <button className="flex items-center gap-2 px-3 py-2 rounded-full bg-card/20 backdrop-blur-md text-card text-sm hover:bg-card/30 transition-all">
+              <Globe className="w-4 h-4" />
+              <span>TR</span>
             </button>
           </div>
         </header>
@@ -83,62 +101,38 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames }: HeroScreenProps)
             </span>
           </h2>
           
-          <p className="text-card/80 text-lg max-w-xl mb-12">
+          <p className="text-card/80 text-lg max-w-xl mb-10">
             Tarihi dokusu, eşsiz plajları ve lezzet duraklarıyla Kuzey Kıbrıs sizi bekliyor.
           </p>
           
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button 
-              onClick={onStart}
-              className="btn-primary-gradient text-lg px-10 py-6 rounded-2xl shadow-elevated group"
-            >
-              <span className="flex items-center gap-3">
-                İlgi Alanlarınızı Seçin
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </Button>
-            
-            {/* Prominent WiFi CTA */}
-            <Button 
-              onClick={onWifiRequest}
-              variant="outline"
-              className="text-lg px-8 py-6 rounded-2xl bg-card/90 backdrop-blur border-2 border-accent text-foreground hover:bg-accent hover:text-accent-foreground group"
-            >
-              <span className="flex items-center gap-3">
-                <Wifi className="w-5 h-5 text-accent group-hover:text-accent-foreground" />
-                İnternete Bağlan
-              </span>
-            </Button>
-            
-            {/* Games CTA */}
-            <Button 
-              onClick={onGames}
-              className="text-lg px-8 py-6 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 shadow-lg group"
-            >
-              <span className="flex items-center gap-3">
-                <Gamepad2 className="w-5 h-5" />
-                Oyun Oyna
-              </span>
-            </Button>
-          </div>
+          {/* Primary CTA - Single Big Button */}
+          <Button 
+            onClick={handleExplore}
+            className="btn-primary-gradient text-xl px-14 py-7 rounded-2xl shadow-elevated group mb-6"
+          >
+            <span className="flex items-center gap-3">
+              Keşfet
+              <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </span>
+          </Button>
           
-          {/* Quick Categories */}
-          <div className="flex gap-4 mt-8">
-            <div className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-card/90 backdrop-blur shadow-lg cursor-pointer hover:scale-105 transition-transform">
-              <Utensils className="w-5 h-5 text-highlight" />
-              <div className="text-left">
-                <p className="text-xs text-muted-foreground">ÖNERİLEN</p>
-                <p className="font-semibold text-foreground">Lezzet Turu</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-card/90 backdrop-blur shadow-lg cursor-pointer hover:scale-105 transition-transform">
-              <MapPin className="w-5 h-5 text-primary" />
-              <div className="text-left">
-                <p className="text-xs text-muted-foreground">POPÜLER</p>
-                <p className="font-semibold text-foreground">En İyi Plajlar</p>
-              </div>
-            </div>
+          {/* Secondary CTAs - Small Chips */}
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={onWifiRequest}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-card/90 backdrop-blur text-foreground text-sm font-medium hover:bg-card transition-all shadow-lg"
+            >
+              <Wifi className="w-4 h-4 text-primary" />
+              <span>Free WiFi</span>
+            </button>
+            
+            <button 
+              onClick={onGames}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-card/90 backdrop-blur text-foreground text-sm font-medium hover:bg-card transition-all shadow-lg"
+            >
+              <Gamepad2 className="w-4 h-4 text-purple-500" />
+              <span>Oyun</span>
+            </button>
           </div>
         </div>
         
@@ -167,6 +161,14 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames }: HeroScreenProps)
           </div>
         </div>
       </div>
+      
+      {/* Interest Selector Modal */}
+      {showInterestModal && (
+        <InterestChipSelector 
+          onComplete={handleInterestComplete}
+          onSkip={handleSkipInterests}
+        />
+      )}
     </div>
   );
 };

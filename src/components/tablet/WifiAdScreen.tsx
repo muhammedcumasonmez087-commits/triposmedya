@@ -13,13 +13,16 @@ interface WifiAdScreenProps {
 
 export const WifiAdScreen = ({ onComplete, sponsorName, onHome }: WifiAdScreenProps) => {
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Default MUTE
   const [progress, setProgress] = useState(0);
   const [adComplete, setAdComplete] = useState(false);
   
-  const adDuration = 5; // seconds
+  const adDuration = 10; // seconds (10-15 sn ideal)
+  const remainingSeconds = Math.max(0, adDuration - Math.floor(progress / 100 * adDuration));
 
   useEffect(() => {
+    if (!isPlaying) return;
+    
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
@@ -32,7 +35,17 @@ export const WifiAdScreen = ({ onComplete, sponsorName, onHome }: WifiAdScreenPr
     }, 100);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [isPlaying]);
+
+  // Auto-transition when ad is complete
+  useEffect(() => {
+    if (adComplete) {
+      const timeout = setTimeout(() => {
+        onComplete();
+      }, 1500); // 1.5 saniye sonra otomatik geçiş
+      return () => clearTimeout(timeout);
+    }
+  }, [adComplete, onComplete]);
 
   return (
     <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col">
@@ -52,51 +65,29 @@ export const WifiAdScreen = ({ onComplete, sponsorName, onHome }: WifiAdScreenPr
               <Wifi className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h1 className="font-bold text-white text-lg">KKTC Taksi Wi-Fi</h1>
-              <p className="text-xs text-white/60">Ücretsiz İnternet Hizmeti</p>
+              <h1 className="font-bold text-white text-lg">WiFi Bağlantısı</h1>
+              <p className="text-xs text-white/60">Reklam sonrası bağlanacaksınız</p>
             </div>
           </div>
-        </div>
-        
-        <div className="text-right">
-          <p className="text-sm text-white/60">34 TKS 1923</p>
-          <p className="text-xs text-white/40">Lefkoşa</p>
         </div>
       </header>
       
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          <h2 className="text-3xl font-bold text-white mb-2">
-            İnternete bağlanmak için
-          </h2>
-          <h2 className="text-3xl font-bold text-primary mb-4">
-            lütfen reklamı izleyiniz
-          </h2>
-          <p className="text-white/60">
-            Sponsorlu içerik gösterimi sonrası bağlantı sağlanacaktır.
-          </p>
-        </motion.div>
-        
         {/* Video Player Container */}
         <motion.div 
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
           className="relative w-full max-w-2xl aspect-video rounded-2xl overflow-hidden bg-slate-800 shadow-2xl"
         >
-          {/* Fake video content - sponsor image */}
+          {/* Video content */}
           <img 
             src={categoryFood}
             alt="Sponsor Ad"
             className="w-full h-full object-cover"
           />
           
-          {/* Overlay gradient */}
+          {/* Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
           
           {/* REKLAM Badge */}
@@ -149,19 +140,17 @@ export const WifiAdScreen = ({ onComplete, sponsorName, onHome }: WifiAdScreenPr
           </div>
         </motion.div>
         
-        {/* Progress Section */}
-        <div className="w-full max-w-2xl mt-6">
-          <div className="flex items-center justify-between text-sm mb-2">
-            <div className="flex items-center gap-2 text-primary">
-              <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-              <span>Kalan Süre</span>
-            </div>
-            <span className="text-white font-mono">
-              00:{String(Math.max(0, adDuration - Math.floor(progress / 100 * adDuration))).padStart(2, '0')}
-            </span>
+        {/* Large Remaining Time Display */}
+        <div className="mt-6 text-center">
+          <p className="text-white/60 text-sm mb-2">Kalan Süre</p>
+          <div className="text-5xl font-bold text-white font-mono">
+            00:{String(remainingSeconds).padStart(2, '0')}
           </div>
-          
-          <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+        </div>
+        
+        {/* Progress Bar */}
+        <div className="w-full max-w-2xl mt-4">
+          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
             <motion.div 
               className="h-full bg-gradient-to-r from-primary to-accent rounded-full"
               initial={{ width: 0 }}
@@ -169,31 +158,31 @@ export const WifiAdScreen = ({ onComplete, sponsorName, onHome }: WifiAdScreenPr
               transition={{ duration: 0.1 }}
             />
           </div>
-          
-          <div className="flex items-center justify-between text-xs text-white/40 mt-2">
-            <span>Yükleniyor...</span>
-            <span>%{Math.floor(progress)}</span>
-          </div>
         </div>
         
-        {/* CTA Button */}
+        {/* Status / CTA */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: adComplete ? 1 : 0.5 }}
-          className="mt-8 w-full max-w-2xl"
+          animate={{ opacity: 1 }}
+          className="mt-6 w-full max-w-2xl"
         >
-          <Button
-            onClick={onComplete}
-            disabled={!adComplete}
-            className="w-full py-6 text-lg rounded-2xl bg-primary hover:bg-primary/90 disabled:bg-primary/30 disabled:cursor-not-allowed"
-          >
-            <Wifi className="w-5 h-5 mr-2" />
-            {adComplete ? 'Devam Et ve Bağlan' : 'Reklam İzleniyor...'}
-          </Button>
-          
-          <p className="text-center text-xs text-white/40 mt-4">
-            "Devam Et" butonuna tıklayarak <span className="text-primary cursor-pointer hover:underline">Kullanım Koşulları</span>'nı kabul etmiş olursunuz.
-          </p>
+          {adComplete ? (
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-500/20 text-green-400 font-medium mb-4">
+                <Wifi className="w-5 h-5" />
+                Bağlandınız!
+              </div>
+              <p className="text-white/60 text-sm">Otomatik yönlendiriliyorsunuz...</p>
+            </div>
+          ) : (
+            <Button
+              disabled
+              className="w-full py-6 text-lg rounded-2xl bg-primary/30 cursor-not-allowed"
+            >
+              <Wifi className="w-5 h-5 mr-2" />
+              Reklam İzleniyor...
+            </Button>
+          )}
         </motion.div>
       </div>
     </div>

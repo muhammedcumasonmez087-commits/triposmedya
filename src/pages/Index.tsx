@@ -44,13 +44,13 @@ const Index = () => {
     setSelectedGame(null);
   };
 
-  const handleStartExperience = () => {
-    setCurrentScreen('swipe');
-  };
-
-  const handleSwipeComplete = (interests: string[]) => {
-    setSelectedInterests(interests);
-    setCurrentScreen('feed');
+  const handleStartExperience = (interests?: string[]) => {
+    if (interests) {
+      setSelectedInterests(interests);
+      setCurrentScreen('feed');
+    } else {
+      setCurrentScreen('feed');
+    }
   };
 
   const handlePlayGame = () => {
@@ -122,12 +122,7 @@ const Index = () => {
         />
       )}
       
-      {currentScreen === 'swipe' && !wifiStep && (
-        <SwipeInterestSelector 
-          onComplete={handleSwipeComplete}
-          onHome={handleGoHome}
-        />
-      )}
+      {/* SwipeInterestSelector artık modal olarak HeroScreen içinde */}
       
       {currentScreen === 'feed' && !wifiStep && (
         <OfferFeed 
