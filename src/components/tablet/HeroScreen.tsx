@@ -143,7 +143,7 @@ const AdDetailModal = ({
 };
 
 export const HeroScreen = ({ onStart, onWifiRequest, onGames, onExplore }: HeroScreenProps) => {
-  const [showJourney, setShowJourney] = useState(true);
+  const [showJourney, setShowJourney] = useState(false);
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [showAdDetail, setShowAdDetail] = useState<ContextualAd | null>(null);
   const [adProgress, setAdProgress] = useState(0);
@@ -250,6 +250,15 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames, onExplore }: HeroS
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
+            {/* Sürücü Bilgisi Butonu */}
+            <button 
+              onClick={() => setShowJourney(true)}
+              className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-green-500/20 backdrop-blur-xl border border-green-500/30 text-white hover:bg-green-500/30 transition-all"
+            >
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-sm font-medium">Yolculuk Bilgisi</span>
+            </button>
+
             <div className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10">
               <span className="text-white font-medium">14:30</span>
               <span className="text-white/50">|</span>
