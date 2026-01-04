@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { CategoryId, JourneyAd } from './types';
 import { journeyAds } from './journeyData';
 import { AdDetailModal } from './AdDetailModal';
+import { EventDetailModal, EventData } from './EventDetailModal';
 
 // Import category images
 import categoryBeach from '@/assets/category-beach.jpg';
@@ -14,56 +15,102 @@ import categoryHistory from '@/assets/category-history.jpg';
 import categoryNature from '@/assets/category-nature.jpg';
 import heroCyprus from '@/assets/hero-cyprus.jpg';
 
-// Events data
-const featuredEvents = [
+// Events data from gisekibris.com
+const featuredEvents: EventData[] = [
   {
-    id: 'event-1',
-    name: 'Uluslararası Mağusa Kültür Sanat ve Turizm Festivali',
-    image: heroCyprus,
-    buttonText: 'Bilet Al',
+    id: 'oguzhanlezzet-1',
+    name: 'Cratos Premium Hotel Golden Cage',
+    artist: 'Oğuzhan ve Lezzet-i Şahane Orkestrası',
+    image: 'https://firebasestorage.googleapis.com/v0/b/gisekibris-8b11d.appspot.com/o/events-v2%2F8isNNt7LIrqjK3Gx4DUo%2Fbanner?alt=media&token=aa3a6405-6694-4626-84f4-d55c38c719e6',
+    date: '9 Ocak 2026',
+    time: '19:00',
+    venue: 'Golden Cage',
+    location: 'Cratos Premium Hotel, Girne',
+    price: '€50',
+    category: 'Canlı Müzik',
+    description: 'Oğuzhan ve Lezzet-i Şahane Orkestrası ile unutulmaz bir gece! Türk müziğinin en güzel parçaları eşliğinde keyifli bir akşam.',
+    ticketUrl: 'https://www.gisekibris.com/',
   },
   {
-    id: 'event-2',
-    name: 'Girne Caz Festivali',
-    image: categoryNightlife,
-    buttonText: 'Bilet Al',
+    id: 'emrealtug-1',
+    name: 'Rocks LYRA Konseri',
+    artist: 'Emre Altuğ',
+    image: 'https://firebasestorage.googleapis.com/v0/b/gisekibris-8b11d.appspot.com/o/events-v2%2FaP3EEyo4eSKH2Tb4UDyU%2Fbanner.jpg?alt=media&token=65897a6b-ff05-4112-ab9b-326069193558',
+    date: '24 Ocak 2026',
+    time: '20:00',
+    venue: 'Rocks LYRA',
+    location: 'Girne',
+    price: '€75',
+    category: 'Konser',
+    description: 'Emre Altuğ\'un muhteşem sesi ve enerjisiyle dolu bir konser gecesi. Hit şarkılarıyla eğlenceye hazır olun!',
+    ticketUrl: 'https://www.gisekibris.com/',
   },
   {
-    id: 'event-3',
-    name: 'Kıbrıs Lezzet Festivali',
-    image: categoryFood,
-    buttonText: 'Bilet Al',
+    id: 'mehmeterdem-1',
+    name: 'Acapulco Live',
+    artist: 'Mehmet Erdem',
+    image: 'https://firebasestorage.googleapis.com/v0/b/gisekibris-8b11d.appspot.com/o/events-v2%2FxwkGnE2ajvPXwDZr0A46%2Fbanner.jpg?alt=media&token=b116c56f-60f7-402c-a21a-cd7227522c73',
+    date: '31 Ocak 2026',
+    time: '21:00',
+    venue: 'Acapulco Resort',
+    location: 'Girne',
+    price: '€80',
+    category: 'Canlı Müzik',
+    description: 'Mehmet Erdem\'in duygusal sesi ve hit şarkılarıyla romantik bir gece. "Herkes Aynı Hayatta" ve daha fazlası!',
+    ticketUrl: 'https://www.gisekibris.com/',
   },
 ];
 
-const upcomingEvents = [
+const upcomingEvents: EventData[] = [
   {
-    id: 'upcoming-1',
-    name: 'Girne Caz Festivali - Girne Limanı',
-    date: '15-18 Ekim',
+    id: 'oguzhanlezzet-2',
+    name: 'Oğuzhan ve Lezzet-i Şahane Orkestrası',
+    artist: 'Oğuzhan',
+    date: '10 Ocak 2026',
+    time: '19:00',
+    price: '€50',
+    image: 'https://firebasestorage.googleapis.com/v0/b/gisekibris-8b11d.appspot.com/o/events-v2%2Fda2Wv536oknAkuKrKkQb%2Fbanner?alt=media&token=819e556a-d582-40d6-8ebc-1b56e57b4c22',
+    venue: 'Golden Cage',
+    location: 'Cratos Premium Hotel, Girne',
+    category: 'Canlı Müzik',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
+  {
+    id: 'emrealtug-concert',
+    name: 'Emre Altuğ Konseri',
+    artist: 'Emre Altuğ',
+    date: '24 Ocak 2026',
+    time: '20:00',
+    price: '€75',
+    image: 'https://firebasestorage.googleapis.com/v0/b/gisekibris-8b11d.appspot.com/o/events-v2%2FaP3EEyo4eSKH2Tb4UDyU%2Fbanner.jpg?alt=media&token=65897a6b-ff05-4112-ab9b-326069193558',
+    venue: 'Rocks LYRA',
+    location: 'Girne',
+    category: 'Konser',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
+  {
+    id: 'mehmeterdem-acapulco',
+    name: 'Mehmet Erdem Live',
+    artist: 'Mehmet Erdem',
+    date: '31 Ocak 2026',
+    time: '21:00',
+    price: '€80',
+    image: 'https://firebasestorage.googleapis.com/v0/b/gisekibris-8b11d.appspot.com/o/events-v2%2FxwkGnE2ajvPXwDZr0A46%2Fbanner.jpg?alt=media&token=b116c56f-60f7-402c-a21a-cd7227522c73',
+    venue: 'Acapulco Resort',
+    location: 'Girne',
+    category: 'Canlı Müzik',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
+  {
+    id: 'girne-jazz',
+    name: 'Girne Caz Festivali',
+    date: '15-18 Şubat 2026',
     price: 'Ücretsiz',
     image: categoryNightlife,
-  },
-  {
-    id: 'upcoming-2',
-    name: 'Kıbrıs Tiyatro Festivali: "Bir Delinin Hatıra Defteri" - Lefkoşa',
-    date: '22 Ekim, 20:00',
-    price: '150₺',
-    image: categoryHistory,
-  },
-  {
-    id: 'upcoming-3',
-    name: 'Kuzey Kıbrıs Lezzet Festivali - Gazimağusa',
-    date: '1-3 Kasım',
-    price: 'Giriş 50₺',
-    image: categoryFood,
-  },
-  {
-    id: 'upcoming-4',
-    name: 'Girne Resort & Casino Konser Gecesi',
-    date: '1-3 Kasım',
-    price: '200₺',
-    image: categoryBeach,
+    venue: 'Girne Limanı',
+    location: 'Girne',
+    category: 'Festival',
+    ticketUrl: 'https://www.gisekibris.com/',
   },
 ];
 
@@ -174,6 +221,7 @@ export const ExploreTabs = ({
   const [activeTab, setActiveTab] = useState('explore');
   const [activeNavItem, setActiveNavItem] = useState('home');
   const [selectedAd, setSelectedAd] = useState<JourneyAd | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [savedAds, setSavedAds] = useState<string[]>([]);
   
   // Hero carousel state
@@ -459,11 +507,17 @@ export const ExploreTabs = ({
 
                           {/* Content */}
                           <div className="absolute bottom-0 left-0 right-0 p-6">
+                            {featuredEvents[currentEventIndex].artist && (
+                              <p className="text-primary font-bold text-lg mb-1">{featuredEvents[currentEventIndex].artist}</p>
+                            )}
                             <h2 className="text-white text-2xl font-bold leading-tight mb-4">
                               {featuredEvents[currentEventIndex].name}
                             </h2>
-                            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 py-2 rounded-lg">
-                              {featuredEvents[currentEventIndex].buttonText}
+                            <Button 
+                              onClick={() => setSelectedEvent(featuredEvents[currentEventIndex])}
+                              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 py-2 rounded-lg"
+                            >
+                              Bilet Al
                             </Button>
                           </div>
                         </motion.div>
@@ -505,7 +559,7 @@ export const ExploreTabs = ({
 
                 {/* Upcoming Events - pushed to bottom */}
                 <div className="mt-auto pt-4">
-                  <UpcomingEventsRow />
+                  <UpcomingEventsRow onEventClick={(event) => setSelectedEvent(event)} />
                 </div>
               </motion.div>
             )}
@@ -556,6 +610,16 @@ export const ExploreTabs = ({
           />
         )}
       </AnimatePresence>
+
+      {/* Event Detail Modal */}
+      <AnimatePresence>
+        {selectedEvent && (
+          <EventDetailModal
+            event={selectedEvent}
+            onClose={() => setSelectedEvent(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -587,7 +651,7 @@ const BottomNavItem = ({
 );
 
 // Upcoming Events Row Component
-const UpcomingEventsRow = () => {
+const UpcomingEventsRow = ({ onEventClick }: { onEventClick?: (event: EventData) => void }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -654,6 +718,7 @@ const UpcomingEventsRow = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
               className="flex-shrink-0 w-[200px] cursor-pointer group"
+              onClick={() => onEventClick?.(event)}
             >
               <div className="relative h-[120px] rounded-xl overflow-hidden mb-2">
                 <img
@@ -662,8 +727,15 @@ const UpcomingEventsRow = () => {
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                {event.category && (
+                  <div className="absolute top-2 left-2">
+                    <span className="px-2 py-0.5 rounded-md bg-primary/90 text-primary-foreground text-[10px] font-bold">
+                      {event.category}
+                    </span>
+                  </div>
+                )}
               </div>
-              <h4 className="text-foreground font-semibold text-sm leading-tight line-clamp-2">{event.name}</h4>
+              <h4 className="text-foreground font-semibold text-sm leading-tight line-clamp-2">{event.artist || event.name}</h4>
               <div className="flex items-center justify-between mt-1">
                 <span className="text-muted-foreground text-xs">{event.date}</span>
                 <span className="text-primary text-xs font-semibold">{event.price}</span>
