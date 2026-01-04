@@ -80,6 +80,19 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+
+  /* Dark Glass Theme for Hub */
+  .dark-glass-theme {
+    --glass-bg: 220 25% 12%;
+    --glass-surface: 220 20% 18%;
+    --glass-elevated: 220 18% 22%;
+    --glass-border: 0 0% 100% / 0.1;
+    --glass-text: 0 0% 100%;
+    --glass-text-muted: 0 0% 100% / 0.6;
+    --glass-accent: 35 90% 55%;
+    --glass-gradient: linear-gradient(135deg, hsl(220 25% 15%) 0%, hsl(220 20% 8%) 100%);
+  }
 }
 
 @layer base {
@@ -155,6 +168,56 @@
 
   .glass-effect {
     @apply bg-white/80 backdrop-blur-xl;
+  }
+
+  /* Glassmorphism Cards */
+  .glass-card {
+    @apply backdrop-blur-xl border border-white/10 rounded-2xl;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+  }
+
+  .glass-card-dark {
+    @apply backdrop-blur-xl border border-white/10 rounded-2xl;
+    background: linear-gradient(135deg, rgba(30,30,40,0.8) 0%, rgba(20,20,30,0.6) 100%);
+  }
+
+  .glass-sidebar {
+    @apply backdrop-blur-2xl border-r border-white/10;
+    background: linear-gradient(180deg, rgba(30,30,40,0.9) 0%, rgba(20,20,30,0.95) 100%);
+  }
+
+  .glass-hero {
+    @apply rounded-3xl overflow-hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  .horizontal-scroll-row {
+    @apply flex gap-4 overflow-x-auto pb-4;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .horizontal-scroll-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scroll-card {
+    @apply flex-shrink-0 rounded-xl overflow-hidden cursor-pointer;
+    scroll-snap-align: start;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .scroll-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+  }
+
+  .premium-badge {
+    @apply absolute top-2 left-2 px-2 py-0.5 rounded text-xs font-bold;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #1a1a1a;
   }
 
   .tab-indicator {

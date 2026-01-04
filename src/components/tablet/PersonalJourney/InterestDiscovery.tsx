@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, X, Heart, Sparkles, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Home, ChevronRight, Check, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { JourneyCategory, CategoryId } from './types';
+import { CategoryId } from './types';
 import { journeyCategories } from './journeyData';
-import { CategorySwipeCard } from './CategorySwipeCard';
 
 interface InterestDiscoveryProps {
   onComplete: (selectedCategories: CategoryId[]) => void;
@@ -12,281 +11,245 @@ interface InterestDiscoveryProps {
 }
 
 export const InterestDiscovery = ({ onComplete, onHome }: InterestDiscoveryProps) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState<CategoryId[]>([]);
-  const [exitDirection, setExitDirection] = useState<'left' | 'right' | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
 
-  const currentCategory = journeyCategories[currentIndex];
-  const isComplete = currentIndex >= journeyCategories.length;
-
-  const handleSwipe = (direction: 'left' | 'right') => {
-    if (isAnimating || isComplete) return;
-    
-    setIsAnimating(true);
-    setExitDirection(direction);
-    
-    if (direction === 'right') {
-      setSelectedCategories(prev => [...prev, currentCategory.id]);
-    }
-    
-    setTimeout(() => {
-      setCurrentIndex(prev => prev + 1);
-      setExitDirection(null);
-      setIsAnimating(false);
-    }, 300);
+  const toggleCategory = (id: CategoryId) => {
+    setSelectedCategories(prev => 
+      prev.includes(id) 
+        ? prev.filter(c => c !== id)
+        : [...prev, id]
+    );
   };
 
   const handleComplete = () => {
     onComplete(selectedCategories);
   };
 
-  // Completion Screen
-  if (isComplete) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-950 overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0">
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-purple-900 via-violet-900 to-indigo-900"
-            animate={{
-              background: [
-                'linear-gradient(135deg, #581c87, #5b21b6, #312e81)',
-                'linear-gradient(135deg, #312e81, #581c87, #5b21b6)',
-                'linear-gradient(135deg, #5b21b6, #312e81, #581c87)',
-              ],
-            }}
-            transition={{ duration: 5, repeat: Infinity }}
-          />
-          {/* Floating particles */}
-          {[...Array(30)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 rounded-full bg-white/20"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                y: [0, -50, 0],
-                opacity: [0, 1, 0],
-                scale: [0, 1, 0],
-              }}
-              transition={{
-                duration: 3 + Math.random() * 2,
-                repeat: Infinity,
-                delay: Math.random() * 2,
-              }}
-            />
-          ))}
-        </div>
-
-        <motion.div 
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="relative text-center px-8 max-w-lg"
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden">
+      {/* Animated Dark Gradient Background */}
+      <div className="absolute inset-0">
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)'
+          }}
+          animate={{
+            background: [
+              'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)',
+              'linear-gradient(135deg, #16213e 0%, #0f0f23 50%, #1a1a2e 100%)',
+              'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
+            ],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+        />
+        
+        {/* Floating orbs */}
+        <motion.div
+          className="absolute w-96 h-96 rounded-full bg-purple-600/20 blur-3xl"
+          style={{ top: '-10%', right: '-10%' }}
+          animate={{ 
+            x: [0, 50, 0], 
+            y: [0, 30, 0],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute w-80 h-80 rounded-full bg-blue-600/15 blur-3xl"
+          style={{ bottom: '-5%', left: '-5%' }}
+          animate={{ 
+            x: [0, -30, 0], 
+            y: [0, -40, 0],
+            scale: [1, 1.15, 1]
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute w-64 h-64 rounded-full bg-amber-500/10 blur-3xl"
+          style={{ top: '40%', left: '30%' }}
+          animate={{ 
+            x: [0, 40, 0], 
+            y: [0, -20, 0],
+            opacity: [0.3, 0.5, 0.3]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </div>
+      
+      {/* Header */}
+      <header className="relative flex items-center justify-between px-8 py-6">
+        <motion.button 
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={onHome}
+          className="w-12 h-12 rounded-full glass-card flex items-center justify-center hover:bg-white/20 transition-colors"
         >
-          {/* Success Icon */}
-          <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-            className="relative w-32 h-32 mx-auto mb-8"
-          >
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 blur-2xl opacity-50" />
-            <div className="relative w-full h-full rounded-full bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500 flex items-center justify-center">
-              <Sparkles className="w-16 h-16 text-white" />
-            </div>
-          </motion.div>
-
-          <motion.h2 
-            className="text-4xl font-black text-white mb-4"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            Mükemmel Seçim!
-          </motion.h2>
-          
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
+          <Home className="w-5 h-5 text-white" />
+        </motion.button>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center"
+        >
+          <h1 className="text-3xl font-black text-white tracking-tight">
+            İlgi Alanlarınız
+          </h1>
+          <p className="text-white/50 text-sm mt-1">
+            Size özel içerikler için seçim yapın
+          </p>
+        </motion.div>
+        
+        <div className="w-12" /> {/* Spacer for centering */}
+      </header>
+      
+      {/* Category Grid */}
+      <div className="relative flex-1 flex items-center justify-center px-8 py-4">
+        <div className="grid grid-cols-3 gap-6 max-w-4xl w-full">
+          {journeyCategories.map((category, index) => {
+            const isSelected = selectedCategories.includes(category.id);
+            
+            return (
+              <motion.button
+                key={category.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.03, y: -5 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => toggleCategory(category.id)}
+                className={`relative aspect-[4/3] rounded-2xl overflow-hidden transition-all duration-300 ${
+                  isSelected 
+                    ? 'ring-4 ring-white/80 ring-offset-4 ring-offset-transparent' 
+                    : 'ring-1 ring-white/20'
+                }`}
+              >
+                {/* Background Gradient */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${category.gradient}`} />
+                
+                {/* Glass overlay */}
+                <div className={`absolute inset-0 transition-opacity duration-300 ${
+                  isSelected ? 'bg-black/10' : 'bg-black/30'
+                }`} />
+                
+                {/* Pattern overlay */}
+                <div 
+                  className="absolute inset-0 opacity-20"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+                  }}
+                />
+                
+                {/* Content */}
+                <div className="relative h-full flex flex-col items-center justify-center p-4">
+                  <motion.span 
+                    className="text-5xl mb-3"
+                    animate={isSelected ? { scale: [1, 1.2, 1] } : {}}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {category.icon}
+                  </motion.span>
+                  <span className="text-white font-bold text-lg tracking-wide">
+                    {category.nameTR}
+                  </span>
+                  <span className="text-white/60 text-sm mt-1">
+                    {category.description}
+                  </span>
+                </div>
+                
+                {/* Selected Checkmark */}
+                <AnimatePresence>
+                  {isSelected && (
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-lg"
+                    >
+                      <Check className="w-5 h-5 text-gray-900" strokeWidth={3} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                {/* Shine effect on hover */}
+                <motion.div
+                  className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%)'
+                  }}
+                />
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+      
+      {/* Bottom Action Bar */}
+      <div className="relative px-8 py-6">
+        <div className="glass-card-dark p-4 flex items-center justify-between max-w-4xl mx-auto">
+          {/* Selected count */}
+          <div className="flex items-center gap-3">
             {selectedCategories.length > 0 ? (
-              <div className="mb-8">
-                <p className="text-white/70 mb-4">
-                  {selectedCategories.length} ilgi alanı seçtiniz
-                </p>
-                <div className="flex flex-wrap gap-3 justify-center">
-                  {selectedCategories.map(catId => {
+              <motion.div 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="flex items-center gap-2"
+              >
+                <div className="flex -space-x-2">
+                  {selectedCategories.slice(0, 4).map(catId => {
                     const cat = journeyCategories.find(c => c.id === catId);
-                    return cat ? (
-                      <motion.span 
+                    return (
+                      <motion.div
                         key={catId}
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className={`px-5 py-2.5 rounded-full bg-gradient-to-r ${cat.gradient} text-white text-sm font-bold shadow-lg`}
+                        className={`w-10 h-10 rounded-full bg-gradient-to-br ${cat?.gradient} flex items-center justify-center border-2 border-gray-900`}
                       >
-                        {cat.icon} {cat.nameTR}
-                      </motion.span>
-                    ) : null;
+                        <span className="text-lg">{cat?.icon}</span>
+                      </motion.div>
+                    );
                   })}
+                  {selectedCategories.length > 4 && (
+                    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-900 text-white text-sm font-bold">
+                      +{selectedCategories.length - 4}
+                    </div>
+                  )}
                 </div>
-              </div>
+                <span className="text-white/70 text-sm ml-2">
+                  {selectedCategories.length} kategori seçildi
+                </span>
+              </motion.div>
             ) : (
-              <p className="text-white/70 mb-8">
-                Tüm kategorileri keşfetmek için hazırsınız!
-              </p>
-            )}
-          </motion.div>
-          
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.6 }}
-          >
-            <Button 
-              onClick={handleComplete}
-              className="bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500 text-white text-xl px-12 py-8 rounded-2xl shadow-2xl hover:opacity-90 transition-opacity border-none"
-            >
-              <span className="flex items-center gap-3">
-                Teklifleri Keşfet
-                <ChevronRight className="w-6 h-6" />
+              <span className="text-white/50 text-sm flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                Kategori seçin veya tümünü keşfedin
               </span>
-            </Button>
-          </motion.div>
-        </motion.div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-950 px-6">
-      {/* Home Button */}
-      <motion.button 
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={onHome}
-        className="absolute top-6 left-6 w-12 h-12 rounded-full bg-white/10 backdrop-blur flex items-center justify-center hover:bg-white/20 transition-colors"
-      >
-        <Home className="w-6 h-6 text-white" />
-      </motion.button>
-      
-      {/* Header */}
-      <div className="text-center mb-8">
-        <motion.h2 
-          className="text-3xl font-black text-white mb-3"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-        >
-          Ne keşfetmek istersiniz?
-        </motion.h2>
-        
-        {/* Progress Dots */}
-        <div className="flex items-center justify-center gap-2 mb-4">
-          {journeyCategories.map((cat, index) => (
-            <motion.div
-              key={cat.id}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: index * 0.05 }}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === currentIndex 
-                  ? `w-10 bg-gradient-to-r ${cat.gradient}` 
-                  : index < currentIndex 
-                    ? selectedCategories.includes(cat.id)
-                      ? 'w-3 bg-green-500'
-                      : 'w-2 bg-white/30'
-                    : 'w-2 bg-white/20'
-              }`}
-            />
-          ))}
-        </div>
-        
-        <p className="text-white/60 text-sm">
-          İlgileniyorsanız sağa, geç için sola kaydırın
-        </p>
-      </div>
-      
-      {/* Card Stack */}
-      <div className="relative w-full max-w-md aspect-[3/4] mb-8">
-        {/* Background cards for stack effect */}
-        {currentIndex + 2 < journeyCategories.length && (
-          <div className="absolute inset-4 top-6 rounded-3xl bg-white/5 transform scale-90" />
-        )}
-        {currentIndex + 1 < journeyCategories.length && (
-          <div className="absolute inset-2 top-4 rounded-3xl bg-white/10 transform scale-95 overflow-hidden">
-            <div className="w-full h-full bg-gray-800" />
+            )}
           </div>
-        )}
-        
-        {/* Active Card */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentCategory.id}
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ 
-              x: exitDirection === 'right' ? 400 : -400,
-              rotate: exitDirection === 'right' ? 25 : -25,
-              opacity: 0
-            }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="absolute inset-0"
-          >
-            <CategorySwipeCard 
-              category={currentCategory}
-              onSwipe={handleSwipe}
-              isAnimating={isAnimating}
-            />
-          </motion.div>
-        </AnimatePresence>
+          
+          {/* Action buttons */}
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              onClick={() => onComplete([])}
+              className="text-white/60 hover:text-white hover:bg-white/10"
+            >
+              Tümünü Gör
+            </Button>
+            
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleComplete}
+              className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-lg shadow-lg shadow-orange-500/30"
+            >
+              Keşfet
+              <ChevronRight className="w-5 h-5" />
+            </motion.button>
+          </div>
+        </div>
       </div>
-      
-      {/* Action Buttons */}
-      <div className="flex items-center justify-center gap-8">
-        <motion.button
-          whileHover={{ scale: 1.15, rotate: -5 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => handleSwipe('left')}
-          disabled={isAnimating}
-          className="w-18 h-18 rounded-full bg-white/10 border-2 border-red-500/50 shadow-lg flex items-center justify-center hover:border-red-500 hover:bg-red-500/10 transition-all disabled:opacity-50"
-          style={{ width: 72, height: 72 }}
-        >
-          <X className="w-9 h-9 text-red-500" />
-        </motion.button>
-        
-        <motion.button
-          whileHover={{ scale: 1.15, rotate: 5 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => handleSwipe('right')}
-          disabled={isAnimating}
-          className="w-22 h-22 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 shadow-xl flex items-center justify-center text-white hover:shadow-green-500/30 transition-shadow disabled:opacity-50"
-          style={{ width: 88, height: 88 }}
-        >
-          <Heart className="w-11 h-11 fill-white" />
-        </motion.button>
-      </div>
-      
-      {/* Skip All */}
-      <button 
-        onClick={() => onComplete([])}
-        className="mt-8 text-white/50 hover:text-white transition-colors text-sm"
-      >
-        Hepsini Atla →
-      </button>
-      
-      {/* Selected Count */}
-      {selectedCategories.length > 0 && (
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="absolute bottom-8 left-8 px-5 py-2.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-400 text-sm font-medium"
-        >
-          ✓ {selectedCategories.length} kategori seçildi
-        </motion.div>
-      )}
     </div>
   );
 };
