@@ -24,7 +24,6 @@ interface ExploreTabsProps {
 
 // Tab navigation items
 const tabItems = [
-  { id: 'explore', label: 'KEŞFET' },
   { id: 'events', label: 'ETKİNLİKLER' },
   { id: 'categories', label: 'KATEGORİLER' },
   { id: 'more', label: 'DAHA FAZLA' },
@@ -63,7 +62,7 @@ export const ExploreTabs = ({
   onPlayRewardGame,
   earnedPoints
 }: ExploreTabsProps) => {
-  const [activeTab, setActiveTab] = useState('explore');
+  const [activeTab, setActiveTab] = useState('events');
   const [selectedAd, setSelectedAd] = useState<JourneyAd | null>(null);
   const [savedAds, setSavedAds] = useState<string[]>([]);
   
@@ -119,112 +118,6 @@ export const ExploreTabs = ({
         {/* Content based on active tab */}
         <main className="flex-1 overflow-y-auto overflow-x-hidden px-8 pb-6">
           <AnimatePresence mode="wait">
-            {activeTab === 'explore' && (
-              <motion.div
-                key="explore"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="space-y-8 max-w-5xl mx-auto"
-              >
-                {/* Hero Carousel */}
-                <div className="relative">
-                  <div className="relative h-[320px] rounded-2xl overflow-hidden">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={currentHeroIndex}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="absolute inset-0"
-                      >
-                        <img 
-                          src={heroCarouselAds[currentHeroIndex].image}
-                          alt={heroCarouselAds[currentHeroIndex].name}
-                          className="w-full h-full object-cover"
-                        />
-                      </motion.div>
-                    </AnimatePresence>
-
-                    {/* Sponsor Badge */}
-                    <div className="sponsor-badge">
-                      Sponsorlu
-                    </div>
-
-                    {/* Left Navigation Arrow */}
-                    <button
-                      onClick={() => setCurrentHeroIndex((currentHeroIndex - 1 + heroCarouselAds.length) % heroCarouselAds.length)}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-secondary/60 backdrop-blur-sm flex items-center justify-center hover:bg-secondary transition-colors"
-                    >
-                      <ChevronLeft className="w-6 h-6 text-foreground" />
-                    </button>
-
-                    {/* Right Navigation Arrow */}
-                    <button
-                      onClick={() => setCurrentHeroIndex((currentHeroIndex + 1) % heroCarouselAds.length)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-secondary/60 backdrop-blur-sm flex items-center justify-center hover:bg-secondary transition-colors"
-                    >
-                      <ChevronRight className="w-6 h-6 text-foreground" />
-                    </button>
-
-                    {/* Content - Bottom */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                      <motion.div
-                        key={`content-${currentHeroIndex}`}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                      >
-                        <h2 className="text-2xl font-bold text-foreground mb-3 text-shadow">
-                          {heroCarouselAds[currentHeroIndex].name}: {heroCarouselAds[currentHeroIndex].title}
-                        </h2>
-                        <Button className="cta-button">
-                          {heroCarouselAds[currentHeroIndex].buttonText}
-                        </Button>
-                      </motion.div>
-                    </div>
-                  </div>
-
-                  {/* Dots Indicator - Below Card */}
-                  <div className="flex items-center justify-center gap-2 mt-4">
-                    {heroCarouselAds.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentHeroIndex(index)}
-                        className={`h-2 rounded-full transition-all duration-300 ${
-                          index === currentHeroIndex 
-                            ? 'bg-primary w-6' 
-                            : 'bg-muted-foreground/40 w-2 hover:bg-muted-foreground/60'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Öne Çıkan Oteller */}
-                <HorizontalAdRow
-                  title="Öne Çıkan Oteller"
-                  ads={hotelAds}
-                  onAdClick={setSelectedAd}
-                />
-
-                {/* Popüler Restoranlar */}
-                <HorizontalAdRow
-                  title="Popüler Restoranlar"
-                  ads={restaurantAds}
-                  onAdClick={setSelectedAd}
-                />
-
-                {/* Plajlar */}
-                <HorizontalAdRow
-                  title="En İyi Plajlar"
-                  ads={beachAds}
-                  onAdClick={setSelectedAd}
-                />
-              </motion.div>
-            )}
-
             {(activeTab === 'events' || activeTab === 'categories' || activeTab === 'more' || activeTab === 'recommendations') && (
               <motion.div
                 key={activeTab}
