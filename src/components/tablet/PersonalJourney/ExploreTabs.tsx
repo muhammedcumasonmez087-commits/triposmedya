@@ -6,6 +6,7 @@ import { CategoryId, JourneyAd } from './types';
 import { journeyAds } from './journeyData';
 import { AdDetailModal } from './AdDetailModal';
 import { EventDetailModal, EventData } from './EventDetailModal';
+import { ExploreMap } from './ExploreMap';
 
 // Import category images
 import categoryBeach from '@/assets/category-beach.jpg';
@@ -572,21 +573,8 @@ export const ExploreTabs = ({
                 exit={{ opacity: 0, y: -20 }}
                 className="flex flex-col h-full"
               >
-                <div className="flex-1 rounded-2xl overflow-hidden relative">
-                  <iframe
-                    src="https://www.google.com/maps/d/embed?mid=128PJmjMY7206PsTudNDqrC7agAbZEK4&femb=1&ll=35.385254683777575%2C33.69330265000001&z=10"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0, minHeight: '500px' }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Kuzey Kıbrıs Haritası"
-                  />
-                  <div className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-sm rounded-xl px-4 py-2">
-                    <p className="text-white text-sm font-semibold">🗺️ Kuzey Kıbrıs Keşfet</p>
-                    <p className="text-white/70 text-xs">Haritada gezinip mekanları keşfedin</p>
-                  </div>
+                <div className="flex-1 rounded-2xl overflow-hidden relative min-h-[500px]">
+                  <ExploreMap />
                 </div>
               </motion.div>
             )}
