@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChevronLeft, ChevronRight, MapPin, Info, Landmark, 
   UtensilsCrossed, Hotel, Waves, Car, CreditCard, Plug, 
-  Clock, Plane, Ship, Sun, Sparkles, Star, BadgeCheck
+  Clock, Plane, Ship, Sun, Sparkles, Star, BadgeCheck,
+  Phone, Globe, Instagram, X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -17,12 +18,26 @@ import categoryNature from '@/assets/category-nature.jpg';
 // Guide sections
 type GuideSection = 'regions' | 'practical' | 'attractions' | 'recommended';
 
+interface RegionPlace {
+  id: string;
+  name: string;
+  type: 'otel' | 'restoran' | 'aktivite';
+  description: string;
+  image: string;
+  rating?: number;
+  priceRange?: string;
+  sponsored?: boolean;
+}
+
 interface Region {
   id: string;
   name: string;
   description: string;
   image: string;
   highlights: string[];
+  hotels: RegionPlace[];
+  restaurants: RegionPlace[];
+  activities: RegionPlace[];
 }
 
 interface PracticalInfo {
@@ -50,6 +65,11 @@ interface RecommendedPlace {
   location: string;
   featured?: boolean;
   sponsorBadge?: string;
+  phone?: string;
+  website?: string;
+  instagram?: string;
+  rating?: number;
+  priceRange?: string;
 }
 
 // Data
@@ -59,28 +79,89 @@ const regions: Region[] = [
     name: 'Lefkoşa',
     description: 'Dünyanın ikiye bölünmüş tek başkenti. Osmanlı, Venedik ve İngiliz mimarisinin iç içe geçtiği tarihi surlar içinde keşfedilecek çok şey var.',
     image: categoryHistory,
-    highlights: ['Büyük Han', 'Selimiye Camii', 'Yeşil Hat', 'Zehra Sokak Kafeleri', 'Rüstem Kitabevi']
+    highlights: ['Büyük Han', 'Selimiye Camii', 'Yeşil Hat', 'Zehra Sokak Kafeleri', 'Rüstem Kitabevi'],
+    hotels: [
+      { id: 'lef-h1', name: 'TasEV Guesthouse', type: 'otel', description: 'Venedik Sütunu yakınında butik konukevi', image: categoryHistory, rating: 4.5, priceRange: '$' },
+      { id: 'lef-h2', name: 'Djumba Hotel & Cafe', type: 'otel', description: 'Havaalanı servisi ve restoranı bulunan otel', image: heroCyprus, rating: 4.2, priceRange: '$$' },
+      { id: 'lef-h3', name: 'Hotel Sun', type: 'otel', description: 'Çatı havuzu olan üç yıldızlı konaklama', image: categoryNature, rating: 4.0, priceRange: '$$', sponsored: true }
+    ],
+    restaurants: [
+      { id: 'lef-r1', name: 'The Soulist Coffee & Music House', type: 'restoran', description: 'Canlı müzik ve özel kahve deneyimi', image: categoryFood, rating: 4.7 },
+      { id: 'lef-r2', name: 'Tezgah Cafe', type: 'restoran', description: 'Nostaljik ambiyans, taze cheesecake', image: categoryFood, rating: 4.5 },
+      { id: 'lef-r3', name: 'Rest', type: 'restoran', description: 'Modern Kıbrıs mutfağı', image: categoryFood, rating: 4.3, sponsored: true }
+    ],
+    activities: [
+      { id: 'lef-a1', name: 'Büyük Han Turu', type: 'aktivite', description: 'Osmanlı kervansarayında el sanatları keşfi', image: categoryHistory },
+      { id: 'lef-a2', name: 'Yeşil Hat Yürüyüşü', type: 'aktivite', description: 'İkiye bölünmüş şehrin sınır hattı gezisi', image: categoryHistory },
+      { id: 'lef-a3', name: 'Zehra Sokak Kafeleri', type: 'aktivite', description: 'Şehrin en hip bölgesinde takılmak', image: categoryFood }
+    ]
   },
   {
     id: 'girne',
     name: 'Girne',
     description: 'Tarihi limanı, muhteşem kaleleri ve Beşparmak Dağları manzarasıyla Kıbrıs\'ın en çekici bölgesi.',
     image: heroCyprus,
-    highlights: ['Girne Kalesi', 'Bellapais Manastırı', 'St. Hilarion Kalesi', 'Karmi Köyü', 'Escape Beach']
+    highlights: ['Girne Kalesi', 'Bellapais Manastırı', 'St. Hilarion Kalesi', 'Karmi Köyü', 'Escape Beach'],
+    hotels: [
+      { id: 'gir-h1', name: 'Cratos Premium Hotel', type: 'otel', description: '5 yıldızlı casino oteli, özel plaj', image: heroCyprus, rating: 4.8, priceRange: '$$$', sponsored: true },
+      { id: 'gir-h2', name: 'Merit Royal Premium', type: 'otel', description: 'Denize sıfır, spa merkezi', image: categoryBeach, rating: 4.7, priceRange: '$$$', sponsored: true },
+      { id: 'gir-h3', name: 'Bellapais Gardens', type: 'otel', description: 'Manastır manzaralı butik otel', image: categoryNature, rating: 4.6, priceRange: '$$' },
+      { id: 'gir-h4', name: 'Kaya Palazzo Resort', type: 'otel', description: 'Aile dostu, 3 havuzlu resort', image: heroCyprus, rating: 4.5, priceRange: '$$$', sponsored: true }
+    ],
+    restaurants: [
+      { id: 'gir-r1', name: 'Bellapais Gardens Restaurant', type: 'restoran', description: 'Manzaralı, şömineli atmosfer', image: categoryFood, rating: 4.8, sponsored: true },
+      { id: 'gir-r2', name: 'Nima Restaurant & Lounge', type: 'restoran', description: 'Modern tasarım, zarif sunumlar', image: categoryFood, rating: 4.6, sponsored: true },
+      { id: 'gir-r3', name: 'Niazi\'s Restaurant', type: 'restoran', description: 'Geleneksel Kıbrıs lezzetleri', image: categoryFood, rating: 4.4 },
+      { id: 'gir-r4', name: 'The Archway', type: 'restoran', description: 'Liman manzaralı deniz ürünleri', image: categoryFood, rating: 4.5 }
+    ],
+    activities: [
+      { id: 'gir-a1', name: 'Escape Beach Club', type: 'aktivite', description: 'Gün batımı partileri ve kokteyller', image: categoryBeach, sponsored: true },
+      { id: 'gir-a2', name: 'St. Hilarion Kalesi Turu', type: 'aktivite', description: 'Masalsı kale ve panoramik manzara', image: categoryHistory },
+      { id: 'gir-a3', name: 'Karmi Köyü Gezisi', type: 'aktivite', description: 'Pitoresk İngiliz kolonisi köyü', image: categoryNature },
+      { id: 'gir-a4', name: 'Dalış Turu', type: 'aktivite', description: 'Akdeniz\'in berrak sularında dalış', image: categoryBeach }
+    ]
   },
   {
     id: 'gazimagusa',
     name: 'Gazimağusa',
     description: 'Antik Salamis kalıntıları, Gotik mimarisi ve hayalet şehir Kapalı Maraş ile tarihin canlı bir müzesi.',
     image: categoryNature,
-    highlights: ['Kapalı Maraş', 'Lala Mustafa Paşa Camii', 'Salamis Harabeleri', 'Othello Kalesi', 'St. Barnabas Manastırı']
+    highlights: ['Kapalı Maraş', 'Lala Mustafa Paşa Camii', 'Salamis Harabeleri', 'Othello Kalesi', 'St. Barnabas Manastırı'],
+    hotels: [
+      { id: 'gaz-h1', name: 'La Regina Veneziana', type: 'otel', description: 'Othello Kalesi yakınında otantik konak', image: categoryHistory, rating: 4.4, priceRange: '$$' },
+      { id: 'gaz-h2', name: 'Salamis Bay Conti Resort', type: 'otel', description: 'Plaj kenarında her şey dahil', image: categoryBeach, rating: 4.3, priceRange: '$$', sponsored: true },
+      { id: 'gaz-h3', name: 'Noah\'s Ark Deluxe', type: 'otel', description: 'Aquapark ve eğlence kompleksi', image: categoryNature, rating: 4.2, priceRange: '$$' }
+    ],
+    restaurants: [
+      { id: 'gaz-r1', name: 'Petek Pastahanesi', type: 'restoran', description: 'Geleneksel tatlılar ve kahvaltı', image: categoryFood, rating: 4.5 },
+      { id: 'gaz-r2', name: 'Garavolli Cafe Bar', type: 'restoran', description: 'Surlar içinde atmosferik mekan', image: categoryFood, rating: 4.3 },
+      { id: 'gaz-r3', name: 'Caleo Fine Dining', type: 'restoran', description: 'İnce yemek deneyimi', image: categoryFood, rating: 4.6, sponsored: true }
+    ],
+    activities: [
+      { id: 'gaz-a1', name: 'Kapalı Maraş Turu', type: 'aktivite', description: 'Hayalet şehri bisikletle keşfet', image: categoryNature },
+      { id: 'gaz-a2', name: 'Salamis Antik Kenti', type: 'aktivite', description: 'Roma dönemi harabeleri gezisi', image: categoryHistory },
+      { id: 'gaz-a3', name: 'Palm Beach Plajı', type: 'aktivite', description: 'Maraş manzaralı kumsalda yüzme', image: categoryBeach }
+    ]
   },
   {
     id: 'karpaz',
     name: 'Karpaz Yarımadası',
     description: 'El değmemiş plajları, yabani eşekleri ve Apostolos Andreas Manastırı ile Kıbrıs\'ın en bakir bölgesi.',
     image: categoryBeach,
-    highlights: ['Altın Kumsal', 'Apostolos Andreas Manastırı', 'Dipkarpaz Milli Parkı', 'Yabani Eşekler', 'Zafer Burnu']
+    highlights: ['Altın Kumsal', 'Apostolos Andreas Manastırı', 'Dipkarpaz Milli Parkı', 'Yabani Eşekler', 'Zafer Burnu'],
+    hotels: [
+      { id: 'kar-h1', name: 'Karpaz Gate Marina Hotel', type: 'otel', description: 'Marina kenarında lüks konaklama', image: heroCyprus, rating: 4.5, priceRange: '$$$' },
+      { id: 'kar-h2', name: 'Theresa Hotel', type: 'otel', description: 'Yabani eşeklerin yakınında butik otel', image: categoryNature, rating: 4.2, priceRange: '$$' }
+    ],
+    restaurants: [
+      { id: 'kar-r1', name: 'Big Sand Beach Restaurant', type: 'restoran', description: 'Altın Kumsal\'da deniz ürünleri', image: categoryFood, rating: 4.4 },
+      { id: 'kar-r2', name: 'Dipkarpaz Köy Kahvesi', type: 'restoran', description: 'Otantik köy kahvaltısı', image: categoryFood, rating: 4.3 }
+    ],
+    activities: [
+      { id: 'kar-a1', name: 'Altın Kumsal', type: 'aktivite', description: 'Kıbrıs\'ın en bakir plajında yüzme', image: categoryBeach },
+      { id: 'kar-a2', name: 'Yabani Eşek Safari', type: 'aktivite', description: 'Doğal yaşam alanında eşek gözlemi', image: categoryNature },
+      { id: 'kar-a3', name: 'Apostolos Andreas Manastırı', type: 'aktivite', description: 'Yarımadanın ucundaki kutsal mekan', image: categoryHistory }
+    ]
   }
 ];
 
@@ -180,57 +261,83 @@ const recommendedPlaces: RecommendedPlace[] = [
     name: 'Cratos Premium Hotel',
     type: 'otel',
     description: 'Girne\'nin en lüks 5 yıldızlı casino oteli. Denize sıfır konumu ve özel plajıyla öne çıkıyor.',
-    image: heroCyprus,
-    location: 'Girne',
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800',
+    location: 'Catalkoy, Girne',
     featured: true,
-    sponsorBadge: 'Önerilen'
+    sponsorBadge: 'Önerilen',
+    phone: '+90 392 650 0500',
+    website: 'cratospremium.com',
+    instagram: '@cratospremiumhotel',
+    rating: 4.8,
+    priceRange: '$$$'
   },
   {
     id: 'rec-2',
     name: 'Bellapais Gardens Restaurant',
     type: 'restoran',
     description: 'Bellapais Manastırı yanında, manzaralı ve şömineli sıcak atmosferiyle benzersiz bir deneyim.',
-    image: categoryFood,
+    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
     location: 'Bellapais, Girne',
     featured: true,
-    sponsorBadge: 'Partner'
+    sponsorBadge: 'Partner',
+    phone: '+90 392 815 6066',
+    instagram: '@bellapaisgarden',
+    rating: 4.7,
+    priceRange: '$$'
   },
   {
     id: 'rec-3',
     name: 'Escape Beach Club',
     type: 'plaj',
     description: 'Gün batımı partileri ve kokteyller eşliğinde Akdeniz\'in keyfini çıkarın.',
-    image: categoryBeach,
-    location: 'Girne',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800',
+    location: 'Alsancak, Girne',
     featured: true,
-    sponsorBadge: 'Önerilen'
+    sponsorBadge: 'Önerilen',
+    phone: '+90 533 888 0088',
+    instagram: '@escapebeachclubcyprus',
+    rating: 4.6
   },
   {
     id: 'rec-4',
     name: 'Merit Royal Premium',
     type: 'otel',
     description: 'Denize sıfır konumu, özel plajı ve spa merkezi ile lüks tatil deneyimi.',
-    image: categoryNature,
-    location: 'Girne',
-    sponsorBadge: 'Partner'
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800',
+    location: 'Alsancak, Girne',
+    sponsorBadge: 'Partner',
+    phone: '+90 392 650 0000',
+    website: 'merithotels.com',
+    instagram: '@meritroyalpremium',
+    rating: 4.7,
+    priceRange: '$$$'
   },
   {
     id: 'rec-5',
     name: 'Nima Restaurant & Lounge',
     type: 'restoran',
     description: 'Modern tasarımı ve zarif sunumlu tabakları ile Kordon Boyu\'nun gözdesi.',
-    image: categoryFood,
+    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800',
     location: 'Girne Limanı',
-    sponsorBadge: 'Önerilen'
+    sponsorBadge: 'Önerilen',
+    phone: '+90 392 815 2121',
+    instagram: '@nimacyprus',
+    rating: 4.5,
+    priceRange: '$$'
   },
   {
     id: 'rec-6',
     name: 'Kaya Palazzo Resort',
     type: 'otel',
     description: 'Üç yüzme havuzu, spa merkezi ve özel plaj alanıyla aile dostu lüks tatil.',
-    image: heroCyprus,
-    location: 'Girne',
-    sponsorBadge: 'Partner'
+    image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800',
+    location: 'Catalkoy, Girne',
+    sponsorBadge: 'Partner',
+    phone: '+90 392 650 2100',
+    website: 'kayahotels.com',
+    instagram: '@kayapalazzocyprus',
+    rating: 4.6,
+    priceRange: '$$$'
   }
 ];
 
@@ -480,6 +587,8 @@ const AttractionsSection = ({ attractions }: { attractions: Attraction[] }) => {
 
 // Recommended Section - Sponsor/Partner işletmeler
 const RecommendedSection = ({ places }: { places: RecommendedPlace[] }) => {
+  const [selectedPlace, setSelectedPlace] = useState<RecommendedPlace | null>(null);
+  
   const typeIcons: Record<string, React.ElementType> = {
     otel: Hotel,
     restoran: UtensilsCrossed,
@@ -497,6 +606,7 @@ const RecommendedSection = ({ places }: { places: RecommendedPlace[] }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
+            onClick={() => setSelectedPlace(place)}
             className="relative bg-black/40 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 group cursor-pointer"
           >
             <div className="relative h-[140px]">
@@ -517,30 +627,52 @@ const RecommendedSection = ({ places }: { places: RecommendedPlace[] }) => {
                 </div>
               )}
 
-              {/* Type Icon */}
-              <div className="absolute top-3 right-3">
-                <div className="w-8 h-8 rounded-lg bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                  {(() => {
-                    const Icon = typeIcons[place.type];
-                    return <Icon className="w-4 h-4 text-white" />;
-                  })()}
+              {/* Rating */}
+              {place.rating && (
+                <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm">
+                  <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                  <span className="text-white text-xs font-medium">{place.rating}</span>
                 </div>
-              </div>
+              )}
             </div>
 
             <div className="p-4">
-              <h4 className="text-white font-semibold mb-1">{place.name}</h4>
+              <div className="flex items-center justify-between mb-1">
+                <h4 className="text-white font-semibold">{place.name}</h4>
+                {place.priceRange && (
+                  <span className="text-primary text-xs font-bold">{place.priceRange}</span>
+                )}
+              </div>
               <p className="text-white/60 text-xs flex items-center gap-1 mb-2">
                 <MapPin className="w-3 h-3" />
                 {place.location}
               </p>
               <p className="text-white/70 text-sm line-clamp-2">{place.description}</p>
-              <Button 
-                size="sm" 
-                className="mt-3 w-full bg-primary/90 hover:bg-primary text-primary-foreground text-xs font-semibold"
-              >
-                İncele
-              </Button>
+              
+              {/* Contact Icons */}
+              <div className="flex items-center gap-2 mt-3">
+                {place.phone && (
+                  <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
+                    <Phone className="w-3.5 h-3.5 text-white/70" />
+                  </div>
+                )}
+                {place.instagram && (
+                  <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
+                    <Instagram className="w-3.5 h-3.5 text-white/70" />
+                  </div>
+                )}
+                {place.website && (
+                  <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
+                    <Globe className="w-3.5 h-3.5 text-white/70" />
+                  </div>
+                )}
+                <Button 
+                  size="sm" 
+                  className="ml-auto bg-primary/90 hover:bg-primary text-primary-foreground text-xs font-semibold h-7 px-3"
+                >
+                  İncele
+                </Button>
+              </div>
             </div>
           </motion.div>
         ))}
@@ -555,6 +687,7 @@ const RecommendedSection = ({ places }: { places: RecommendedPlace[] }) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 + index * 0.08 }}
+            onClick={() => setSelectedPlace(place)}
             className="flex items-center gap-3 bg-black/30 backdrop-blur-sm rounded-xl p-3 border border-white/5 cursor-pointer hover:bg-black/40 transition-colors"
           >
             <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
@@ -566,18 +699,31 @@ const RecommendedSection = ({ places }: { places: RecommendedPlace[] }) => {
                   <BadgeCheck className="w-3.5 h-3.5 text-primary flex-shrink-0" />
                 )}
                 <h5 className="text-white font-medium text-sm truncate">{place.name}</h5>
+                {place.rating && (
+                  <span className="text-yellow-400 text-xs flex items-center gap-0.5 ml-auto">
+                    <Star className="w-3 h-3 fill-yellow-400" />
+                    {place.rating}
+                  </span>
+                )}
               </div>
               <p className="text-white/50 text-xs truncate">{place.location}</p>
             </div>
           </motion.div>
         ))}
       </div>
+
+      {/* Place Detail Modal */}
+      <AnimatePresence>
+        {selectedPlace && (
+          <PlaceDetailModal place={selectedPlace} onClose={() => setSelectedPlace(null)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
-// Region Detail Modal
-const RegionDetailModal = ({ region, onClose }: { region: Region; onClose: () => void }) => (
+// Place Detail Modal
+const PlaceDetailModal = ({ place, onClose }: { place: RecommendedPlace; onClose: () => void }) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -592,13 +738,13 @@ const RegionDetailModal = ({ region, onClose }: { region: Region; onClose: () =>
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.9, opacity: 0 }}
       onClick={(e) => e.stopPropagation()}
-      className="relative bg-card rounded-2xl overflow-hidden max-w-2xl w-full shadow-2xl"
+      className="relative bg-card rounded-2xl overflow-hidden max-w-lg w-full shadow-2xl"
     >
       {/* Header Image */}
       <div className="relative h-[200px]">
         <img
-          src={region.image}
-          alt={region.name}
+          src={place.image}
+          alt={place.name}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
@@ -607,34 +753,270 @@ const RegionDetailModal = ({ region, onClose }: { region: Region; onClose: () =>
           onClick={onClose}
           className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors"
         >
-          <ChevronLeft className="w-5 h-5 text-white rotate-180" />
+          <X className="w-5 h-5 text-white" />
         </button>
+
+        {place.sponsorBadge && (
+          <div className="absolute top-4 left-4">
+            <span className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-bold flex items-center gap-1.5">
+              <BadgeCheck className="w-4 h-4" />
+              {place.sponsorBadge}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Content */}
       <div className="p-6 -mt-10 relative">
-        <h2 className="text-foreground text-2xl font-bold mb-3">{region.name}</h2>
-        <p className="text-muted-foreground leading-relaxed mb-6">{region.description}</p>
+        <div className="flex items-start justify-between mb-2">
+          <h2 className="text-foreground text-xl font-bold">{place.name}</h2>
+          {place.rating && (
+            <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-yellow-500/20">
+              <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+              <span className="text-yellow-500 font-bold">{place.rating}</span>
+            </div>
+          )}
+        </div>
+        
+        <p className="text-muted-foreground text-sm flex items-center gap-1.5 mb-4">
+          <MapPin className="w-4 h-4" />
+          {place.location}
+          {place.priceRange && (
+            <span className="ml-2 text-primary font-bold">{place.priceRange}</span>
+          )}
+        </p>
+        
+        <p className="text-muted-foreground leading-relaxed mb-6">{place.description}</p>
 
-        <h4 className="text-foreground font-semibold mb-3 flex items-center gap-2">
-          <Landmark className="w-4 h-4 text-primary" />
-          Önemli Noktalar
-        </h4>
-        <div className="flex flex-wrap gap-2">
-          {region.highlights.map((highlight, i) => (
-            <span
-              key={i}
-              className="px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-sm font-medium"
-            >
-              {highlight}
-            </span>
-          ))}
+        {/* Contact Info */}
+        <div className="space-y-3 mb-6">
+          {place.phone && (
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <Phone className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-foreground font-medium">{place.phone}</p>
+                <p className="text-muted-foreground text-xs">Telefon</p>
+              </div>
+            </div>
+          )}
+          
+          {place.instagram && (
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+              <div className="w-10 h-10 rounded-full bg-pink-500/10 flex items-center justify-center">
+                <Instagram className="w-5 h-5 text-pink-500" />
+              </div>
+              <div>
+                <p className="text-foreground font-medium">{place.instagram}</p>
+                <p className="text-muted-foreground text-xs">Instagram</p>
+              </div>
+            </div>
+          )}
+          
+          {place.website && (
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+              <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
+                <Globe className="w-5 h-5 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-foreground font-medium">{place.website}</p>
+                <p className="text-muted-foreground text-xs">Website</p>
+              </div>
+            </div>
+          )}
         </div>
 
-        <Button className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
-          Bu Bölgeyi Keşfet
+        <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
+          Rezervasyon Yap
         </Button>
       </div>
     </motion.div>
+  </motion.div>
+);
+
+// Region Detail Modal with Hotels, Restaurants, Activities
+const RegionDetailModal = ({ region, onClose }: { region: Region; onClose: () => void }) => {
+  const [activeTab, setActiveTab] = useState<'highlights' | 'hotels' | 'restaurants' | 'activities'>('highlights');
+  
+  const tabs = [
+    { id: 'highlights', label: 'Önemli Noktalar', icon: Landmark },
+    { id: 'hotels', label: 'Oteller', icon: Hotel, count: region.hotels.length },
+    { id: 'restaurants', label: 'Restoranlar', icon: UtensilsCrossed, count: region.restaurants.length },
+    { id: 'activities', label: 'Aktiviteler', icon: Waves, count: region.activities.length }
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-6"
+      onClick={onClose}
+    >
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative bg-card rounded-2xl overflow-hidden max-w-3xl w-full shadow-2xl max-h-[85vh] flex flex-col"
+      >
+        {/* Header Image */}
+        <div className="relative h-[180px] shrink-0">
+          <img
+            src={region.image}
+            alt={region.name}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
+          
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors"
+          >
+            <X className="w-5 h-5 text-white" />
+          </button>
+          
+          <div className="absolute bottom-4 left-6">
+            <h2 className="text-white text-2xl font-bold">{region.name}</h2>
+            <p className="text-white/70 text-sm mt-1 line-clamp-2 max-w-lg">{region.description}</p>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-1 px-6 py-3 border-b border-border/50 shrink-0 overflow-x-auto">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                activeTab === tab.id
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:bg-muted'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
+              {tab.count !== undefined && (
+                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                  activeTab === tab.id ? 'bg-white/20' : 'bg-muted-foreground/20'
+                }`}>
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <AnimatePresence mode="wait">
+            {activeTab === 'highlights' && (
+              <motion.div
+                key="highlights"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+              >
+                <div className="flex flex-wrap gap-2">
+                  {region.highlights.map((highlight, i) => (
+                    <span
+                      key={i}
+                      className="px-4 py-2 rounded-lg bg-primary/10 text-primary font-medium"
+                    >
+                      {highlight}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'hotels' && (
+              <motion.div
+                key="hotels"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="grid grid-cols-2 gap-4"
+              >
+                {region.hotels.map((hotel, i) => (
+                  <PlaceCard key={hotel.id} place={hotel} index={i} />
+                ))}
+              </motion.div>
+            )}
+
+            {activeTab === 'restaurants' && (
+              <motion.div
+                key="restaurants"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="grid grid-cols-2 gap-4"
+              >
+                {region.restaurants.map((restaurant, i) => (
+                  <PlaceCard key={restaurant.id} place={restaurant} index={i} />
+                ))}
+              </motion.div>
+            )}
+
+            {activeTab === 'activities' && (
+              <motion.div
+                key="activities"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="grid grid-cols-2 gap-4"
+              >
+                {region.activities.map((activity, i) => (
+                  <PlaceCard key={activity.id} place={activity} index={i} />
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// Place Card Component for Region Modal
+const PlaceCard = ({ place, index }: { place: RegionPlace; index: number }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: index * 0.05 }}
+    className="bg-muted/50 rounded-xl overflow-hidden group cursor-pointer hover:bg-muted transition-colors"
+  >
+    <div className="relative h-[100px]">
+      <img
+        src={place.image}
+        alt={place.name}
+        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+      />
+      {place.sponsored && (
+        <div className="absolute top-2 left-2">
+          <span className="px-2 py-0.5 rounded bg-primary text-primary-foreground text-[10px] font-bold">
+            Önerilen
+          </span>
+        </div>
+      )}
+      {place.rating && (
+        <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm">
+          <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+          <span className="text-white text-xs">{place.rating}</span>
+        </div>
+      )}
+    </div>
+    <div className="p-3">
+      <div className="flex items-center justify-between mb-1">
+        <h5 className="text-foreground font-semibold text-sm">{place.name}</h5>
+        {place.priceRange && (
+          <span className="text-primary text-xs font-bold">{place.priceRange}</span>
+        )}
+      </div>
+      <p className="text-muted-foreground text-xs line-clamp-2">{place.description}</p>
+    </div>
   </motion.div>
 );
