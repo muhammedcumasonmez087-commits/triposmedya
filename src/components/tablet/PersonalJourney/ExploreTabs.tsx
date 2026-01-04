@@ -94,36 +94,20 @@ export const ExploreTabs = ({
   const beachAds = journeyAds.filter(ad => ad.categoryId === 'beach');
 
   return (
-    <div 
-      className="fixed inset-0 flex flex-col overflow-hidden"
-      style={{
-        backgroundImage: `url(${heroCyprus})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      {/* Blurred overlay */}
-      <div 
-        className="absolute inset-0"
-        style={{
-          backdropFilter: 'blur(20px)',
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
-        }}
-      />
-
+    <div className="fixed inset-0 flex flex-col overflow-hidden bg-background">
       {/* Content */}
       <div className="relative z-10 flex flex-col h-full">
         {/* Top Tab Navigation */}
         <header className="flex items-center justify-center py-6 px-6 shrink-0">
-          <div className="flex items-center gap-1 bg-gray-900/90 rounded-full px-2 py-1.5">
+          <div className="flex items-center gap-1 bg-secondary rounded-full px-2 py-1.5">
             {tabItems.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                className={`nav-tab ${
                   activeTab === tab.id
-                    ? 'bg-orange-500 text-white'
-                    : 'text-gray-300 hover:text-white'
+                    ? 'nav-tab-active'
+                    : 'nav-tab-inactive'
                 }`}
               >
                 {tab.label}
@@ -164,26 +148,24 @@ export const ExploreTabs = ({
                     </AnimatePresence>
 
                     {/* Sponsor Badge */}
-                    <div className="absolute top-4 left-4 z-10">
-                      <span className="px-3 py-1.5 rounded bg-orange-500 text-white text-xs font-bold">
-                        Sponsorlu
-                      </span>
+                    <div className="sponsor-badge">
+                      Sponsorlu
                     </div>
 
                     {/* Left Navigation Arrow */}
                     <button
                       onClick={() => setCurrentHeroIndex((currentHeroIndex - 1 + heroCarouselAds.length) % heroCarouselAds.length)}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-secondary/60 backdrop-blur-sm flex items-center justify-center hover:bg-secondary transition-colors"
                     >
-                      <ChevronLeft className="w-6 h-6 text-white" />
+                      <ChevronLeft className="w-6 h-6 text-foreground" />
                     </button>
 
                     {/* Right Navigation Arrow */}
                     <button
                       onClick={() => setCurrentHeroIndex((currentHeroIndex + 1) % heroCarouselAds.length)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-secondary/60 backdrop-blur-sm flex items-center justify-center hover:bg-secondary transition-colors"
                     >
-                      <ChevronRight className="w-6 h-6 text-white" />
+                      <ChevronRight className="w-6 h-6 text-foreground" />
                     </button>
 
                     {/* Content - Bottom */}
@@ -194,10 +176,10 @@ export const ExploreTabs = ({
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
                       >
-                        <h2 className="text-2xl font-bold text-white mb-3">
+                        <h2 className="text-2xl font-bold text-foreground mb-3 text-shadow">
                           {heroCarouselAds[currentHeroIndex].name}: {heroCarouselAds[currentHeroIndex].title}
                         </h2>
-                        <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2.5 h-auto rounded-lg">
+                        <Button className="cta-button">
                           {heroCarouselAds[currentHeroIndex].buttonText}
                         </Button>
                       </motion.div>
@@ -212,8 +194,8 @@ export const ExploreTabs = ({
                         onClick={() => setCurrentHeroIndex(index)}
                         className={`h-2 rounded-full transition-all duration-300 ${
                           index === currentHeroIndex 
-                            ? 'bg-white w-6' 
-                            : 'bg-white/40 w-2 hover:bg-white/60'
+                            ? 'bg-primary w-6' 
+                            : 'bg-muted-foreground/40 w-2 hover:bg-muted-foreground/60'
                         }`}
                       />
                     ))}
@@ -252,9 +234,9 @@ export const ExploreTabs = ({
                 className="flex items-center justify-center h-[400px]"
               >
                 <div className="text-center">
-                  <Calendar className="w-16 h-16 text-white/60 mx-auto mb-4" />
-                  <h3 className="text-white text-xl font-semibold">Yakında</h3>
-                  <p className="text-white/60 text-sm mt-2">Bu bölüm hazırlanıyor...</p>
+                  <Calendar className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-foreground text-xl font-semibold">Yakında</h3>
+                  <p className="text-muted-foreground text-sm mt-2">Bu bölüm hazırlanıyor...</p>
                 </div>
               </motion.div>
             )}
@@ -330,16 +312,16 @@ const HorizontalAdRow = ({
 
   return (
     <div className="relative">
-      <h3 className="text-white text-lg font-semibold mb-4">{title}</h3>
+      <h3 className="text-foreground text-lg font-semibold mb-4">{title}</h3>
       
       <div className="relative">
         {/* Left Arrow */}
         {canScrollLeft && (
           <button
             onClick={() => scroll('left')}
-            className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors"
+            className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-secondary/60 backdrop-blur-sm flex items-center justify-center hover:bg-secondary transition-colors"
           >
-            <ChevronLeft className="w-5 h-5 text-white" />
+            <ChevronLeft className="w-5 h-5 text-foreground" />
           </button>
         )}
 
@@ -347,9 +329,9 @@ const HorizontalAdRow = ({
         {canScrollRight && (
           <button
             onClick={() => scroll('right')}
-            className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors"
+            className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-secondary/60 backdrop-blur-sm flex items-center justify-center hover:bg-secondary transition-colors"
           >
-            <ChevronRight className="w-5 h-5 text-white" />
+            <ChevronRight className="w-5 h-5 text-foreground" />
           </button>
         )}
 
@@ -368,18 +350,18 @@ const HorizontalAdRow = ({
               className="flex-shrink-0 w-[200px] cursor-pointer group"
               onClick={() => onAdClick(ad)}
             >
-              <div className="relative h-[140px] rounded-xl overflow-hidden">
+              <div className="relative h-[140px] rounded-xl overflow-hidden glass-card">
                 <img
                   src={ad.image}
                   alt={ad.name}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute inset-0 gradient-overlay" />
                 
                 {/* Sponsor Badge - only on first card */}
                 {index === 0 && (
                   <div className="absolute top-2 left-2">
-                    <span className="px-2 py-0.5 rounded bg-orange-500 text-white text-[10px] font-bold">
+                    <span className="px-2 py-0.5 rounded-md bg-primary text-primary-foreground text-[10px] font-bold">
                       Sponsorlu
                     </span>
                   </div>
@@ -387,10 +369,10 @@ const HorizontalAdRow = ({
 
                 {/* Info */}
                 <div className="absolute bottom-0 left-0 right-0 p-3">
-                  <h4 className="text-white font-semibold text-sm leading-tight">{ad.name}</h4>
-                  <p className="text-gray-300 text-xs mt-0.5 truncate">{ad.description}</p>
+                  <h4 className="text-foreground font-semibold text-sm leading-tight">{ad.name}</h4>
+                  <p className="text-muted-foreground text-xs mt-0.5 truncate">{ad.description}</p>
                   <button 
-                    className="text-orange-400 text-xs font-medium mt-2 hover:text-orange-300 transition-colors"
+                    className="text-primary text-xs font-medium mt-2 hover:text-primary/80 transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
                       onAdClick(ad);
