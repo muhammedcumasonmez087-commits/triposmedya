@@ -414,12 +414,12 @@ export const ExploreTabs = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="space-y-6"
+                className="flex flex-col h-full"
               >
                 <div className="flex gap-6">
                   {/* Events Hero Carousel */}
-                  <div className="flex-1 max-w-[600px]">
-                    <div className="relative h-[280px] rounded-2xl overflow-hidden">
+                  <div className="flex-1 max-w-4xl">
+                    <div className="relative h-[340px] rounded-2xl overflow-hidden">
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={currentEventIndex}
@@ -443,23 +443,23 @@ export const ExploreTabs = ({
                             </span>
                           </div>
 
-                          {/* Navigation Arrows */}
+                          {/* Navigation Arrows - Centered vertically */}
                           <button
                             onClick={() => handleEventSlideChange(currentEventIndex === 0 ? featuredEvents.length - 1 : currentEventIndex - 1)}
-                            className="absolute right-14 top-4 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
+                            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors"
                           >
-                            <ChevronLeft className="w-4 h-4 text-white" />
+                            <ChevronLeft className="w-5 h-5 text-white" />
                           </button>
                           <button
                             onClick={() => handleEventSlideChange((currentEventIndex + 1) % featuredEvents.length)}
-                            className="absolute right-4 top-4 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors"
                           >
-                            <ChevronRight className="w-4 h-4 text-white" />
+                            <ChevronRight className="w-5 h-5 text-white" />
                           </button>
 
                           {/* Content */}
                           <div className="absolute bottom-0 left-0 right-0 p-6">
-                            <h2 className="text-white text-xl font-bold leading-tight mb-4">
+                            <h2 className="text-white text-2xl font-bold leading-tight mb-4">
                               {featuredEvents[currentEventIndex].name}
                             </h2>
                             <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 py-2 rounded-lg">
@@ -476,8 +476,8 @@ export const ExploreTabs = ({
                         <button
                           key={index}
                           onClick={() => handleEventSlideChange(index)}
-                          className={`w-2.5 h-2.5 rounded-full transition-all ${
-                            index === currentEventIndex ? 'bg-white w-6' : 'bg-white/40'
+                          className={`h-2 rounded-full transition-all ${
+                            index === currentEventIndex ? 'bg-white w-6' : 'bg-white/40 w-2'
                           }`}
                         />
                       ))}
@@ -486,25 +486,27 @@ export const ExploreTabs = ({
 
                   {/* Categories Section */}
                   <div className="w-[220px] shrink-0">
-                    <h3 className="text-foreground text-lg font-semibold mb-4">Kategorilere Göz At</h3>
+                    <h3 className="text-white text-lg font-semibold mb-4">Kategorilere Göz At</h3>
                     <div className="grid grid-cols-2 gap-3">
                       {eventCategories.map((cat) => (
                         <button
                           key={cat.id}
-                          className="flex flex-col items-center gap-2 p-4 rounded-xl bg-secondary/80 hover:bg-secondary transition-colors"
+                          className="flex flex-col items-center gap-2 p-4 rounded-xl bg-black/40 backdrop-blur-sm hover:bg-black/60 transition-colors"
                         >
                           <div className={`w-10 h-10 rounded-lg ${cat.color} flex items-center justify-center`}>
                             <cat.icon className="w-5 h-5 text-white" />
                           </div>
-                          <span className="text-foreground text-xs font-medium text-center">{cat.name}</span>
+                          <span className="text-white text-xs font-medium text-center">{cat.name}</span>
                         </button>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                {/* Upcoming Events */}
-                <UpcomingEventsRow />
+                {/* Upcoming Events - pushed to bottom */}
+                <div className="mt-auto pt-4">
+                  <UpcomingEventsRow />
+                </div>
               </motion.div>
             )}
 
