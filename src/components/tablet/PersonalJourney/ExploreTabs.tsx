@@ -269,7 +269,15 @@ export const ExploreTabs = ({
   const beachAds = journeyAds.filter(ad => ad.categoryId === 'beach');
 
   return (
-    <div className="fixed inset-0 flex flex-col overflow-hidden bg-background">
+    <div className="fixed inset-0 flex flex-col overflow-hidden">
+      {/* Blurred Background */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${heroCyprus})` }}
+      />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-xl" />
+      
+      {/* Content */}
       {/* Content */}
       <div className="relative z-10 flex flex-col h-full">
         {/* Top Tab Navigation */}
@@ -292,7 +300,7 @@ export const ExploreTabs = ({
         </header>
 
         {/* Content based on active tab */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden px-8 pb-6">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden px-8 pb-2 flex flex-col">
           <AnimatePresence mode="wait">
             {activeTab === 'explore' && (
               <motion.div
@@ -300,11 +308,11 @@ export const ExploreTabs = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="space-y-8"
+                className="flex flex-col h-full"
               >
                 {/* Hero Carousel */}
-                <div className="relative max-w-3xl mx-auto">
-                  <div className="relative h-[280px] rounded-2xl overflow-hidden">
+                <div className="relative max-w-4xl mx-auto w-full">
+                  <div className="relative h-[340px] rounded-2xl overflow-hidden">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={currentHeroIndex}
@@ -352,18 +360,18 @@ export const ExploreTabs = ({
                           ))}
                         </div>
 
-                        {/* Navigation Arrows */}
+                        {/* Navigation Arrows - Centered vertically */}
                         <button
                           onClick={() => handleSlideChange(currentHeroIndex === 0 ? heroCarouselAds.length - 1 : currentHeroIndex - 1)}
-                          className="absolute right-14 top-12 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
+                          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors"
                         >
-                          <ChevronLeft className="w-4 h-4 text-white" />
+                          <ChevronLeft className="w-5 h-5 text-white" />
                         </button>
                         <button
                           onClick={() => handleSlideChange((currentHeroIndex + 1) % heroCarouselAds.length)}
-                          className="absolute right-4 top-12 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors"
                         >
-                          <ChevronRight className="w-4 h-4 text-white" />
+                          <ChevronRight className="w-5 h-5 text-white" />
                         </button>
 
                         {/* Content */}
@@ -379,10 +387,24 @@ export const ExploreTabs = ({
                     </AnimatePresence>
                   </div>
 
+                  {/* Pagination Dots */}
+                  <div className="flex justify-center gap-2 mt-3">
+                    {heroCarouselAds.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSlideChange(index)}
+                        className={`h-2 rounded-full transition-all ${
+                          index === currentHeroIndex ? 'bg-white w-6' : 'bg-white/40 w-2'
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
 
-                {/* Featured Hotels Section */}
-                <FeaturedHotelsRow />
+                {/* Featured Hotels Section - pushed to bottom */}
+                <div className="mt-auto pt-4">
+                  <FeaturedHotelsRow />
+                </div>
               </motion.div>
             )}
 
