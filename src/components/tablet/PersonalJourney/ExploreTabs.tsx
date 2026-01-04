@@ -12,6 +12,7 @@ import categoryFood from '@/assets/category-food.jpg';
 import categoryNightlife from '@/assets/category-nightlife.jpg';
 import categoryHistory from '@/assets/category-history.jpg';
 import categoryNature from '@/assets/category-nature.jpg';
+import heroCyprus from '@/assets/hero-cyprus.jpg';
 
 interface ExploreTabsProps {
   selectedCategories: CategoryId[];
@@ -34,43 +35,24 @@ const tabItems = [
 const heroCarouselAds = [
   {
     id: 'hero-1',
-    name: 'Escape Beach Club',
-    title: 'Gün Batımı Partisi & Kokteyller',
-    image: categoryBeach,
-    offer: 'Rezervasyon Yap - %10 indirim',
-    category: 'beach',
+    name: 'Merit Royal Premium',
+    title: 'Lüks Tatil Deneyimi',
+    image: heroCyprus,
+    buttonText: 'Hemen İncele',
   },
   {
     id: 'hero-2',
-    name: 'Merit Royal Premium',
-    title: 'Denize Sıfır Tatil Deneyimi',
-    image: categoryNature,
-    offer: 'Erken Rezervasyon %25 İndirim',
-    category: 'hotel',
+    name: 'Escape Beach Club',
+    title: 'Gün Batımı Partisi',
+    image: categoryBeach,
+    buttonText: 'Hemen İncele',
   },
   {
     id: 'hero-3',
     name: 'Bellapais Manastırı',
     title: 'Tarihi Kıbrıs Turu',
     image: categoryHistory,
-    offer: 'Rehberli Tur - %15 İndirim',
-    category: 'history',
-  },
-  {
-    id: 'hero-4',
-    name: 'Nicosia Night Club',
-    title: 'Canlı Müzik & DJ Performansları',
-    image: categoryNightlife,
-    offer: 'İlk İçki Bedava',
-    category: 'nightlife',
-  },
-  {
-    id: 'hero-5',
-    name: 'Cyprian Fine Dining',
-    title: 'Akdeniz Mutfağının En İyisi',
-    image: categoryFood,
-    offer: '2 Kişilik Menü %20 İndirim',
-    category: 'food',
+    buttonText: 'Hemen İncele',
   },
 ];
 
@@ -112,161 +94,173 @@ export const ExploreTabs = ({
   const beachAds = journeyAds.filter(ad => ad.categoryId === 'beach');
 
   return (
-    <div className="fixed inset-0 flex flex-col overflow-hidden" style={{
-      background: 'linear-gradient(180deg, #d4c4b0 0%, #e8ddd0 30%, #c9b8a4 100%)'
-    }}>
-      {/* Top Tab Navigation */}
-      <header className="flex items-center justify-center py-4 px-6 shrink-0">
-        <div className="flex items-center gap-1 bg-gray-900/95 rounded-full px-2 py-1.5">
-          {tabItems.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                activeTab === tab.id
-                  ? 'bg-orange-500 text-white'
-                  : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </header>
+    <div 
+      className="fixed inset-0 flex flex-col overflow-hidden"
+      style={{
+        backgroundImage: `url(${heroCyprus})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      {/* Blurred overlay */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          backdropFilter: 'blur(20px)',
+          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        }}
+      />
 
-      {/* Content based on active tab */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden px-8 pb-6">
-        <AnimatePresence mode="wait">
-          {activeTab === 'explore' && (
-            <motion.div
-              key="explore"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-6 max-w-6xl mx-auto"
-            >
-              {/* Hero Carousel */}
-              <div className="relative h-[260px] rounded-2xl overflow-hidden shadow-xl">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentHeroIndex}
-                    initial={{ opacity: 0, scale: 1.05 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.5 }}
-                    className="absolute inset-0"
-                  >
-                    <div 
-                      className="absolute inset-0 bg-cover bg-center"
-                      style={{ backgroundImage: `url(${heroCarouselAds[currentHeroIndex].image})` }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                  </motion.div>
-                </AnimatePresence>
+      {/* Content */}
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Top Tab Navigation */}
+        <header className="flex items-center justify-center py-6 px-6 shrink-0">
+          <div className="flex items-center gap-1 bg-gray-900/90 rounded-full px-2 py-1.5">
+            {tabItems.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-orange-500 text-white'
+                    : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </header>
 
-                {/* Sponsor Badge */}
-                <div className="absolute top-4 left-4 z-10">
-                  <span className="px-3 py-1 rounded bg-orange-500 text-white text-xs font-semibold shadow-lg">
-                    Sponsorlu
-                  </span>
-                </div>
+        {/* Content based on active tab */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden px-8 pb-6">
+          <AnimatePresence mode="wait">
+            {activeTab === 'explore' && (
+              <motion.div
+                key="explore"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-8 max-w-5xl mx-auto"
+              >
+                {/* Hero Carousel */}
+                <div className="relative">
+                  <div className="relative h-[320px] rounded-2xl overflow-hidden">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={currentHeroIndex}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="absolute inset-0"
+                      >
+                        <img 
+                          src={heroCarouselAds[currentHeroIndex].image}
+                          alt={heroCarouselAds[currentHeroIndex].name}
+                          className="w-full h-full object-cover"
+                        />
+                      </motion.div>
+                    </AnimatePresence>
 
-                {/* Navigation Arrows - Top Right */}
-                <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-                  <button
-                    onClick={() => setCurrentHeroIndex((currentHeroIndex - 1 + heroCarouselAds.length) % heroCarouselAds.length)}
-                    className="w-8 h-8 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center hover:bg-white/50 transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4 text-white" />
-                  </button>
-                  <button
-                    onClick={() => setCurrentHeroIndex((currentHeroIndex + 1) % heroCarouselAds.length)}
-                    className="w-8 h-8 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center hover:bg-white/50 transition-colors"
-                  >
-                    <ChevronRight className="w-4 h-4 text-white" />
-                  </button>
-                </div>
+                    {/* Sponsor Badge */}
+                    <div className="absolute top-4 left-4 z-10">
+                      <span className="px-3 py-1.5 rounded bg-orange-500 text-white text-xs font-bold">
+                        Sponsorlu
+                      </span>
+                    </div>
 
-                {/* Content - Bottom Left */}
-                <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
-                  <motion.div
-                    key={`content-${currentHeroIndex}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    <h2 className="text-xl md:text-2xl font-bold text-white leading-tight">
-                      {heroCarouselAds[currentHeroIndex].name}: {heroCarouselAds[currentHeroIndex].title}
-                    </h2>
-                    <Button className="mt-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2 h-auto rounded-lg shadow-lg">
-                      {heroCarouselAds[currentHeroIndex].offer}
-                    </Button>
-                  </motion.div>
-                </div>
-
-                {/* Dots Indicator - Bottom Center */}
-                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5">
-                  {heroCarouselAds.map((_, index) => (
+                    {/* Left Navigation Arrow */}
                     <button
-                      key={index}
-                      onClick={() => setCurrentHeroIndex(index)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        index === currentHeroIndex 
-                          ? 'bg-white w-5' 
-                          : 'bg-white/50 w-2 hover:bg-white/70'
-                      }`}
-                    />
-                  ))}
+                      onClick={() => setCurrentHeroIndex((currentHeroIndex - 1 + heroCarouselAds.length) % heroCarouselAds.length)}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors"
+                    >
+                      <ChevronLeft className="w-6 h-6 text-white" />
+                    </button>
+
+                    {/* Right Navigation Arrow */}
+                    <button
+                      onClick={() => setCurrentHeroIndex((currentHeroIndex + 1) % heroCarouselAds.length)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors"
+                    >
+                      <ChevronRight className="w-6 h-6 text-white" />
+                    </button>
+
+                    {/* Content - Bottom */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+                      <motion.div
+                        key={`content-${currentHeroIndex}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <h2 className="text-2xl font-bold text-white mb-3">
+                          {heroCarouselAds[currentHeroIndex].name}: {heroCarouselAds[currentHeroIndex].title}
+                        </h2>
+                        <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2.5 h-auto rounded-lg">
+                          {heroCarouselAds[currentHeroIndex].buttonText}
+                        </Button>
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Dots Indicator - Below Card */}
+                  <div className="flex items-center justify-center gap-2 mt-4">
+                    {heroCarouselAds.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentHeroIndex(index)}
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          index === currentHeroIndex 
+                            ? 'bg-white w-6' 
+                            : 'bg-white/40 w-2 hover:bg-white/60'
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Öne Çıkan Oteller */}
-              <HorizontalAdRow
-                title="Öne Çıkan Oteller"
-                ads={hotelAds}
-                onAdClick={setSelectedAd}
-                onSave={toggleSave}
-                savedAds={savedAds}
-              />
+                {/* Öne Çıkan Oteller */}
+                <HorizontalAdRow
+                  title="Öne Çıkan Oteller"
+                  ads={hotelAds}
+                  onAdClick={setSelectedAd}
+                />
 
-              {/* Popüler Restoranlar */}
-              <HorizontalAdRow
-                title="Popüler Restoranlar"
-                ads={restaurantAds}
-                onAdClick={setSelectedAd}
-                onSave={toggleSave}
-                savedAds={savedAds}
-              />
+                {/* Popüler Restoranlar */}
+                <HorizontalAdRow
+                  title="Popüler Restoranlar"
+                  ads={restaurantAds}
+                  onAdClick={setSelectedAd}
+                />
 
-              {/* Plajlar */}
-              <HorizontalAdRow
-                title="En İyi Plajlar"
-                ads={beachAds}
-                onAdClick={setSelectedAd}
-                onSave={toggleSave}
-                savedAds={savedAds}
-              />
-            </motion.div>
-          )}
+                {/* Plajlar */}
+                <HorizontalAdRow
+                  title="En İyi Plajlar"
+                  ads={beachAds}
+                  onAdClick={setSelectedAd}
+                />
+              </motion.div>
+            )}
 
-          {(activeTab === 'events' || activeTab === 'categories' || activeTab === 'more' || activeTab === 'recommendations') && (
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="flex items-center justify-center h-[400px]"
-            >
-              <div className="text-center">
-                <Calendar className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                <h3 className="text-gray-800 text-xl font-semibold">Yakında</h3>
-                <p className="text-gray-600 text-sm mt-2">Bu bölüm hazırlanıyor...</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </main>
+            {(activeTab === 'events' || activeTab === 'categories' || activeTab === 'more' || activeTab === 'recommendations') && (
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="flex items-center justify-center h-[400px]"
+              >
+                <div className="text-center">
+                  <Calendar className="w-16 h-16 text-white/60 mx-auto mb-4" />
+                  <h3 className="text-white text-xl font-semibold">Yakında</h3>
+                  <p className="text-white/60 text-sm mt-2">Bu bölüm hazırlanıyor...</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </main>
+      </div>
 
       {/* Ad Detail Modal */}
       <AnimatePresence>
@@ -286,16 +280,12 @@ interface HorizontalAdRowProps {
   title: string;
   ads: JourneyAd[];
   onAdClick: (ad: JourneyAd) => void;
-  onSave: (adId: string) => void;
-  savedAds: string[];
 }
 
 const HorizontalAdRow = ({
   title,
   ads,
   onAdClick,
-  onSave,
-  savedAds
 }: HorizontalAdRowProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -328,18 +318,28 @@ const HorizontalAdRow = ({
     }
   };
 
+  const getButtonText = (categoryId: CategoryId) => {
+    switch (categoryId) {
+      case 'hotel': return 'İncele & Rezervasyon Yap';
+      case 'restaurant': return 'Fırsatları Gör';
+      case 'beach': return 'Detaylı Bilgi';
+      case 'entertainment': return 'Rezervasyon Yap';
+      default: return 'Fırsatları Gör';
+    }
+  };
+
   return (
     <div className="relative">
-      <h3 className="text-gray-900 text-lg font-semibold mb-3">{title}</h3>
+      <h3 className="text-white text-lg font-semibold mb-4">{title}</h3>
       
       <div className="relative">
         {/* Left Arrow */}
         {canScrollLeft && (
           <button
             onClick={() => scroll('left')}
-            className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition-colors"
+            className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors"
           >
-            <ChevronLeft className="w-5 h-5 text-gray-700" />
+            <ChevronLeft className="w-5 h-5 text-white" />
           </button>
         )}
 
@@ -347,9 +347,9 @@ const HorizontalAdRow = ({
         {canScrollRight && (
           <button
             onClick={() => scroll('right')}
-            className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition-colors"
+            className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors"
           >
-            <ChevronRight className="w-5 h-5 text-gray-700" />
+            <ChevronRight className="w-5 h-5 text-white" />
           </button>
         )}
 
@@ -365,43 +365,39 @@ const HorizontalAdRow = ({
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="flex-shrink-0 w-[260px] cursor-pointer group"
+              className="flex-shrink-0 w-[200px] cursor-pointer group"
               onClick={() => onAdClick(ad)}
             >
-              <div className="relative h-[150px] rounded-xl overflow-hidden shadow-lg">
+              <div className="relative h-[140px] rounded-xl overflow-hidden">
                 <img
                   src={ad.image}
                   alt={ad.name}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 
-                {/* Sponsor Badge */}
-                <div className="absolute top-2 left-2">
-                  <span className="px-2 py-0.5 rounded bg-orange-500 text-white text-[10px] font-semibold shadow">
-                    Sponsorlu
-                  </span>
-                </div>
+                {/* Sponsor Badge - only on first card */}
+                {index === 0 && (
+                  <div className="absolute top-2 left-2">
+                    <span className="px-2 py-0.5 rounded bg-orange-500 text-white text-[10px] font-bold">
+                      Sponsorlu
+                    </span>
+                  </div>
+                )}
 
-                {/* CTA Button */}
-                <div className="absolute bottom-11 right-2">
-                  <Button 
-                    size="sm" 
-                    className="bg-white/95 hover:bg-white text-gray-800 text-[10px] font-medium px-2.5 py-1 h-auto rounded shadow-md"
+                {/* Info */}
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <h4 className="text-white font-semibold text-sm leading-tight">{ad.name}</h4>
+                  <p className="text-gray-300 text-xs mt-0.5 truncate">{ad.description}</p>
+                  <button 
+                    className="text-orange-400 text-xs font-medium mt-2 hover:text-orange-300 transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
                       onAdClick(ad);
                     }}
                   >
-                    {ad.categoryId === 'hotel' ? 'İncele & Rezervasyon Yap' : 
-                     ad.categoryId === 'restaurant' ? 'Fırsatları Gör' : 'Detaylı Bilgi'}
-                  </Button>
-                </div>
-
-                {/* Info */}
-                <div className="absolute bottom-0 left-0 right-0 p-2.5">
-                  <h4 className="text-white font-semibold text-sm">{ad.name}</h4>
-                  <p className="text-gray-300 text-xs truncate">{ad.description}</p>
+                    {getButtonText(ad.categoryId)}
+                  </button>
                 </div>
               </div>
             </motion.div>
