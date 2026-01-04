@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Calendar, Home, Compass, Gamepad2, Music, Wifi, MapPin, Mic2, Theater, PartyPopper, Trophy } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, Home, Compass, Gamepad2, Music, Wifi, MapPin, Mic2, Theater, PartyPopper, Trophy, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CategoryId, JourneyAd } from './types';
 import { journeyAds } from './journeyData';
 import { AdDetailModal } from './AdDetailModal';
 import { EventDetailModal, EventData } from './EventDetailModal';
 import { ExploreMap } from './ExploreMap';
+import { CyprusGuide } from './CyprusGuide';
 
 // Import category images
 import categoryBeach from '@/assets/category-beach.jpg';
@@ -136,9 +137,8 @@ interface ExploreTabsProps {
 const tabItems = [
   { id: 'explore', label: 'KEŞFET' },
   { id: 'events', label: 'ETKİNLİKLER' },
-  { id: 'categories', label: 'KATEGORİLER' },
-  { id: 'more', label: 'DAHA FAZLA' },
-  { id: 'recommendations', label: 'ÖNERİLER' },
+  { id: 'guide', label: 'KIBRIS REHBERİ' },
+  { id: 'more', label: 'HARİTA' },
 ];
 
 // Main hero carousel ads
@@ -565,6 +565,18 @@ export const ExploreTabs = ({
               </motion.div>
             )}
 
+            {activeTab === 'guide' && (
+              <motion.div
+                key="guide"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="flex flex-col h-full"
+              >
+                <CyprusGuide />
+              </motion.div>
+            )}
+
             {activeTab === 'more' && (
               <motion.div
                 key="more"
@@ -575,22 +587,6 @@ export const ExploreTabs = ({
               >
                 <div className="flex-1 rounded-2xl overflow-hidden relative min-h-[500px]">
                   <ExploreMap />
-                </div>
-              </motion.div>
-            )}
-
-            {(activeTab === 'categories' || activeTab === 'recommendations') && (
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="flex items-center justify-center h-[400px]"
-              >
-                <div className="text-center">
-                  <Calendar className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-foreground text-xl font-semibold">Yakında</h3>
-                  <p className="text-muted-foreground text-sm mt-2">Bu bölüm hazırlanıyor...</p>
                 </div>
               </motion.div>
             )}
