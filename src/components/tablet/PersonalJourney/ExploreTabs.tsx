@@ -79,6 +79,8 @@ interface ExploreTabsProps {
   onHome: () => void;
   onBack: () => void;
   onPlayRewardGame: () => void;
+  onWifi?: () => void;
+  onGames?: () => void;
   earnedPoints: number;
 }
 
@@ -165,6 +167,8 @@ export const ExploreTabs = ({
   onHome,
   onBack,
   onPlayRewardGame,
+  onWifi,
+  onGames,
   earnedPoints
 }: ExploreTabsProps) => {
   const [activeTab, setActiveTab] = useState('explore');
@@ -230,12 +234,26 @@ export const ExploreTabs = ({
   // Handle bottom navigation
   const handleNavClick = (navId: string) => {
     setActiveNavItem(navId);
-    if (navId === 'explore') {
-      setActiveTab('explore');
-    } else if (navId === 'games') {
-      onPlayRewardGame();
-    } else if (navId === 'home') {
-      setActiveTab('explore');
+    switch (navId) {
+      case 'home':
+        onHome();
+        break;
+      case 'games':
+        if (onGames) onGames();
+        else onPlayRewardGame();
+        break;
+      case 'wifi':
+        if (onWifi) onWifi();
+        break;
+      case 'explore':
+        setActiveTab('explore');
+        break;
+      case 'music':
+        // Music functionality - can be added later
+        break;
+      case 'location':
+        // Location functionality - can be added later
+        break;
     }
   };
 

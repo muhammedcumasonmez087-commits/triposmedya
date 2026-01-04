@@ -122,6 +122,8 @@ const Index = () => {
         <PersonalJourney 
           onComplete={handleExploreComplete}
           onHome={handleGoHome}
+          onWifi={handleWifiRequest}
+          onGames={handleOpenGames}
         />
       )}
       
