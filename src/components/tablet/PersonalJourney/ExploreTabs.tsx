@@ -113,11 +113,11 @@ export const ExploreTabs = ({
 
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden" style={{
-      background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)'
+      background: 'linear-gradient(180deg, #d4c4b0 0%, #e8ddd0 30%, #c9b8a4 100%)'
     }}>
       {/* Top Tab Navigation */}
       <header className="flex items-center justify-center py-4 px-6 shrink-0">
-        <div className="flex items-center gap-1 bg-gray-800/90 rounded-full px-2 py-1.5">
+        <div className="flex items-center gap-1 bg-gray-900/95 rounded-full px-2 py-1.5">
           {tabItems.map((tab) => (
             <button
               key={tab.id}
@@ -143,14 +143,14 @@ export const ExploreTabs = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="space-y-6"
+              className="space-y-6 max-w-6xl mx-auto"
             >
               {/* Hero Carousel */}
-              <div className="relative h-[280px] rounded-2xl overflow-hidden shadow-xl">
+              <div className="relative h-[260px] rounded-2xl overflow-hidden shadow-xl">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentHeroIndex}
-                    initial={{ opacity: 0, scale: 1.1 }}
+                    initial={{ opacity: 0, scale: 1.05 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.5 }}
@@ -160,59 +160,61 @@ export const ExploreTabs = ({
                       className="absolute inset-0 bg-cover bg-center"
                       style={{ backgroundImage: `url(${heroCarouselAds[currentHeroIndex].image})` }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                   </motion.div>
                 </AnimatePresence>
 
                 {/* Sponsor Badge */}
                 <div className="absolute top-4 left-4 z-10">
-                  <span className="px-3 py-1 rounded-md bg-orange-500 text-white text-xs font-semibold">
+                  <span className="px-3 py-1 rounded bg-orange-500 text-white text-xs font-semibold shadow-lg">
                     Sponsorlu
                   </span>
                 </div>
 
-                {/* Navigation Arrows */}
-                <button
-                  onClick={() => setCurrentHeroIndex((currentHeroIndex - 1 + heroCarouselAds.length) % heroCarouselAds.length)}
-                  className="absolute right-16 top-4 z-10 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/40 transition-colors"
-                >
-                  <ChevronLeft className="w-4 h-4 text-white" />
-                </button>
-                <button
-                  onClick={() => setCurrentHeroIndex((currentHeroIndex + 1) % heroCarouselAds.length)}
-                  className="absolute right-4 top-4 z-10 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/40 transition-colors"
-                >
-                  <ChevronRight className="w-4 h-4 text-white" />
-                </button>
+                {/* Navigation Arrows - Top Right */}
+                <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentHeroIndex((currentHeroIndex - 1 + heroCarouselAds.length) % heroCarouselAds.length)}
+                    className="w-8 h-8 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center hover:bg-white/50 transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4 text-white" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentHeroIndex((currentHeroIndex + 1) % heroCarouselAds.length)}
+                    className="w-8 h-8 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center hover:bg-white/50 transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4 text-white" />
+                  </button>
+                </div>
 
-                {/* Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+                {/* Content - Bottom Left */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
                   <motion.div
                     key={`content-${currentHeroIndex}`}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                    <h2 className="text-xl md:text-2xl font-bold text-white leading-tight">
                       {heroCarouselAds[currentHeroIndex].name}: {heroCarouselAds[currentHeroIndex].title}
                     </h2>
-                    <Button className="mt-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 rounded-lg">
+                    <Button className="mt-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2 h-auto rounded-lg shadow-lg">
                       {heroCarouselAds[currentHeroIndex].offer}
                     </Button>
                   </motion.div>
                 </div>
 
-                {/* Dots Indicator */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
+                {/* Dots Indicator - Bottom Center */}
+                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5">
                   {heroCarouselAds.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentHeroIndex(index)}
-                      className={`w-2 h-2 rounded-full transition-all ${
+                      className={`h-2 rounded-full transition-all duration-300 ${
                         index === currentHeroIndex 
-                          ? 'bg-white w-6' 
-                          : 'bg-white/40 hover:bg-white/60'
+                          ? 'bg-white w-5' 
+                          : 'bg-white/50 w-2 hover:bg-white/70'
                       }`}
                     />
                   ))}
@@ -257,9 +259,9 @@ export const ExploreTabs = ({
               className="flex items-center justify-center h-[400px]"
             >
               <div className="text-center">
-                <Calendar className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-                <h3 className="text-gray-300 text-xl font-semibold">Yakında</h3>
-                <p className="text-gray-500 text-sm mt-2">Bu bölüm hazırlanıyor...</p>
+                <Calendar className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-gray-800 text-xl font-semibold">Yakında</h3>
+                <p className="text-gray-600 text-sm mt-2">Bu bölüm hazırlanıyor...</p>
               </div>
             </motion.div>
           )}
@@ -318,7 +320,7 @@ const HorizontalAdRow = ({
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const scrollAmount = 320;
+      const scrollAmount = 300;
       scrollRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
@@ -328,16 +330,16 @@ const HorizontalAdRow = ({
 
   return (
     <div className="relative">
-      <h3 className="text-white text-lg font-semibold mb-3">{title}</h3>
+      <h3 className="text-gray-900 text-lg font-semibold mb-3">{title}</h3>
       
       <div className="relative">
         {/* Left Arrow */}
         {canScrollLeft && (
           <button
             onClick={() => scroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center hover:bg-black/80 transition-colors shadow-lg"
+            className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition-colors"
           >
-            <ChevronLeft className="w-5 h-5 text-white" />
+            <ChevronLeft className="w-5 h-5 text-gray-700" />
           </button>
         )}
 
@@ -345,9 +347,9 @@ const HorizontalAdRow = ({
         {canScrollRight && (
           <button
             onClick={() => scroll('right')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center hover:bg-black/80 transition-colors shadow-lg"
+            className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 shadow-lg flex items-center justify-center hover:bg-white transition-colors"
           >
-            <ChevronRight className="w-5 h-5 text-white" />
+            <ChevronRight className="w-5 h-5 text-gray-700" />
           </button>
         )}
 
@@ -363,31 +365,29 @@ const HorizontalAdRow = ({
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="flex-shrink-0 w-[280px] cursor-pointer group"
+              className="flex-shrink-0 w-[260px] cursor-pointer group"
               onClick={() => onAdClick(ad)}
             >
-              <div className="relative h-[160px] rounded-xl overflow-hidden shadow-lg">
+              <div className="relative h-[150px] rounded-xl overflow-hidden shadow-lg">
                 <img
                   src={ad.image}
                   alt={ad.name}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 
                 {/* Sponsor Badge */}
-                {ad.tier === 'platinum' && (
-                  <div className="absolute top-2 left-2">
-                    <span className="px-2 py-0.5 rounded bg-orange-500 text-white text-xs font-medium">
-                      Sponsorlu
-                    </span>
-                  </div>
-                )}
+                <div className="absolute top-2 left-2">
+                  <span className="px-2 py-0.5 rounded bg-orange-500 text-white text-[10px] font-semibold shadow">
+                    Sponsorlu
+                  </span>
+                </div>
 
                 {/* CTA Button */}
-                <div className="absolute bottom-12 right-3">
+                <div className="absolute bottom-11 right-2">
                   <Button 
                     size="sm" 
-                    className="bg-white/90 hover:bg-white text-gray-800 text-xs font-medium px-3 py-1 h-auto rounded-lg shadow"
+                    className="bg-white/95 hover:bg-white text-gray-800 text-[10px] font-medium px-2.5 py-1 h-auto rounded shadow-md"
                     onClick={(e) => {
                       e.stopPropagation();
                       onAdClick(ad);
@@ -399,9 +399,9 @@ const HorizontalAdRow = ({
                 </div>
 
                 {/* Info */}
-                <div className="absolute bottom-0 left-0 right-0 p-3">
+                <div className="absolute bottom-0 left-0 right-0 p-2.5">
                   <h4 className="text-white font-semibold text-sm">{ad.name}</h4>
-                  <p className="text-gray-300 text-xs">{ad.description}</p>
+                  <p className="text-gray-300 text-xs truncate">{ad.description}</p>
                 </div>
               </div>
             </motion.div>
