@@ -64,6 +64,7 @@ const featuredEvents: EventData[] = [
 ];
 
 const upcomingEvents: EventData[] = [
+  // Konserler
   {
     id: 'oguzhanlezzet-2',
     name: 'Oğuzhan ve Lezzet-i Şahane Orkestrası',
@@ -74,7 +75,7 @@ const upcomingEvents: EventData[] = [
     image: 'https://firebasestorage.googleapis.com/v0/b/gisekibris-8b11d.appspot.com/o/events-v2%2Fda2Wv536oknAkuKrKkQb%2Fbanner?alt=media&token=819e556a-d582-40d6-8ebc-1b56e57b4c22',
     venue: 'Golden Cage',
     location: 'Cratos Premium Hotel, Girne',
-    category: 'Canlı Müzik',
+    category: 'Konser',
     ticketUrl: 'https://www.gisekibris.com/',
   },
   {
@@ -100,9 +101,63 @@ const upcomingEvents: EventData[] = [
     image: 'https://firebasestorage.googleapis.com/v0/b/gisekibris-8b11d.appspot.com/o/events-v2%2FxwkGnE2ajvPXwDZr0A46%2Fbanner.jpg?alt=media&token=b116c56f-60f7-402c-a21a-cd7227522c73',
     venue: 'Acapulco Resort',
     location: 'Girne',
-    category: 'Canlı Müzik',
+    category: 'Konser',
     ticketUrl: 'https://www.gisekibris.com/',
   },
+  {
+    id: 'sezen-aksu',
+    name: 'Sezen Aksu Konseri',
+    artist: 'Sezen Aksu',
+    date: '14 Şubat 2026',
+    time: '21:00',
+    price: '€120',
+    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800',
+    venue: 'Merit Royal Arena',
+    location: 'Girne',
+    category: 'Konser',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
+  // Tiyatrolar
+  {
+    id: 'tiyatro-1',
+    name: 'Hisseli Harikalar Kumpanyası',
+    artist: 'Tiyatro Oyunu',
+    date: '12 Ocak 2026',
+    time: '20:30',
+    price: '€35',
+    image: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800',
+    venue: 'Lefkoşa Belediye Tiyatrosu',
+    location: 'Lefkoşa',
+    category: 'Tiyatro',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
+  {
+    id: 'tiyatro-2',
+    name: 'Bir Delinin Hatıra Defteri',
+    artist: 'Tek Kişilik Oyun',
+    date: '18 Ocak 2026',
+    time: '19:30',
+    price: '€40',
+    image: 'https://images.unsplash.com/photo-1503095396549-807759245b35?w=800',
+    venue: 'Girne Amfitiyatro',
+    location: 'Girne',
+    category: 'Tiyatro',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
+  {
+    id: 'tiyatro-3',
+    name: 'Keşanlı Ali Destanı',
+    artist: 'Müzikal',
+    date: '25 Ocak 2026',
+    time: '20:00',
+    price: '€45',
+    image: 'https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?w=800',
+    venue: 'Merit Crystal Kongre Salonu',
+    location: 'Lefkoşa',
+    category: 'Tiyatro',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
+  // Festivaller
   {
     id: 'girne-jazz',
     name: 'Girne Caz Festivali',
@@ -114,13 +169,73 @@ const upcomingEvents: EventData[] = [
     category: 'Festival',
     ticketUrl: 'https://www.gisekibris.com/',
   },
+  {
+    id: 'festival-2',
+    name: 'Kıbrıs Yaz Festivali',
+    date: '20-22 Haziran 2026',
+    price: '€25',
+    image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800',
+    venue: 'Salamis Antik Tiyatro',
+    location: 'Gazimağusa',
+    category: 'Festival',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
+  {
+    id: 'festival-3',
+    name: 'Zeytinlik Müzik Festivali',
+    date: '5-7 Temmuz 2026',
+    price: '€60',
+    image: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800',
+    venue: 'Zeytinlik Köyü',
+    location: 'Girne',
+    category: 'Festival',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
+  // Spor Etkinlikleri
+  {
+    id: 'spor-1',
+    name: 'Kıbrıs Maratonu 2026',
+    date: '8 Mart 2026',
+    time: '07:00',
+    price: '€30',
+    image: 'https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?w=800',
+    venue: 'Girne - Lefkoşa Parkuru',
+    location: 'Girne',
+    category: 'Spor',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
+  {
+    id: 'spor-2',
+    name: 'Beach Volleyball Turnuvası',
+    date: '15 Mayıs 2026',
+    time: '10:00',
+    price: 'Ücretsiz',
+    image: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800',
+    venue: 'Escape Beach',
+    location: 'Girne',
+    category: 'Spor',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
+  {
+    id: 'spor-3',
+    name: 'Kıbrıs Golf Şampiyonası',
+    date: '22 Nisan 2026',
+    time: '09:00',
+    price: '€100',
+    image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=800',
+    venue: 'Korineum Golf Resort',
+    location: 'Esentepe',
+    category: 'Spor',
+    ticketUrl: 'https://www.gisekibris.com/',
+  },
 ];
 
 const eventCategories = [
-  { id: 'concerts', name: 'Konserler', icon: Mic2, color: 'bg-orange-500' },
-  { id: 'theaters', name: 'Tiyatrolar', icon: Theater, color: 'bg-amber-600' },
-  { id: 'festivals', name: 'Festivaller', icon: PartyPopper, color: 'bg-rose-500' },
-  { id: 'sports', name: 'Spor Etkinlikleri', icon: Trophy, color: 'bg-sky-500' },
+  { id: 'all', name: 'Tümü', icon: Calendar, color: 'bg-primary', filterValue: null },
+  { id: 'concerts', name: 'Konserler', icon: Mic2, color: 'bg-orange-500', filterValue: 'Konser' },
+  { id: 'theaters', name: 'Tiyatrolar', icon: Theater, color: 'bg-amber-600', filterValue: 'Tiyatro' },
+  { id: 'festivals', name: 'Festivaller', icon: PartyPopper, color: 'bg-rose-500', filterValue: 'Festival' },
+  { id: 'sports', name: 'Spor', icon: Trophy, color: 'bg-sky-500', filterValue: 'Spor' },
 ];
 
 interface ExploreTabsProps {
@@ -224,6 +339,12 @@ export const ExploreTabs = ({
   const [selectedAd, setSelectedAd] = useState<JourneyAd | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [savedAds, setSavedAds] = useState<string[]>([]);
+  const [selectedEventCategory, setSelectedEventCategory] = useState<string | null>(null);
+
+  // Filter events based on selected category
+  const filteredEvents = selectedEventCategory
+    ? upcomingEvents.filter(event => event.category === selectedEventCategory)
+    : upcomingEvents;
   
   // Hero carousel state
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
@@ -546,7 +667,12 @@ export const ExploreTabs = ({
                       {eventCategories.map((cat) => (
                         <button
                           key={cat.id}
-                          className="flex flex-col items-center gap-2 p-4 rounded-xl bg-black/40 backdrop-blur-sm hover:bg-black/60 transition-colors"
+                          onClick={() => setSelectedEventCategory(cat.filterValue)}
+                          className={`flex flex-col items-center gap-2 p-4 rounded-xl backdrop-blur-sm transition-all ${
+                            selectedEventCategory === cat.filterValue
+                              ? 'bg-primary/30 ring-2 ring-primary'
+                              : 'bg-black/40 hover:bg-black/60'
+                          }`}
                         >
                           <div className={`w-10 h-10 rounded-lg ${cat.color} flex items-center justify-center`}>
                             <cat.icon className="w-5 h-5 text-white" />
@@ -560,7 +686,10 @@ export const ExploreTabs = ({
 
                 {/* Upcoming Events - pushed to bottom */}
                 <div className="mt-auto pt-4">
-                  <UpcomingEventsRow onEventClick={(event) => setSelectedEvent(event)} />
+                  <UpcomingEventsRow 
+                    events={filteredEvents}
+                    onEventClick={(event) => setSelectedEvent(event)} 
+                  />
                 </div>
               </motion.div>
             )}
@@ -662,7 +791,13 @@ const BottomNavItem = ({
 );
 
 // Upcoming Events Row Component
-const UpcomingEventsRow = ({ onEventClick }: { onEventClick?: (event: EventData) => void }) => {
+const UpcomingEventsRow = ({ 
+  events, 
+  onEventClick 
+}: { 
+  events: EventData[];
+  onEventClick?: (event: EventData) => void;
+}) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -682,7 +817,7 @@ const UpcomingEventsRow = ({ onEventClick }: { onEventClick?: (event: EventData)
       ref.addEventListener('scroll', updateScrollButtons);
       return () => ref.removeEventListener('scroll', updateScrollButtons);
     }
-  }, []);
+  }, [events]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -696,33 +831,36 @@ const UpcomingEventsRow = ({ onEventClick }: { onEventClick?: (event: EventData)
 
   return (
     <div className="relative">
-      <h3 className="text-foreground text-xl font-semibold mb-4">Yaklaşan Etkinlikler</h3>
+      <h3 className="text-foreground text-xl font-semibold mb-4">
+        {events.length > 0 ? `Yaklaşan Etkinlikler (${events.length})` : 'Bu kategoride etkinlik bulunamadı'}
+      </h3>
       
-      <div className="relative">
-        {canScrollLeft && (
-          <button
-            onClick={() => scroll('left')}
-            className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors border border-white/10"
-          >
-            <ChevronLeft className="w-5 h-5 text-white" />
-          </button>
-        )}
+      {events.length > 0 ? (
+        <div className="relative">
+          {canScrollLeft && (
+            <button
+              onClick={() => scroll('left')}
+              className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors border border-white/10"
+            >
+              <ChevronLeft className="w-5 h-5 text-white" />
+            </button>
+          )}
 
-        {canScrollRight && (
-          <button
-            onClick={() => scroll('right')}
-            className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors border border-white/10"
-          >
-            <ChevronRight className="w-5 h-5 text-white" />
-          </button>
-        )}
+          {canScrollRight && (
+            <button
+              onClick={() => scroll('right')}
+              className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors border border-white/10"
+            >
+              <ChevronRight className="w-5 h-5 text-white" />
+            </button>
+          )}
 
-        <div
-          ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 scroll-smooth"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {upcomingEvents.map((event, index) => (
+          <div
+            ref={scrollRef}
+            className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 scroll-smooth"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {events.map((event, index) => (
             <motion.div
               key={event.id}
               initial={{ opacity: 0, x: 20 }}
@@ -753,8 +891,13 @@ const UpcomingEventsRow = ({ onEventClick }: { onEventClick?: (event: EventData)
               </div>
             </motion.div>
           ))}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex items-center justify-center h-[120px] rounded-xl bg-black/20 backdrop-blur-sm">
+          <p className="text-muted-foreground">Bu kategoride henüz etkinlik yok</p>
+        </div>
+      )}
     </div>
   );
 };
