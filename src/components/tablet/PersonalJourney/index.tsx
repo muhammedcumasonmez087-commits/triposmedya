@@ -11,9 +11,11 @@ type JourneyStep = 'discovery' | 'feed' | 'reward';
 interface PersonalJourneyProps {
   onComplete: (selectedCategories: CategoryId[]) => void;
   onHome: () => void;
+  onWifi?: () => void;
+  onGames?: () => void;
 }
 
-export const PersonalJourney = ({ onComplete, onHome }: PersonalJourneyProps) => {
+export const PersonalJourney = ({ onComplete, onHome, onWifi, onGames }: PersonalJourneyProps) => {
   const [currentStep, setCurrentStep] = useState<JourneyStep>('discovery');
   const [selectedCategories, setSelectedCategories] = useState<CategoryId[]>([]);
   const [earnedPoints, setEarnedPoints] = useState(0);
@@ -82,6 +84,8 @@ export const PersonalJourney = ({ onComplete, onHome }: PersonalJourneyProps) =>
               onHome={onHome}
               onBack={handleBackToDiscovery}
               onPlayRewardGame={handlePlayRewardGame}
+              onWifi={onWifi}
+              onGames={onGames}
               earnedPoints={earnedPoints}
             />
           </motion.div>
