@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { HeroScreen } from '@/components/tablet/HeroScreen';
-import { ExploreScreen } from '@/components/tablet/ExploreScreen';
+import { PersonalJourney } from '@/components/tablet/PersonalJourney';
 import { OfferFeed } from '@/components/tablet/OfferFeed';
 import { SpinWheel } from '@/components/tablet/SpinWheel';
 import { ScratchCard } from '@/components/tablet/ScratchCard';
@@ -117,9 +117,9 @@ const Index = () => {
         />
       )}
 
-      {/* Explore Screen - Yeni yaratıcı ilgi alanı seçici */}
+      {/* Personal Journey - Kişisel Yolculuk Modeli */}
       {currentScreen === 'explore' && !wifiStep && (
-        <ExploreScreen 
+        <PersonalJourney 
           onComplete={handleExploreComplete}
           onHome={handleGoHome}
         />
