@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CategoryId } from './types';
 import { InterestDiscovery } from './InterestDiscovery';
-import { PersonalizedFeed } from './PersonalizedFeed';
+import { ExploreTabs } from './ExploreTabs';
 import { SpinWheel } from '../SpinWheel';
 import { QRReward } from '../QRReward';
 
@@ -77,7 +77,7 @@ export const PersonalJourney = ({ onComplete, onHome }: PersonalJourneyProps) =>
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -100 }}
           >
-            <PersonalizedFeed 
+            <ExploreTabs 
               selectedCategories={selectedCategories}
               onHome={onHome}
               onBack={handleBackToDiscovery}
