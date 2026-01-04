@@ -24,6 +24,7 @@ interface ExploreTabsProps {
 
 // Tab navigation items
 const tabItems = [
+  { id: 'explore', label: 'KEŞFET' },
   { id: 'events', label: 'ETKİNLİKLER' },
   { id: 'categories', label: 'KATEGORİLER' },
   { id: 'more', label: 'DAHA FAZLA' },
@@ -34,16 +35,16 @@ const tabItems = [
 const heroCarouselAds = [
   {
     id: 'hero-1',
-    name: 'Merit Royal Premium',
-    title: 'Lüks Tatil Deneyimi',
-    image: heroCyprus,
-    buttonText: 'Hemen İncele',
+    name: 'Escape Beach Club',
+    title: 'Gün Batımı Partisi & Kokteyller',
+    image: categoryBeach,
+    buttonText: 'Rezervasyon Yap - %10 indirim',
   },
   {
     id: 'hero-2',
-    name: 'Escape Beach Club',
-    title: 'Gün Batımı Partisi',
-    image: categoryBeach,
+    name: 'Merit Royal Premium',
+    title: 'Lüks Tatil Deneyimi',
+    image: heroCyprus,
     buttonText: 'Hemen İncele',
   },
   {
@@ -51,7 +52,51 @@ const heroCarouselAds = [
     name: 'Bellapais Manastırı',
     title: 'Tarihi Kıbrıs Turu',
     image: categoryHistory,
-    buttonText: 'Hemen İncele',
+    buttonText: 'Keşfet',
+  },
+];
+
+// Featured hotels data
+const featuredHotels = [
+  {
+    id: 'hotel-1',
+    name: "Lord's Palace Hotel",
+    description: "Girne'de Lüks ve Konfor",
+    image: heroCyprus,
+    buttonText: 'İncele & Rezervasyon Yap',
+    sponsored: true,
+  },
+  {
+    id: 'hotel-2',
+    name: 'Merit Royal Premium',
+    description: 'Denize Sıfır Tatil Deneyimi',
+    image: categoryBeach,
+    buttonText: 'Fırsatları Gör',
+    sponsored: false,
+  },
+  {
+    id: 'hotel-3',
+    name: 'Kaya Palazzo Resort',
+    description: 'Aile Boyu Eğlence',
+    image: categoryNature,
+    buttonText: 'Detaylı Bilgi',
+    sponsored: false,
+  },
+  {
+    id: 'hotel-4',
+    name: 'Elexus Hotel',
+    description: "Girne'de Lüks ve Konfor",
+    image: categoryFood,
+    buttonText: 'Fırsatları Gör',
+    sponsored: false,
+  },
+  {
+    id: 'hotel-5',
+    name: 'Acapulco Resort',
+    description: 'Eğlence ve Konfor Bir Arada',
+    image: categoryNightlife,
+    buttonText: 'Rezervasyon Yap',
+    sponsored: false,
   },
 ];
 
@@ -62,7 +107,7 @@ export const ExploreTabs = ({
   onPlayRewardGame,
   earnedPoints
 }: ExploreTabsProps) => {
-  const [activeTab, setActiveTab] = useState('events');
+  const [activeTab, setActiveTab] = useState('explore');
   const [selectedAd, setSelectedAd] = useState<JourneyAd | null>(null);
   const [savedAds, setSavedAds] = useState<string[]>([]);
   
@@ -118,6 +163,88 @@ export const ExploreTabs = ({
         {/* Content based on active tab */}
         <main className="flex-1 overflow-y-auto overflow-x-hidden px-8 pb-6">
           <AnimatePresence mode="wait">
+            {activeTab === 'explore' && (
+              <motion.div
+                key="explore"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-8"
+              >
+                {/* Hero Carousel */}
+                <div className="relative max-w-3xl mx-auto">
+                  <div className="relative h-[280px] rounded-2xl overflow-hidden">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={currentHeroIndex}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="absolute inset-0"
+                      >
+                        <img
+                          src={heroCarouselAds[currentHeroIndex].image}
+                          alt={heroCarouselAds[currentHeroIndex].name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        
+                        {/* Sponsor Badge */}
+                        <div className="absolute top-4 left-4">
+                          <span className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-bold shadow-lg">
+                            Sponsorlu
+                          </span>
+                        </div>
+
+                        {/* Navigation Arrows */}
+                        <button
+                          onClick={() => setCurrentHeroIndex(prev => prev === 0 ? heroCarouselAds.length - 1 : prev - 1)}
+                          className="absolute right-14 top-4 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
+                        >
+                          <ChevronLeft className="w-4 h-4 text-white" />
+                        </button>
+                        <button
+                          onClick={() => setCurrentHeroIndex(prev => (prev + 1) % heroCarouselAds.length)}
+                          className="absolute right-4 top-4 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
+                        >
+                          <ChevronRight className="w-4 h-4 text-white" />
+                        </button>
+
+                        {/* Content */}
+                        <div className="absolute bottom-0 left-0 right-0 p-6">
+                          <h2 className="text-white text-2xl font-bold leading-tight mb-4">
+                            {heroCarouselAds[currentHeroIndex].name}: {heroCarouselAds[currentHeroIndex].title}
+                          </h2>
+                          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 py-2 rounded-lg">
+                            {heroCarouselAds[currentHeroIndex].buttonText}
+                          </Button>
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Pagination Dots */}
+                  <div className="flex items-center justify-center gap-2 mt-4">
+                    {heroCarouselAds.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentHeroIndex(index)}
+                        className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                          index === currentHeroIndex 
+                            ? 'bg-primary w-6' 
+                            : 'bg-muted-foreground/40 hover:bg-muted-foreground/60'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Featured Hotels Section */}
+                <FeaturedHotelsRow />
+              </motion.div>
+            )}
+
             {(activeTab === 'events' || activeTab === 'categories' || activeTab === 'more' || activeTab === 'recommendations') && (
               <motion.div
                 key={activeTab}
@@ -150,18 +277,8 @@ export const ExploreTabs = ({
   );
 };
 
-// Horizontal Ad Row Component
-interface HorizontalAdRowProps {
-  title: string;
-  ads: JourneyAd[];
-  onAdClick: (ad: JourneyAd) => void;
-}
-
-const HorizontalAdRow = ({
-  title,
-  ads,
-  onAdClick,
-}: HorizontalAdRowProps) => {
+// Featured Hotels Row Component
+const FeaturedHotelsRow = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -193,28 +310,18 @@ const HorizontalAdRow = ({
     }
   };
 
-  const getButtonText = (categoryId: CategoryId) => {
-    switch (categoryId) {
-      case 'hotel': return 'İncele & Rezervasyon Yap';
-      case 'restaurant': return 'Fırsatları Gör';
-      case 'beach': return 'Detaylı Bilgi';
-      case 'entertainment': return 'Rezervasyon Yap';
-      default: return 'Fırsatları Gör';
-    }
-  };
-
   return (
     <div className="relative">
-      <h3 className="text-foreground text-lg font-semibold mb-4">{title}</h3>
+      <h3 className="text-foreground text-xl font-semibold mb-4">Öne Çıkan Oteller</h3>
       
       <div className="relative">
         {/* Left Arrow */}
         {canScrollLeft && (
           <button
             onClick={() => scroll('left')}
-            className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-secondary/60 backdrop-blur-sm flex items-center justify-center hover:bg-secondary transition-colors"
+            className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors border border-white/10"
           >
-            <ChevronLeft className="w-5 h-5 text-foreground" />
+            <ChevronLeft className="w-5 h-5 text-white" />
           </button>
         )}
 
@@ -222,9 +329,9 @@ const HorizontalAdRow = ({
         {canScrollRight && (
           <button
             onClick={() => scroll('right')}
-            className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-secondary/60 backdrop-blur-sm flex items-center justify-center hover:bg-secondary transition-colors"
+            className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-colors border border-white/10"
           >
-            <ChevronRight className="w-5 h-5 text-foreground" />
+            <ChevronRight className="w-5 h-5 text-white" />
           </button>
         )}
 
@@ -234,45 +341,41 @@ const HorizontalAdRow = ({
           className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 scroll-smooth"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {ads.map((ad, index) => (
+          {featuredHotels.map((hotel, index) => (
             <motion.div
-              key={ad.id}
+              key={hotel.id}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="flex-shrink-0 w-[200px] cursor-pointer group"
-              onClick={() => onAdClick(ad)}
+              className="flex-shrink-0 w-[280px] cursor-pointer group"
             >
-              <div className="relative h-[140px] rounded-xl overflow-hidden glass-card">
+              <div className="relative h-[180px] rounded-xl overflow-hidden">
                 <img
-                  src={ad.image}
-                  alt={ad.name}
+                  src={hotel.image}
+                  alt={hotel.name}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 gradient-overlay" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 
-                {/* Sponsor Badge - only on first card */}
-                {index === 0 && (
-                  <div className="absolute top-2 left-2">
-                    <span className="px-2 py-0.5 rounded-md bg-primary text-primary-foreground text-[10px] font-bold">
+                {/* Sponsor Badge */}
+                {hotel.sponsored && (
+                  <div className="absolute top-3 left-3">
+                    <span className="px-2.5 py-1 rounded-md bg-primary text-primary-foreground text-[11px] font-bold">
                       Sponsorlu
                     </span>
                   </div>
                 )}
 
-                {/* Info */}
-                <div className="absolute bottom-0 left-0 right-0 p-3">
-                  <h4 className="text-foreground font-semibold text-sm leading-tight">{ad.name}</h4>
-                  <p className="text-muted-foreground text-xs mt-0.5 truncate">{ad.description}</p>
-                  <button 
-                    className="text-primary text-xs font-medium mt-2 hover:text-primary/80 transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAdClick(ad);
-                    }}
+                {/* Content */}
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h4 className="text-white font-bold text-base leading-tight">{hotel.name}</h4>
+                  <p className="text-white/70 text-sm mt-0.5">{hotel.description}</p>
+                  <Button 
+                    size="sm"
+                    className="mt-3 bg-primary/90 hover:bg-primary text-primary-foreground text-xs font-semibold px-4 py-1.5 h-auto rounded-md"
                   >
-                    {getButtonText(ad.categoryId)}
-                  </button>
+                    {hotel.buttonText}
+                  </Button>
                 </div>
               </div>
             </motion.div>
