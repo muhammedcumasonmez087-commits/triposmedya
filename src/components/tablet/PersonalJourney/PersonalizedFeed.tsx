@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Home, Compass, Bookmark, Download, Settings, HelpCircle,
-  ChevronRight, Star, MapPin, Clock, Gift, Play, Search, Bell,
-  Heart, ChevronLeft, Sparkles, Trophy
+  Home, ChevronRight, Star, MapPin, Play, Search, Bell,
+  Heart, ChevronLeft, Sparkles, Trophy, Gift,
+  Utensils, Umbrella, Building2, Landmark, PartyPopper, ShoppingBag, Calendar
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CategoryId, JourneyAd } from './types';
@@ -18,14 +18,15 @@ interface PersonalizedFeedProps {
   earnedPoints: number;
 }
 
-// Sidebar navigation items
-const sidebarItems = [
-  { icon: Home, label: 'Ana Sayfa', active: true },
-  { icon: Compass, label: 'Keşfet', active: false },
-  { icon: Bookmark, label: 'Kaydedilenler', active: false },
-  { icon: Download, label: 'İndirimler', active: false },
-  { icon: Settings, label: 'Ayarlar', active: false },
-  { icon: HelpCircle, label: 'Yardım', active: false },
+// Category navigation items with icons
+const categoryNavItems = [
+  { id: 'all' as const, icon: Home, label: 'Ana Sayfa' },
+  { id: 'restaurant' as CategoryId, icon: Utensils, label: 'Restoranlar' },
+  { id: 'beach' as CategoryId, icon: Umbrella, label: 'Plajlar' },
+  { id: 'hotel' as CategoryId, icon: Building2, label: 'Oteller' },
+  { id: 'history' as CategoryId, icon: Landmark, label: 'Tarih' },
+  { id: 'entertainment' as CategoryId, icon: PartyPopper, label: 'Etkinlikler' },
+  { id: 'shopping' as CategoryId, icon: ShoppingBag, label: 'Alışveriş' },
 ];
 
 export const PersonalizedFeed = ({
@@ -37,12 +38,19 @@ export const PersonalizedFeed = ({
 }: PersonalizedFeedProps) => {
   const [selectedAd, setSelectedAd] = useState<JourneyAd | null>(null);
   const [savedAds, setSavedAds] = useState<string[]>([]);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<CategoryId | 'all'>('all');
 
-  // Filter ads by selected categories
-  const filteredAds = selectedCategories.length > 0 
-    ? journeyAds.filter(ad => selectedCategories.includes(ad.categoryId))
-    : journeyAds;
+  // Filter ads by active category
+  const getFilteredAds = () => {
+    if (activeCategory === 'all') {
+      return selectedCategories.length > 0 
+        ? journeyAds.filter(ad => selectedCategories.includes(ad.categoryId))
+        : journeyAds;
+    }
+    return journeyAds.filter(ad => ad.categoryId === activeCategory);
+  };
+
+  const filteredAds = getFilteredAds();
 
   // Get featured ad for hero
   const featuredAd = filteredAds.find(ad => ad.tier === 'platinum') || filteredAds[0];
@@ -54,12 +62,6 @@ export const PersonalizedFeed = ({
   // Get popular ads (platinum + gold tier)
   const popularAds = filteredAds.filter(ad => ad.tier === 'platinum' || ad.tier === 'gold');
 
-  // Get "coming this week" / special offers
-  const specialOffers = filteredAds.filter(ad => ad.tier === 'platinum').slice(0, 3);
-
-  // Get recently added (bronze tier)
-  const recentlyAdded = filteredAds.filter(ad => ad.tier === 'bronze');
-
   const toggleSave = (adId: string) => {
     setSavedAds(prev => 
       prev.includes(adId) ? prev.filter(id => id !== adId) : [...prev, adId]
@@ -70,126 +72,123 @@ export const PersonalizedFeed = ({
     <div className="fixed inset-0 flex overflow-hidden" style={{
       background: 'linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0d0d1a 100%)'
     }}>
-      {/* Left Sidebar */}
+      {/* Left Sidebar - Compact with Categories */}
       <motion.aside
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className={`relative z-20 flex flex-col py-6 transition-all duration-300 ${
-          sidebarCollapsed ? 'w-20' : 'w-64'
-        }`}
+        className="relative z-20 flex flex-col py-4 w-16"
         style={{
           background: 'linear-gradient(180deg, rgba(20,20,30,0.95) 0%, rgba(15,15,25,0.98) 100%)',
           borderRight: '1px solid rgba(255,255,255,0.06)'
         }}
       >
-        {/* Logo / Home */}
-        <div className="px-4 mb-8">
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={onHome}
-            className="flex items-center gap-3 text-white"
+            className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            {!sidebarCollapsed && (
-              <span className="font-bold text-lg tracking-tight">Keşfet</span>
-            )}
+            <Sparkles className="w-5 h-5 text-white" />
           </motion.button>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-3 space-y-1">
-          {sidebarItems.map((item, index) => (
-            <motion.button
-              key={item.label}
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ x: 5 }}
-              className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${
-                item.active 
-                  ? 'bg-gradient-to-r from-amber-500/20 to-orange-500/10 text-amber-400' 
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <item.icon className={`w-5 h-5 ${item.active ? 'text-amber-400' : ''}`} />
-              {!sidebarCollapsed && (
-                <span className="font-medium text-sm">{item.label}</span>
-              )}
-            </motion.button>
-          ))}
+        {/* Category Navigation */}
+        <nav className="flex-1 flex flex-col items-center gap-1 px-2">
+          {categoryNavItems.map((item, index) => {
+            const isActive = activeCategory === item.id;
+            return (
+              <motion.button
+                key={item.id}
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ scale: 1.1 }}
+                onClick={() => setActiveCategory(item.id)}
+                className={`relative w-11 h-11 rounded-xl flex items-center justify-center transition-all group ${
+                  isActive 
+                    ? 'bg-gradient-to-r from-amber-500/30 to-orange-500/20' 
+                    : 'hover:bg-white/5'
+                }`}
+              >
+                <item.icon className={`w-5 h-5 ${isActive ? 'text-amber-400' : 'text-white/50 group-hover:text-white/80'}`} />
+                
+                {/* Active indicator */}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-amber-400"
+                  />
+                )}
+
+                {/* Tooltip */}
+                <div className="absolute left-full ml-2 px-2 py-1 rounded-md bg-black/90 text-white text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  {item.label}
+                </div>
+              </motion.button>
+            );
+          })}
         </nav>
 
-        {/* Points Display */}
-        <div className="px-4 mt-auto">
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="p-4 rounded-2xl"
-            style={{
-              background: 'linear-gradient(135deg, rgba(251,191,36,0.15) 0%, rgba(245,158,11,0.08) 100%)',
-              border: '1px solid rgba(251,191,36,0.2)'
-            }}
+        {/* Points & Reward */}
+        <div className="flex flex-col items-center gap-2 px-2">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            onClick={onPlayRewardGame}
+            className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/10 border border-amber-500/30 flex items-center justify-center group"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                <Trophy className="w-5 h-5 text-white" />
-              </div>
-              {!sidebarCollapsed && (
-                <div>
-                  <p className="text-white/60 text-xs">Puanlarınız</p>
-                  <p className="text-amber-400 font-bold text-xl">{earnedPoints}</p>
-                </div>
-              )}
+            <Gift className="w-5 h-5 text-amber-400" />
+            <div className="absolute left-full ml-2 px-2 py-1 rounded-md bg-black/90 text-white text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+              Çark Çevir
             </div>
-            {!sidebarCollapsed && (
-              <Button
-                onClick={onPlayRewardGame}
-                className="w-full mt-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-sm py-2"
-              >
-                <Gift className="w-4 h-4 mr-2" />
-                Çark Çevir
-              </Button>
-            )}
-          </motion.div>
+          </motion.button>
+          
+          <div className="flex flex-col items-center">
+            <Trophy className="w-4 h-4 text-amber-400 mb-1" />
+            <span className="text-amber-400 font-bold text-xs">{earnedPoints}</span>
+          </div>
         </div>
       </motion.aside>
 
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Center Content */}
+        {/* Center Content - Expanded */}
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
           {/* Top Navigation */}
-          <header className="sticky top-0 z-10 flex items-center justify-between px-8 py-4" style={{
+          <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-4" style={{
             background: 'linear-gradient(180deg, rgba(15,15,26,0.95) 0%, transparent 100%)'
           }}>
-            {/* Category Tabs */}
-            <div className="flex items-center gap-6">
-              <button className="text-white font-semibold text-sm hover:text-amber-400 transition-colors">
-                Tümü
-              </button>
-              {selectedCategories.slice(0, 4).map(catId => {
-                const cat = journeyCategories.find(c => c.id === catId);
-                return (
-                  <button
-                    key={catId}
-                    className="text-white/60 font-medium text-sm hover:text-white transition-colors"
-                  >
-                    {cat?.nameTR}
-                  </button>
-                );
-              })}
+            {/* Category Title */}
+            <div className="flex items-center gap-4">
+              <h1 className="text-white font-bold text-xl">
+                {activeCategory === 'all' 
+                  ? 'Keşfet' 
+                  : categoryNavItems.find(c => c.id === activeCategory)?.label}
+              </h1>
+              <div className="flex items-center gap-2">
+                {selectedCategories.slice(0, 3).map(catId => {
+                  const cat = journeyCategories.find(c => c.id === catId);
+                  return (
+                    <span
+                      key={catId}
+                      className="text-white/40 text-xs px-2 py-1 rounded-full bg-white/5"
+                    >
+                      {cat?.icon} {cat?.nameTR}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Search & Notifications */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                 <input
                   type="text"
                   placeholder="Ara..."
-                  className="w-56 pl-10 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 text-sm focus:outline-none focus:border-amber-500/50"
+                  className="w-48 pl-10 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 text-sm focus:outline-none focus:border-amber-500/50"
                 />
               </div>
               <button className="relative p-2 rounded-xl hover:bg-white/10 transition-colors">
@@ -200,277 +199,247 @@ export const PersonalizedFeed = ({
           </header>
 
           {/* Hero Section - Featured Ad */}
-          <section className="px-8 mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="relative h-[380px] rounded-3xl overflow-hidden cursor-pointer group"
-              onClick={() => setSelectedAd(featuredAd)}
-            >
-              {/* Background Image */}
-              <div 
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                style={{ backgroundImage: `url(${featuredAd.image})` }}
-              />
-              
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+          {featuredAd && (
+            <section className="px-6 mb-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative h-[320px] rounded-2xl overflow-hidden cursor-pointer group"
+                onClick={() => setSelectedAd(featuredAd)}
+              >
+                {/* Background Image */}
+                <div 
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                  style={{ backgroundImage: `url(${featuredAd.image})` }}
+                />
+                
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
-              {/* Content */}
-              <div className="absolute inset-0 flex flex-col justify-end p-8">
-                <div className="max-w-xl">
-                  {/* Badge */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(251,191,36,0.2) 0%, rgba(245,158,11,0.1) 100%)',
-                      border: '1px solid rgba(251,191,36,0.3)'
-                    }}
-                  >
-                    <span className="text-lg">{featuredAd.logo}</span>
-                    <span className="text-amber-400 text-xs font-semibold">ÖNE ÇIKAN</span>
-                  </motion.div>
-
-                  {/* Title */}
-                  <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-4xl font-black text-white mb-2 tracking-tight"
-                  >
-                    {featuredAd.name}
-                  </motion.h1>
-
-                  {/* Meta */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="flex items-center gap-4 text-white/60 text-sm mb-4"
-                  >
-                    <span className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                      {featuredAd.rating}
-                    </span>
-                    <span>{featuredAd.distance}</span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      {featuredAd.location}
-                    </span>
-                  </motion.div>
-
-                  {/* Description */}
-                  <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                    className="text-white/70 text-sm leading-relaxed mb-6 line-clamp-2"
-                  >
-                    {featuredAd.fullDescription}
-                  </motion.p>
-
-                  {/* Actions */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                    className="flex items-center gap-3"
-                  >
-                    <Button 
-                      className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-6 gap-2"
-                    >
-                      <Play className="w-4 h-4 fill-white" />
-                      İncele
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="border-white/20 bg-white/10 hover:bg-white/20 text-white gap-2"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleSave(featuredAd.id);
+                {/* Content */}
+                <div className="absolute inset-0 flex flex-col justify-end p-6">
+                  <div className="max-w-lg">
+                    {/* Badge */}
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(251,191,36,0.2) 0%, rgba(245,158,11,0.1) 100%)',
+                        border: '1px solid rgba(251,191,36,0.3)'
                       }}
                     >
-                      <Bookmark className={`w-4 h-4 ${savedAds.includes(featuredAd.id) ? 'fill-white' : ''}`} />
-                      Listeye Ekle
-                    </Button>
-                  </motion.div>
+                      <span className="text-lg">{featuredAd.logo}</span>
+                      <span className="text-amber-400 text-xs font-semibold">ÖNE ÇIKAN</span>
+                    </motion.div>
+
+                    {/* Title */}
+                    <motion.h1
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className="text-3xl font-black text-white mb-2 tracking-tight"
+                    >
+                      {featuredAd.name}
+                    </motion.h1>
+
+                    {/* Meta */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 }}
+                      className="flex items-center gap-3 text-white/60 text-sm mb-3"
+                    >
+                      <span className="flex items-center gap-1">
+                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                        {featuredAd.rating}
+                      </span>
+                      <span>{featuredAd.distance}</span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-4 h-4" />
+                        {featuredAd.location}
+                      </span>
+                    </motion.div>
+
+                    {/* Actions */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                      className="flex items-center gap-3"
+                    >
+                      <Button 
+                        className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-5 gap-2"
+                      >
+                        <Play className="w-4 h-4 fill-white" />
+                        İncele
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="border-white/20 bg-white/10 hover:bg-white/20 text-white"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleSave(featuredAd.id);
+                        }}
+                      >
+                        <Heart className={`w-4 h-4 ${savedAds.includes(featuredAd.id) ? 'fill-red-500 text-red-500' : ''}`} />
+                      </Button>
+                    </motion.div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Offer Badge */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.7 }}
-                className="absolute top-6 right-6 px-4 py-2 rounded-xl"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(239,68,68,0.9) 0%, rgba(220,38,38,0.9) 100%)',
-                  boxShadow: '0 10px 30px -5px rgba(239,68,68,0.4)'
-                }}
-              >
-                <p className="text-white font-bold text-sm">{featuredAd.offer}</p>
-                <p className="text-white/80 text-xs">{featuredAd.offerValue}</p>
+                {/* Offer Badge */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.6 }}
+                  className="absolute top-4 right-4 px-3 py-1.5 rounded-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(239,68,68,0.9) 0%, rgba(220,38,38,0.9) 100%)',
+                    boxShadow: '0 8px 20px -4px rgba(239,68,68,0.4)'
+                  }}
+                >
+                  <p className="text-white font-bold text-sm">{featuredAd.offer}</p>
+                </motion.div>
               </motion.div>
-            </motion.div>
-          </section>
+            </section>
+          )}
 
-          {/* Popular Row */}
-          <ContentRow 
-            title="Popüler" 
-            ads={popularAds} 
-            onAdClick={setSelectedAd}
-            onSave={toggleSave}
-            savedAds={savedAds}
-          />
+          {/* Content Rows based on active category */}
+          {activeCategory === 'all' ? (
+            <>
+              {/* Popular Row */}
+              <ContentRow 
+                title="Popüler" 
+                ads={popularAds} 
+                onAdClick={setSelectedAd}
+                onSave={toggleSave}
+                savedAds={savedAds}
+              />
 
-          {/* Category Rows */}
-          {selectedCategories.length > 0 ? (
-            selectedCategories.map(catId => {
-              const cat = journeyCategories.find(c => c.id === catId);
-              const categoryAds = getCategoryAds(catId);
-              if (categoryAds.length === 0) return null;
-              
-              return (
-                <ContentRow 
-                  key={catId}
-                  title={cat?.nameTR || ''} 
-                  ads={categoryAds} 
-                  onAdClick={setSelectedAd}
-                  onSave={toggleSave}
-                  savedAds={savedAds}
-                />
-              );
-            })
+              {/* Category Rows */}
+              {journeyCategories.map(cat => {
+                const categoryAds = getCategoryAds(cat.id);
+                if (categoryAds.length === 0) return null;
+                
+                return (
+                  <ContentRow 
+                    key={cat.id}
+                    title={cat.nameTR} 
+                    ads={categoryAds} 
+                    onAdClick={setSelectedAd}
+                    onSave={toggleSave}
+                    savedAds={savedAds}
+                  />
+                );
+              })}
+            </>
           ) : (
-            journeyCategories.map(cat => {
-              const categoryAds = getCategoryAds(cat.id);
-              if (categoryAds.length === 0) return null;
-              
-              return (
-                <ContentRow 
-                  key={cat.id}
-                  title={cat.nameTR} 
-                  ads={categoryAds} 
-                  onAdClick={setSelectedAd}
-                  onSave={toggleSave}
-                  savedAds={savedAds}
-                />
-              );
-            })
+            <ContentRow 
+              title={categoryNavItems.find(c => c.id === activeCategory)?.label || ''} 
+              ads={filteredAds} 
+              onAdClick={setSelectedAd}
+              onSave={toggleSave}
+              savedAds={savedAds}
+            />
           )}
 
           {/* Bottom padding */}
           <div className="h-8" />
         </main>
 
-        {/* Right Sidebar */}
+        {/* Right Sidebar - Single Ad Banner */}
         <aside 
-          className="w-80 border-l overflow-y-auto py-6 px-5"
+          className="w-72 border-l overflow-hidden flex flex-col"
           style={{
             background: 'linear-gradient(180deg, rgba(20,20,30,0.6) 0%, rgba(15,15,25,0.8) 100%)',
             borderColor: 'rgba(255,255,255,0.06)'
           }}
         >
-          {/* Coming This Week */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-bold text-lg">Bu Hafta</h3>
-              <button className="text-amber-400 text-sm hover:underline">Tümü</button>
-            </div>
-
-            {specialOffers.slice(0, 1).map((ad, index) => (
-              <motion.div
-                key={ad.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                className="relative rounded-2xl overflow-hidden cursor-pointer mb-4"
-                onClick={() => setSelectedAd(ad)}
-              >
-                <div 
-                  className="h-48 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${ad.image})` }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h4 className="text-white font-bold mb-1">{ad.name}</h4>
-                  <p className="text-white/60 text-xs">{ad.tagline}</p>
-                </div>
-              </motion.div>
-            ))}
-
-            {specialOffers.slice(1, 2).map((ad) => (
-              <motion.div
-                key={ad.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                whileHover={{ scale: 1.02 }}
-                className="p-4 rounded-xl cursor-pointer"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
-                  border: '1px solid rgba(255,255,255,0.08)'
-                }}
-                onClick={() => setSelectedAd(ad)}
-              >
-                <div className="flex items-center gap-3">
-                  <div 
-                    className="w-14 h-14 rounded-xl bg-cover bg-center flex-shrink-0"
-                    style={{ backgroundImage: `url(${ad.image})` }}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-white font-semibold text-sm truncate">{ad.name}</h4>
-                    <p className="text-white/50 text-xs truncate">{ad.tagline}</p>
-                  </div>
-                </div>
-                <Button
-                  size="sm"
-                  className="w-full mt-3 bg-white/5 hover:bg-white/10 text-white/80 border border-white/10"
-                >
-                  <Clock className="w-3 h-3 mr-1" />
-                  Hatırlat
-                </Button>
-              </motion.div>
-            ))}
+          {/* Ad Banner Header */}
+          <div className="px-4 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+            <span className="text-white/40 text-xs uppercase tracking-wider">Sponsor</span>
           </div>
 
-          {/* Recently Added */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-bold text-lg">Yeni Eklenenler</h3>
-            </div>
-
-            <div className="space-y-3">
-              {recentlyAdded.slice(0, 3).map((ad, index) => (
-                <motion.div
-                  key={ad.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ x: -5 }}
-                  className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors hover:bg-white/5"
-                  onClick={() => setSelectedAd(ad)}
-                >
-                  <div 
-                    className="w-20 h-28 rounded-lg bg-cover bg-center flex-shrink-0"
-                    style={{ backgroundImage: `url(${ad.image})` }}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-white font-semibold text-sm mb-1 truncate">{ad.name}</h4>
-                    <p className="text-white/50 text-xs mb-2 line-clamp-2">{ad.description}</p>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">
-                        {ad.offer}
-                      </span>
-                    </div>
+          {/* Single Ad Banner - Canva Style */}
+          <div className="flex-1 p-4 flex flex-col">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex-1 rounded-2xl overflow-hidden relative group cursor-pointer"
+              style={{
+                background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #ec4899 100%)'
+              }}
+            >
+              {/* Decorative Elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-white/10 blur-2xl" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full bg-pink-500/20 blur-xl" />
+              
+              {/* Content */}
+              <div className="relative h-full flex flex-col p-5">
+                {/* Logo */}
+                <div className="mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <span className="text-2xl">🎨</span>
                   </div>
-                </motion.div>
-              ))}
+                </div>
+
+                {/* Title */}
+                <h3 className="text-white font-bold text-xl mb-2">
+                  Canva Pro
+                </h3>
+                <p className="text-white/80 text-sm mb-4 leading-relaxed">
+                  Profesyonel tasarımlar oluşturun. 30 gün ücretsiz deneyin!
+                </p>
+
+                {/* Features */}
+                <div className="space-y-2 mb-6">
+                  <div className="flex items-center gap-2 text-white/70 text-xs">
+                    <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
+                      <span className="text-white text-[10px]">✓</span>
+                    </div>
+                    <span>100M+ şablon</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-white/70 text-xs">
+                    <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
+                      <span className="text-white text-[10px]">✓</span>
+                    </div>
+                    <span>Sınırsız stok fotoğraf</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-white/70 text-xs">
+                    <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
+                      <span className="text-white text-[10px]">✓</span>
+                    </div>
+                    <span>AI ile tasarım</span>
+                  </div>
+                </div>
+
+                {/* CTA */}
+                <div className="mt-auto">
+                  <Button 
+                    className="w-full bg-white text-purple-600 hover:bg-white/90 font-bold"
+                  >
+                    Ücretsiz Başla
+                  </Button>
+                  <p className="text-center text-white/50 text-[10px] mt-2">
+                    Kredi kartı gerektirmez
+                  </p>
+                </div>
+              </div>
+
+              {/* Hover Effect */}
+              <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </motion.div>
+
+            {/* Ad Info */}
+            <div className="mt-3 flex items-center justify-between">
+              <span className="text-white/30 text-[10px]">Reklam</span>
+              <button className="text-white/30 text-[10px] hover:text-white/50">
+                Neden bu reklam?
+              </button>
             </div>
           </div>
         </aside>
@@ -513,7 +482,7 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const scrollAmount = 320;
+      const scrollAmount = 280;
       scrollRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
@@ -522,10 +491,10 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
   };
 
   return (
-    <section className="mb-8 relative group">
+    <section className="mb-6 relative group">
       {/* Header */}
-      <div className="flex items-center justify-between px-8 mb-4">
-        <h2 className="text-white font-bold text-xl tracking-tight">{title}</h2>
+      <div className="flex items-center justify-between px-6 mb-3">
+        <h2 className="text-white font-bold text-lg tracking-tight">{title}</h2>
         <button className="text-white/50 hover:text-amber-400 text-sm font-medium flex items-center gap-1 transition-colors">
           Tümünü gör
           <ChevronRight className="w-4 h-4" />
@@ -536,40 +505,39 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
       {canScrollLeft && (
         <button
           onClick={() => scroll('left')}
-          className="absolute left-2 top-1/2 mt-4 z-10 w-10 h-10 rounded-full bg-black/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black"
+          className="absolute left-2 top-1/2 mt-4 z-10 w-9 h-9 rounded-full bg-black/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-4 h-4" />
         </button>
       )}
       {canScrollRight && (
         <button
           onClick={() => scroll('right')}
-          className="absolute right-[340px] top-1/2 mt-4 z-10 w-10 h-10 rounded-full bg-black/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black"
+          className="absolute right-[300px] top-1/2 mt-4 z-10 w-9 h-9 rounded-full bg-black/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-4 h-4" />
         </button>
       )}
 
       {/* Scrollable Row */}
       <div 
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto px-8 pb-2"
+        className="flex gap-3 overflow-x-auto px-6 pb-2"
         onScroll={checkScrollButtons}
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        <style>{`.scrollbar-hide::-webkit-scrollbar { display: none; }`}</style>
         {ads.map((ad, index) => (
           <motion.div
             key={ad.id}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.05 }}
-            whileHover={{ scale: 1.05, y: -8 }}
-            className="flex-shrink-0 w-44 cursor-pointer group/card"
+            whileHover={{ scale: 1.05, y: -6 }}
+            className="flex-shrink-0 w-40 cursor-pointer group/card"
             onClick={() => onAdClick(ad)}
           >
             {/* Card Image */}
-            <div className="relative h-64 rounded-xl overflow-hidden mb-2">
+            <div className="relative h-56 rounded-xl overflow-hidden mb-2">
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover/card:scale-110"
                 style={{ backgroundImage: `url(${ad.image})` }}
@@ -580,7 +548,7 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity">
                 <div className="flex items-center gap-2">
                   <button 
-                    className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-lg"
+                    className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-lg"
                     onClick={(e) => {
                       e.stopPropagation();
                       onAdClick(ad);
@@ -589,19 +557,19 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
                     <Play className="w-4 h-4 text-gray-900 fill-gray-900 ml-0.5" />
                   </button>
                   <button 
-                    className="w-8 h-8 rounded-full bg-black/60 border border-white/30 flex items-center justify-center"
+                    className="w-7 h-7 rounded-full bg-black/60 border border-white/30 flex items-center justify-center"
                     onClick={(e) => {
                       e.stopPropagation();
                       onSave(ad.id);
                     }}
                   >
-                    <Heart className={`w-4 h-4 ${savedAds.includes(ad.id) ? 'text-red-500 fill-red-500' : 'text-white'}`} />
+                    <Heart className={`w-3 h-3 ${savedAds.includes(ad.id) ? 'text-red-500 fill-red-500' : 'text-white'}`} />
                   </button>
                 </div>
               </div>
 
               {/* Rating Badge */}
-              <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 rounded-md bg-black/60 backdrop-blur-sm">
+              <div className="absolute bottom-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-black/60 backdrop-blur-sm">
                 <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
                 <span className="text-white text-xs font-semibold">{ad.rating}</span>
               </div>
@@ -609,7 +577,7 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
               {/* Premium indicator for top 3 */}
               {index < 3 && (
                 <div 
-                  className="absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+                  className="absolute top-2 left-2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
                   style={{
                     background: 'linear-gradient(135deg, #FFD700, #FFA500)',
                     color: '#1a1a1a'
@@ -621,7 +589,7 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
             </div>
 
             {/* Card Info */}
-            <div className="px-1">
+            <div className="px-0.5">
               <h3 className="text-white font-semibold text-sm truncate mb-0.5">{ad.name}</h3>
               <p className="text-white/50 text-xs truncate">{ad.distance} • {ad.priceRange}</p>
             </div>
