@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, Home, Compass, Gamepad2, Music, Wifi, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CategoryId, JourneyAd } from './types';
 import { journeyAds } from './journeyData';
@@ -115,16 +115,32 @@ export const ExploreTabs = ({
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const heroIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Auto-rotate hero carousel
+  // Progress bar state
+  const [progress, setProgress] = useState(0);
+  const SLIDE_DURATION = 5000; // 5 seconds per slide
+
+  // Auto-rotate hero carousel with progress
   useEffect(() => {
-    heroIntervalRef.current = setInterval(() => {
-      setCurrentHeroIndex(prev => (prev + 1) % heroCarouselAds.length);
-    }, 5000);
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          setCurrentHeroIndex(current => (current + 1) % heroCarouselAds.length);
+          return 0;
+        }
+        return prev + (100 / (SLIDE_DURATION / 50)); // Update every 50ms
+      });
+    }, 50);
 
     return () => {
-      if (heroIntervalRef.current) clearInterval(heroIntervalRef.current);
+      clearInterval(progressInterval);
     };
   }, []);
+
+  // Reset progress when manually changing slides
+  const handleSlideChange = (index: number) => {
+    setCurrentHeroIndex(index);
+    setProgress(0);
+  };
 
   const toggleSave = (adId: string) => {
     setSavedAds(prev => 
@@ -197,16 +213,40 @@ export const ExploreTabs = ({
                           </span>
                         </div>
 
+                        {/* Progress Bars at Top */}
+                        <div className="absolute top-4 left-4 right-4 flex gap-2">
+                          {heroCarouselAds.map((_, index) => (
+                            <div
+                              key={index}
+                              className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden cursor-pointer"
+                              onClick={() => handleSlideChange(index)}
+                            >
+                              <motion.div
+                                className="h-full bg-white rounded-full"
+                                initial={{ width: 0 }}
+                                animate={{ 
+                                  width: index === currentHeroIndex 
+                                    ? `${progress}%` 
+                                    : index < currentHeroIndex 
+                                      ? '100%' 
+                                      : '0%' 
+                                }}
+                                transition={{ duration: 0.05, ease: 'linear' }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
                         {/* Navigation Arrows */}
                         <button
-                          onClick={() => setCurrentHeroIndex(prev => prev === 0 ? heroCarouselAds.length - 1 : prev - 1)}
-                          className="absolute right-14 top-4 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
+                          onClick={() => handleSlideChange(currentHeroIndex === 0 ? heroCarouselAds.length - 1 : currentHeroIndex - 1)}
+                          className="absolute right-14 top-12 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
                         >
                           <ChevronLeft className="w-4 h-4 text-white" />
                         </button>
                         <button
-                          onClick={() => setCurrentHeroIndex(prev => (prev + 1) % heroCarouselAds.length)}
-                          className="absolute right-4 top-4 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
+                          onClick={() => handleSlideChange((currentHeroIndex + 1) % heroCarouselAds.length)}
+                          className="absolute right-4 top-12 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
                         >
                           <ChevronRight className="w-4 h-4 text-white" />
                         </button>
@@ -224,20 +264,6 @@ export const ExploreTabs = ({
                     </AnimatePresence>
                   </div>
 
-                  {/* Pagination Dots */}
-                  <div className="flex items-center justify-center gap-2 mt-4">
-                    {heroCarouselAds.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentHeroIndex(index)}
-                        className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                          index === currentHeroIndex 
-                            ? 'bg-primary w-6' 
-                            : 'bg-muted-foreground/40 hover:bg-muted-foreground/60'
-                        }`}
-                      />
-                    ))}
-                  </div>
                 </div>
 
                 {/* Featured Hotels Section */}
@@ -264,6 +290,18 @@ export const ExploreTabs = ({
         </main>
       </div>
 
+      {/* Bottom Navigation Bar */}
+      <nav className="shrink-0 bg-card/95 backdrop-blur-xl border-t border-border/50 px-6 py-3">
+        <div className="flex items-center justify-around max-w-2xl mx-auto">
+          <BottomNavItem icon={<MapPin className="w-5 h-5" />} label="Lefkoşa" sublabel="Kalkış" />
+          <BottomNavItem icon={<Home className="w-5 h-5" />} label="Ana Sayfa" active />
+          <BottomNavItem icon={<Gamepad2 className="w-5 h-5" />} label="Oyunlar" />
+          <BottomNavItem icon={<Compass className="w-5 h-5" />} label="Keşfet" />
+          <BottomNavItem icon={<Music className="w-5 h-5" />} label="Müzik" />
+          <BottomNavItem icon={<Wifi className="w-5 h-5" />} label="WiFi" />
+        </div>
+      </nav>
+
       {/* Ad Detail Modal */}
       <AnimatePresence>
         {selectedAd && (
@@ -276,6 +314,29 @@ export const ExploreTabs = ({
     </div>
   );
 };
+
+// Bottom Navigation Item Component
+const BottomNavItem = ({ 
+  icon, 
+  label, 
+  sublabel, 
+  active = false 
+}: { 
+  icon: React.ReactNode; 
+  label: string; 
+  sublabel?: string; 
+  active?: boolean;
+}) => (
+  <button 
+    className={`flex flex-col items-center gap-0.5 px-3 py-1 transition-colors ${
+      active ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+    }`}
+  >
+    {icon}
+    <span className="text-xs font-medium">{label}</span>
+    {sublabel && <span className="text-[10px] opacity-70">{sublabel}</span>}
+  </button>
+);
 
 // Featured Hotels Row Component
 const FeaturedHotelsRow = () => {
