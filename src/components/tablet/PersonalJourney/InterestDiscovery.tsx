@@ -1,14 +1,80 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, ChevronRight, Check, Sparkles } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CategoryId } from './types';
 import { journeyCategories } from './journeyData';
+
+// Import category images
+import categoryBeach from '@/assets/category-beach.jpg';
+import categoryFood from '@/assets/category-food.jpg';
+import categoryNightlife from '@/assets/category-nightlife.jpg';
+import categoryHistory from '@/assets/category-history.jpg';
+import categoryNature from '@/assets/category-nature.jpg';
+import categoryShopping from '@/assets/category-shopping.jpg';
 
 interface InterestDiscoveryProps {
   onComplete: (selectedCategories: CategoryId[]) => void;
   onHome: () => void;
 }
+
+// Category data with pastel colors matching reference
+const categories = [
+  { 
+    id: 'beach' as CategoryId, 
+    name: 'Plaj & Deniz', 
+    description: 'Berrak sular, altın kumsallar',
+    icon: '☂️',
+    bgColor: 'bg-[#d4e5f7]',
+    iconBg: 'bg-[#e8f4fc]',
+    image: categoryBeach
+  },
+  { 
+    id: 'history' as CategoryId, 
+    name: 'Tarih & Kültür', 
+    description: 'Antik kaleler, müzeler',
+    icon: '🏛️',
+    bgColor: 'bg-[#fce8dc]',
+    iconBg: 'bg-[#fff5f0]',
+    image: categoryHistory
+  },
+  { 
+    id: 'entertainment' as CategoryId, 
+    name: 'Gece Hayatı', 
+    description: 'Barlar, kulüpler, canlı müzik',
+    icon: '🎵',
+    bgColor: 'bg-[#f5d4d4]',
+    iconBg: 'bg-[#fce8e8]',
+    image: categoryNightlife
+  },
+  { 
+    id: 'hotel' as CategoryId, 
+    name: 'Aile Aktiviteleri', 
+    description: 'Çocuklarla eğlence',
+    icon: '👨‍👩‍👧',
+    bgColor: 'bg-[#e8f4f4]',
+    iconBg: 'bg-[#f0fafa]',
+    image: categoryNature
+  },
+  { 
+    id: 'shopping' as CategoryId, 
+    name: 'İş Seyahati', 
+    description: 'Toplantı, networking',
+    icon: '💼',
+    bgColor: 'bg-[#e8e4f4]',
+    iconBg: 'bg-[#f4f0fc]',
+    image: categoryShopping
+  },
+  { 
+    id: 'restaurant' as CategoryId, 
+    name: 'Gastronomi', 
+    description: 'Yerel lezzetler, restoranlar',
+    icon: '🍴',
+    bgColor: 'bg-[#faf0d4]',
+    iconBg: 'bg-[#fcf5e0]',
+    image: categoryFood
+  },
+];
 
 export const InterestDiscovery = ({ onComplete, onHome }: InterestDiscoveryProps) => {
   const [selectedCategories, setSelectedCategories] = useState<CategoryId[]>([]);
@@ -26,134 +92,72 @@ export const InterestDiscovery = ({ onComplete, onHome }: InterestDiscoveryProps
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden">
-      {/* Animated Dark Gradient Background */}
-      <div className="absolute inset-0">
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)'
-          }}
-          animate={{
-            background: [
-              'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)',
-              'linear-gradient(135deg, #16213e 0%, #0f0f23 50%, #1a1a2e 100%)',
-              'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
-            ],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-        />
-        
-        {/* Floating orbs */}
-        <motion.div
-          className="absolute w-96 h-96 rounded-full bg-purple-600/20 blur-3xl"
-          style={{ top: '-10%', right: '-10%' }}
-          animate={{ 
-            x: [0, 50, 0], 
-            y: [0, 30, 0],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute w-80 h-80 rounded-full bg-blue-600/15 blur-3xl"
-          style={{ bottom: '-5%', left: '-5%' }}
-          animate={{ 
-            x: [0, -30, 0], 
-            y: [0, -40, 0],
-            scale: [1, 1.15, 1]
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute w-64 h-64 rounded-full bg-amber-500/10 blur-3xl"
-          style={{ top: '40%', left: '30%' }}
-          animate={{ 
-            x: [0, 40, 0], 
-            y: [0, -20, 0],
-            opacity: [0.3, 0.5, 0.3]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-      
+    <div 
+      className="fixed inset-0 z-50 flex flex-col overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, #e8dfd4 0%, #f2ebe4 50%, #e8e0d8 100%)'
+      }}
+    >
       {/* Header */}
-      <header className="relative flex items-center justify-between px-8 py-6">
+      <header className="relative flex items-center px-8 py-6">
         <motion.button 
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={onHome}
-          className="w-12 h-12 rounded-full glass-card flex items-center justify-center hover:bg-white/20 transition-colors"
+          className="text-gray-600 hover:text-gray-800 transition-colors"
         >
-          <Home className="w-5 h-5 text-white" />
+          <ArrowLeft className="w-6 h-6" />
         </motion.button>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center"
-        >
-          <h1 className="text-3xl font-black text-white tracking-tight">
-            İlgi Alanlarınız
-          </h1>
-          <p className="text-white/50 text-sm mt-1">
-            Size özel içerikler için seçim yapın
-          </p>
-        </motion.div>
-        
-        <div className="w-12" /> {/* Spacer for centering */}
       </header>
+
+      {/* Title Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center px-8 mb-8"
+      >
+        <p className="text-gray-500 text-sm mb-2">Adım 1/2</p>
+        <h1 className="text-3xl font-bold text-gray-800 mb-3">
+          Ne Keşfetmek İstersiniz?
+        </h1>
+        <p className="text-gray-500">
+          Size özel öneriler için ilgi alanlarınızı seçin
+        </p>
+      </motion.div>
       
       {/* Category Grid */}
-      <div className="relative flex-1 flex items-center justify-center px-8 py-4">
-        <div className="grid grid-cols-3 gap-6 max-w-4xl w-full">
-          {journeyCategories.map((category, index) => {
+      <div className="relative flex-1 flex items-start justify-center px-8 py-4">
+        <div className="grid grid-cols-4 gap-5 max-w-4xl w-full">
+          {categories.slice(0, 4).map((category, index) => {
             const isSelected = selectedCategories.includes(category.id);
             
             return (
               <motion.button
                 key={category.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.03, y: -5 }}
+                transition={{ delay: index * 0.08 }}
+                whileHover={{ scale: 1.02, y: -3 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => toggleCategory(category.id)}
-                className={`relative aspect-[4/3] rounded-2xl overflow-hidden transition-all duration-300 ${
+                className={`relative rounded-2xl overflow-hidden transition-all duration-300 ${category.bgColor} ${
                   isSelected 
-                    ? 'ring-4 ring-white/80 ring-offset-4 ring-offset-transparent' 
-                    : 'ring-1 ring-white/20'
+                    ? 'ring-3 ring-[#5a8bbd] shadow-lg' 
+                    : 'shadow-md hover:shadow-lg'
                 }`}
+                style={{ aspectRatio: '1 / 1.1' }}
               >
-                {/* Background Gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${category.gradient}`} />
-                
-                {/* Glass overlay */}
-                <div className={`absolute inset-0 transition-opacity duration-300 ${
-                  isSelected ? 'bg-black/10' : 'bg-black/30'
-                }`} />
-                
-                {/* Pattern overlay */}
-                <div 
-                  className="absolute inset-0 opacity-20"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-                  }}
-                />
-                
                 {/* Content */}
-                <div className="relative h-full flex flex-col items-center justify-center p-4">
-                  <motion.span 
-                    className="text-5xl mb-3"
-                    animate={isSelected ? { scale: [1, 1.2, 1] } : {}}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {category.icon}
-                  </motion.span>
-                  <span className="text-white font-bold text-lg tracking-wide">
-                    {category.nameTR}
+                <div className="h-full flex flex-col items-center justify-center p-4">
+                  {/* Icon Circle */}
+                  <div className={`w-16 h-16 rounded-full ${category.iconBg} flex items-center justify-center mb-4 shadow-sm`}>
+                    <span className="text-3xl">{category.icon}</span>
+                  </div>
+                  
+                  <span className="text-gray-800 font-semibold text-base text-center mb-1">
+                    {category.name}
                   </span>
-                  <span className="text-white/60 text-sm mt-1">
+                  <span className="text-gray-500 text-xs text-center">
                     {category.description}
                   </span>
                 </div>
@@ -165,90 +169,104 @@ export const InterestDiscovery = ({ onComplete, onHome }: InterestDiscoveryProps
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0, opacity: 0 }}
-                      className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-lg"
+                      className="absolute top-3 right-3 w-6 h-6 rounded-full bg-[#5a8bbd] flex items-center justify-center shadow-md"
                     >
-                      <Check className="w-5 h-5 text-gray-900" strokeWidth={3} />
+                      <Check className="w-4 h-4 text-white" strokeWidth={3} />
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Second Row */}
+      <div className="relative flex justify-center px-8 pb-4 -mt-4">
+        <div className="grid grid-cols-3 gap-5 max-w-3xl w-full">
+          {categories.slice(4).concat([
+            { 
+              id: 'nature' as CategoryId, 
+              name: 'Macera & Doğa', 
+              description: 'Trekking, dalış, safari',
+              icon: '🏔️',
+              bgColor: 'bg-[#d8e8dc]',
+              iconBg: 'bg-[#e8f4ec]',
+              image: categoryNature
+            }
+          ]).map((category, index) => {
+            const isSelected = selectedCategories.includes(category.id);
+            
+            return (
+              <motion.button
+                key={category.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: (index + 4) * 0.08 }}
+                whileHover={{ scale: 1.02, y: -3 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => toggleCategory(category.id)}
+                className={`relative rounded-2xl overflow-hidden transition-all duration-300 ${category.bgColor} ${
+                  isSelected 
+                    ? 'ring-3 ring-[#5a8bbd] shadow-lg' 
+                    : 'shadow-md hover:shadow-lg'
+                }`}
+                style={{ aspectRatio: '1 / 1.1' }}
+              >
+                {/* Content */}
+                <div className="h-full flex flex-col items-center justify-center p-4">
+                  {/* Icon Circle */}
+                  <div className={`w-16 h-16 rounded-full ${category.iconBg} flex items-center justify-center mb-4 shadow-sm`}>
+                    <span className="text-3xl">{category.icon}</span>
+                  </div>
+                  
+                  <span className="text-gray-800 font-semibold text-base text-center mb-1">
+                    {category.name}
+                  </span>
+                  <span className="text-gray-500 text-xs text-center">
+                    {category.description}
+                  </span>
+                </div>
                 
-                {/* Shine effect on hover */}
-                <motion.div
-                  className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500"
-                  style={{
-                    background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%)'
-                  }}
-                />
+                {/* Selected Checkmark */}
+                <AnimatePresence>
+                  {isSelected && (
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      className="absolute top-3 right-3 w-6 h-6 rounded-full bg-[#5a8bbd] flex items-center justify-center shadow-md"
+                    >
+                      <Check className="w-4 h-4 text-white" strokeWidth={3} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.button>
             );
           })}
         </div>
       </div>
       
-      {/* Bottom Action Bar */}
-      <div className="relative px-8 py-6">
-        <div className="glass-card-dark p-4 flex items-center justify-between max-w-4xl mx-auto">
-          {/* Selected count */}
-          <div className="flex items-center gap-3">
-            {selectedCategories.length > 0 ? (
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="flex items-center gap-2"
-              >
-                <div className="flex -space-x-2">
-                  {selectedCategories.slice(0, 4).map(catId => {
-                    const cat = journeyCategories.find(c => c.id === catId);
-                    return (
-                      <motion.div
-                        key={catId}
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className={`w-10 h-10 rounded-full bg-gradient-to-br ${cat?.gradient} flex items-center justify-center border-2 border-gray-900`}
-                      >
-                        <span className="text-lg">{cat?.icon}</span>
-                      </motion.div>
-                    );
-                  })}
-                  {selectedCategories.length > 4 && (
-                    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-900 text-white text-sm font-bold">
-                      +{selectedCategories.length - 4}
-                    </div>
-                  )}
-                </div>
-                <span className="text-white/70 text-sm ml-2">
-                  {selectedCategories.length} kategori seçildi
-                </span>
-              </motion.div>
-            ) : (
-              <span className="text-white/50 text-sm flex items-center gap-2">
-                <Sparkles className="w-4 h-4" />
-                Kategori seçin veya tümünü keşfedin
-              </span>
-            )}
-          </div>
-          
-          {/* Action buttons */}
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              onClick={() => onComplete([])}
-              className="text-white/60 hover:text-white hover:bg-white/10"
-            >
-              Tümünü Gör
-            </Button>
-            
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleComplete}
-              className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-lg shadow-lg shadow-orange-500/30"
-            >
-              Keşfet
-              <ChevronRight className="w-5 h-5" />
-            </motion.button>
-          </div>
-        </div>
+      {/* Bottom Action */}
+      <div className="relative px-8 py-8 flex flex-col items-center">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleComplete}
+          disabled={selectedCategories.length === 0}
+          className={`flex items-center justify-center gap-2 px-16 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all ${
+            selectedCategories.length > 0
+              ? 'bg-[#6b8fa8] hover:bg-[#5a7d96] text-white shadow-[#6b8fa8]/30'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          Devam Et
+          <ChevronRight className="w-5 h-5" />
+        </motion.button>
+        
+        <p className="text-gray-400 text-sm mt-3">
+          En az bir kategori seçin
+        </p>
       </div>
     </div>
   );

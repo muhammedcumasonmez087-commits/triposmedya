@@ -10,6 +10,14 @@ import { CategoryId, JourneyAd } from './types';
 import { journeyCategories, journeyAds } from './journeyData';
 import { AdDetailModal } from './AdDetailModal';
 
+// Import category images for sidebar
+import categoryBeach from '@/assets/category-beach.jpg';
+import categoryFood from '@/assets/category-food.jpg';
+import categoryNightlife from '@/assets/category-nightlife.jpg';
+import categoryHistory from '@/assets/category-history.jpg';
+import categoryNature from '@/assets/category-nature.jpg';
+import categoryShopping from '@/assets/category-shopping.jpg';
+
 interface PersonalizedFeedProps {
   selectedCategories: CategoryId[];
   onHome: () => void;
@@ -18,15 +26,15 @@ interface PersonalizedFeedProps {
   earnedPoints: number;
 }
 
-// Category navigation items with icons
+// Category navigation items with icons and images
 const categoryNavItems = [
-  { id: 'all' as const, icon: Home, label: 'Ana Sayfa' },
-  { id: 'restaurant' as CategoryId, icon: Utensils, label: 'Restoranlar' },
-  { id: 'beach' as CategoryId, icon: Umbrella, label: 'Plajlar' },
-  { id: 'hotel' as CategoryId, icon: Building2, label: 'Oteller' },
-  { id: 'history' as CategoryId, icon: Landmark, label: 'Tarih' },
-  { id: 'entertainment' as CategoryId, icon: PartyPopper, label: 'Etkinlikler' },
-  { id: 'shopping' as CategoryId, icon: ShoppingBag, label: 'Alışveriş' },
+  { id: 'all' as const, icon: Home, label: 'Ana Sayfa', image: null },
+  { id: 'restaurant' as CategoryId, icon: Utensils, label: 'Restoranlar', image: categoryFood },
+  { id: 'beach' as CategoryId, icon: Umbrella, label: 'Plajlar', image: categoryBeach },
+  { id: 'hotel' as CategoryId, icon: Building2, label: 'Oteller', image: categoryNature },
+  { id: 'history' as CategoryId, icon: Landmark, label: 'Tarih', image: categoryHistory },
+  { id: 'entertainment' as CategoryId, icon: PartyPopper, label: 'Etkinlikler', image: categoryNightlife },
+  { id: 'shopping' as CategoryId, icon: ShoppingBag, label: 'Alışveriş', image: categoryShopping },
 ];
 
 export const PersonalizedFeed = ({
@@ -70,32 +78,32 @@ export const PersonalizedFeed = ({
 
   return (
     <div className="fixed inset-0 flex overflow-hidden" style={{
-      background: 'linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0d0d1a 100%)'
+      background: 'linear-gradient(135deg, #e8dfd4 0%, #f2ebe4 50%, #e8e0d8 100%)'
     }}>
-      {/* Left Sidebar - Compact with Categories */}
+      {/* Left Sidebar - Compact with Category Images */}
       <motion.aside
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="relative z-20 flex flex-col py-4 w-16"
+        className="relative z-20 flex flex-col py-4 w-20"
         style={{
-          background: 'linear-gradient(180deg, rgba(20,20,30,0.95) 0%, rgba(15,15,25,0.98) 100%)',
-          borderRight: '1px solid rgba(255,255,255,0.06)'
+          background: 'linear-gradient(180deg, rgba(232,223,212,0.98) 0%, rgba(242,235,228,0.98) 100%)',
+          borderRight: '1px solid rgba(0,0,0,0.08)'
         }}
       >
         {/* Logo */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-4">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={onHome}
-            className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center"
+            className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6b8fa8] to-[#5a7d96] flex items-center justify-center shadow-md"
           >
             <Sparkles className="w-5 h-5 text-white" />
           </motion.button>
         </div>
 
-        {/* Category Navigation */}
-        <nav className="flex-1 flex flex-col items-center gap-1 px-2">
+        {/* Category Navigation with Images */}
+        <nav className="flex-1 flex flex-col items-center gap-2 px-2 overflow-y-auto scrollbar-hide">
           {categoryNavItems.map((item, index) => {
             const isActive = activeCategory === item.id;
             return (
@@ -104,49 +112,61 @@ export const PersonalizedFeed = ({
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: index * 0.05 }}
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.05 }}
                 onClick={() => setActiveCategory(item.id)}
-                className={`relative w-11 h-11 rounded-xl flex items-center justify-center transition-all group ${
+                className={`relative w-14 flex flex-col items-center gap-1 p-1.5 rounded-xl transition-all ${
                   isActive 
-                    ? 'bg-gradient-to-r from-amber-500/30 to-orange-500/20' 
-                    : 'hover:bg-white/5'
+                    ? 'bg-white shadow-md' 
+                    : 'hover:bg-white/50'
                 }`}
               >
-                <item.icon className={`w-5 h-5 ${isActive ? 'text-amber-400' : 'text-white/50 group-hover:text-white/80'}`} />
+                {/* Icon */}
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                  isActive ? 'bg-[#6b8fa8] text-white' : 'bg-gray-200/80 text-gray-600'
+                }`}>
+                  <item.icon className="w-4 h-4" />
+                </div>
                 
+                {/* Category Image */}
+                {item.image ? (
+                  <div className="w-12 h-8 rounded-md overflow-hidden shadow-sm">
+                    <img 
+                      src={item.image} 
+                      alt={item.label}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-12 h-8 rounded-md bg-gradient-to-br from-[#6b8fa8] to-[#5a7d96] flex items-center justify-center">
+                    <Home className="w-4 h-4 text-white" />
+                  </div>
+                )}
+
                 {/* Active indicator */}
                 {isActive && (
                   <motion.div
                     layoutId="activeIndicator"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-amber-400"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full bg-[#6b8fa8]"
                   />
                 )}
-
-                {/* Tooltip */}
-                <div className="absolute left-full ml-2 px-2 py-1 rounded-md bg-black/90 text-white text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                  {item.label}
-                </div>
               </motion.button>
             );
           })}
         </nav>
 
         {/* Points & Reward */}
-        <div className="flex flex-col items-center gap-2 px-2">
+        <div className="flex flex-col items-center gap-2 px-2 pt-2 border-t border-gray-200/50">
           <motion.button
             whileHover={{ scale: 1.1 }}
             onClick={onPlayRewardGame}
-            className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/10 border border-amber-500/30 flex items-center justify-center group"
+            className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 shadow-md flex items-center justify-center"
           >
-            <Gift className="w-5 h-5 text-amber-400" />
-            <div className="absolute left-full ml-2 px-2 py-1 rounded-md bg-black/90 text-white text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-              Çark Çevir
-            </div>
+            <Gift className="w-5 h-5 text-white" />
           </motion.button>
           
           <div className="flex flex-col items-center">
-            <Trophy className="w-4 h-4 text-amber-400 mb-1" />
-            <span className="text-amber-400 font-bold text-xs">{earnedPoints}</span>
+            <Trophy className="w-4 h-4 text-amber-500 mb-0.5" />
+            <span className="text-amber-600 font-bold text-xs">{earnedPoints}</span>
           </div>
         </div>
       </motion.aside>
@@ -157,11 +177,11 @@ export const PersonalizedFeed = ({
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
           {/* Top Navigation */}
           <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-4" style={{
-            background: 'linear-gradient(180deg, rgba(15,15,26,0.95) 0%, transparent 100%)'
+            background: 'linear-gradient(180deg, rgba(242,235,228,0.98) 0%, transparent 100%)'
           }}>
             {/* Category Title */}
             <div className="flex items-center gap-4">
-              <h1 className="text-white font-bold text-xl">
+              <h1 className="text-gray-800 font-bold text-xl">
                 {activeCategory === 'all' 
                   ? 'Keşfet' 
                   : categoryNavItems.find(c => c.id === activeCategory)?.label}
@@ -172,7 +192,7 @@ export const PersonalizedFeed = ({
                   return (
                     <span
                       key={catId}
-                      className="text-white/40 text-xs px-2 py-1 rounded-full bg-white/5"
+                      className="text-gray-600 text-xs px-2 py-1 rounded-full bg-white/60"
                     >
                       {cat?.icon} {cat?.nameTR}
                     </span>
@@ -184,15 +204,15 @@ export const PersonalizedFeed = ({
             {/* Search & Notifications */}
             <div className="flex items-center gap-3">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Ara..."
-                  className="w-48 pl-10 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 text-sm focus:outline-none focus:border-amber-500/50"
+                  className="w-48 pl-10 pr-4 py-2 rounded-xl bg-white/80 border border-gray-200 text-gray-800 placeholder:text-gray-400 text-sm focus:outline-none focus:border-[#6b8fa8] shadow-sm"
                 />
               </div>
-              <button className="relative p-2 rounded-xl hover:bg-white/10 transition-colors">
-                <Bell className="w-5 h-5 text-white/60" />
+              <button className="relative p-2 rounded-xl bg-white/60 hover:bg-white/80 transition-colors shadow-sm">
+                <Bell className="w-5 h-5 text-gray-600" />
                 <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-amber-500" />
               </button>
             </div>
@@ -355,13 +375,13 @@ export const PersonalizedFeed = ({
         <aside 
           className="w-72 border-l overflow-hidden flex flex-col"
           style={{
-            background: 'linear-gradient(180deg, rgba(20,20,30,0.6) 0%, rgba(15,15,25,0.8) 100%)',
-            borderColor: 'rgba(255,255,255,0.06)'
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(248,245,240,0.8) 100%)',
+            borderColor: 'rgba(0,0,0,0.08)'
           }}
         >
           {/* Ad Banner Header */}
-          <div className="px-4 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-            <span className="text-white/40 text-xs uppercase tracking-wider">Sponsor</span>
+          <div className="px-4 py-3 border-b" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
+            <span className="text-gray-500 text-xs uppercase tracking-wider">Sponsor</span>
           </div>
 
           {/* Single Ad Banner - Canva Style */}
