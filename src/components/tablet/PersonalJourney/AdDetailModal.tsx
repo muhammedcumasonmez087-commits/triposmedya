@@ -13,7 +13,7 @@ import QRCode from 'react-qr-code';
 interface AdDetailModalProps {
   ad: JourneyAd;
   onClose: () => void;
-  onClaim: (ad: JourneyAd) => void;
+  onClaim?: (ad: JourneyAd) => void;
 }
 
 export const AdDetailModal = ({ ad, onClose, onClaim }: AdDetailModalProps) => {
@@ -59,7 +59,7 @@ export const AdDetailModal = ({ ad, onClose, onClaim }: AdDetailModalProps) => {
 
   const handleClaim = () => {
     setShowQR(true);
-    onClaim(ad);
+    onClaim?.(ad);
   };
 
   return (
