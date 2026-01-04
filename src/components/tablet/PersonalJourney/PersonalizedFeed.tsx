@@ -456,8 +456,8 @@ export const PersonalizedFeed = ({
 
             {/* Ad Info */}
             <div className="mt-3 flex items-center justify-between">
-              <span className="text-white/30 text-[10px]">Reklam</span>
-              <button className="text-white/30 text-[10px] hover:text-white/50">
+              <span className="text-gray-400 text-[10px]">Reklam</span>
+              <button className="text-gray-400 text-[10px] hover:text-gray-600">
                 Neden bu reklam?
               </button>
             </div>
@@ -514,8 +514,8 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
     <section className="mb-6 relative group">
       {/* Header */}
       <div className="flex items-center justify-between px-6 mb-3">
-        <h2 className="text-white font-bold text-lg tracking-tight">{title}</h2>
-        <button className="text-white/50 hover:text-amber-400 text-sm font-medium flex items-center gap-1 transition-colors">
+        <h2 className="text-gray-800 font-bold text-lg tracking-tight">{title}</h2>
+        <button className="text-gray-500 hover:text-[#6b8fa8] text-sm font-medium flex items-center gap-1 transition-colors">
           Tümünü gör
           <ChevronRight className="w-4 h-4" />
         </button>
@@ -525,7 +525,7 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
       {canScrollLeft && (
         <button
           onClick={() => scroll('left')}
-          className="absolute left-2 top-1/2 mt-4 z-10 w-9 h-9 rounded-full bg-black/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black"
+          className="absolute left-2 top-1/2 mt-4 z-10 w-9 h-9 rounded-full bg-white/90 text-gray-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-md"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
@@ -533,7 +533,7 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
       {canScrollRight && (
         <button
           onClick={() => scroll('right')}
-          className="absolute right-[300px] top-1/2 mt-4 z-10 w-9 h-9 rounded-full bg-black/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black"
+          className="absolute right-[300px] top-1/2 mt-4 z-10 w-9 h-9 rounded-full bg-white/90 text-gray-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-md"
         >
           <ChevronRight className="w-4 h-4" />
         </button>
@@ -557,7 +557,7 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
             onClick={() => onAdClick(ad)}
           >
             {/* Card Image */}
-            <div className="relative h-56 rounded-xl overflow-hidden mb-2">
+            <div className="relative h-56 rounded-xl overflow-hidden mb-2 shadow-md">
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover/card:scale-110"
                 style={{ backgroundImage: `url(${ad.image})` }}
@@ -610,8 +610,8 @@ const ContentRow = ({ title, ads, onAdClick, onSave, savedAds }: ContentRowProps
 
             {/* Card Info */}
             <div className="px-0.5">
-              <h3 className="text-white font-semibold text-sm truncate mb-0.5">{ad.name}</h3>
-              <p className="text-white/50 text-xs truncate">{ad.distance} • {ad.priceRange}</p>
+              <h3 className="text-gray-800 font-semibold text-sm truncate mb-0.5">{ad.name}</h3>
+              <p className="text-gray-500 text-xs truncate">{ad.distance} • {ad.priceRange}</p>
             </div>
           </motion.div>
         ))}
