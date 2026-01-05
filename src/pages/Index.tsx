@@ -169,7 +169,7 @@ const Index = () => {
       {wifiStep === 'ad' && (
         <WifiAdScreen 
           onComplete={handleAdComplete}
-          sponsorName="Eziç Restaurant"
+          userInterests={selectedInterests}
           onHome={handleGoHome}
         />
       )}
