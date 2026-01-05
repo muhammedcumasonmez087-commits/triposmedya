@@ -1,19 +1,40 @@
-import { useState, useEffect } from 'react';
-import { Wifi, Play, Pause, Volume2, VolumeX, Home } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Wifi, Play, Pause, Volume2, VolumeX, Home, MapPin, Phone, Globe, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import categoryFood from '@/assets/category-food.jpg';
+import { contextualAds, tierConfig, SponsorBadge, ContextualAd } from './ContextualAdEngine';
 
 interface WifiAdScreenProps {
   onComplete: () => void;
-  sponsorName: string;
-  sponsorLogo?: string;
+  userInterests?: string[];
   onHome: () => void;
 }
 
-export const WifiAdScreen = ({ onComplete, sponsorName, onHome }: WifiAdScreenProps) => {
+// Platinum veya Gold sponsordan rastgele seç
+const getRandomSponsor = (interests: string[] = []): ContextualAd => {
+  const priorityAds = contextualAds.filter(ad => ad.tier === 'platinum' || ad.tier === 'gold');
+  
+  // İlgi alanlarına göre skorla
+  if (interests.length > 0) {
+    const scored = priorityAds.map(ad => ({
+      ...ad,
+      score: ad.categories.filter(cat => interests.includes(cat)).length
+    })).sort((a, b) => b.score - a.score);
+    
+    // En yüksek skorlu ilk 3'ten rastgele seç
+    const topAds = scored.slice(0, 3);
+    return topAds[Math.floor(Math.random() * topAds.length)];
+  }
+  
+  return priorityAds[Math.floor(Math.random() * priorityAds.length)];
+};
+
+export const WifiAdScreen = ({ onComplete, userInterests = [], onHome }: WifiAdScreenProps) => {
+  const sponsor = useMemo(() => getRandomSponsor(userInterests), []);
+  const config = tierConfig[sponsor.tier];
+  
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(true); // Default MUTE
+  const [isMuted, setIsMuted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [adComplete, setAdComplete] = useState(false);
   
@@ -74,30 +95,70 @@ export const WifiAdScreen = ({ onComplete, sponsorName, onHome }: WifiAdScreenPr
       
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-8">
-        {/* Video Player Container */}
+        {/* Sponsor Card Container */}
         <motion.div 
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="relative w-full max-w-2xl aspect-video rounded-2xl overflow-hidden bg-slate-800 shadow-2xl"
+          className={`relative w-full max-w-2xl aspect-video rounded-2xl overflow-hidden shadow-2xl ${config.glowColor} ${config.borderColor} border-2`}
         >
-          {/* Video content */}
-          <img 
-            src={categoryFood}
-            alt="Sponsor Ad"
-            className="w-full h-full object-cover"
+          {/* Background Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${sponsor.image})` }}
           />
+          <div className={`absolute inset-0 bg-gradient-to-t ${config.bgGradient}`} />
           
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
-          
-          {/* REKLAM Badge */}
-          <div className="absolute top-4 left-4 px-3 py-1 rounded bg-black/50 text-white/80 text-xs font-medium backdrop-blur-sm">
-            REKLAM
+          {/* Top Bar */}
+          <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between">
+            <div className="px-3 py-1 rounded bg-black/50 text-white/80 text-xs font-medium backdrop-blur-sm">
+              REKLAM
+            </div>
+            <SponsorBadge tier={sponsor.tier} size="sm" />
           </div>
           
-          {/* Sponsor Badge */}
-          <div className="absolute top-4 right-4 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-md text-white text-sm font-medium">
-            {sponsorName}
+          {/* Main Content */}
+          <div className="absolute inset-0 flex flex-col justify-end p-6">
+            {/* Logo & Name */}
+            <div className="flex items-center gap-4 mb-3">
+              <motion.div 
+                className="w-16 h-16 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center text-4xl"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                {sponsor.logo}
+              </motion.div>
+              <div>
+                <h3 className="text-2xl font-black text-white">{sponsor.name}</h3>
+                <p className="text-white/70 text-sm">{sponsor.slogan}</p>
+              </div>
+            </div>
+            
+            {/* Offer Badge */}
+            <motion.div 
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r ${config.gradient} text-white font-bold mb-3 self-start`}
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <Gift className="w-5 h-5" />
+              {sponsor.offer}
+            </motion.div>
+            
+            {/* Description */}
+            <p className="text-white/80 text-sm mb-4 line-clamp-2">{sponsor.description}</p>
+            
+            {/* Info Row */}
+            <div className="flex items-center gap-4 text-white/60 text-xs">
+              <span className="flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                {sponsor.location}
+              </span>
+              {sponsor.phone && (
+                <span className="flex items-center gap-1">
+                  <Phone className="w-3 h-3" />
+                  {sponsor.phone}
+                </span>
+              )}
+            </div>
           </div>
           
           {/* Play/Pause Overlay */}
@@ -113,11 +174,11 @@ export const WifiAdScreen = ({ onComplete, sponsorName, onHome }: WifiAdScreenPr
           )}
           
           {/* Bottom Controls */}
-          <div className="absolute bottom-0 left-0 right-0 p-4">
-            <div className="flex items-center gap-4">
+          <div className="absolute bottom-4 right-4">
+            <div className="flex items-center gap-2">
               <button 
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors"
+                className="w-10 h-10 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center hover:bg-black/50 transition-colors"
               >
                 {isPlaying ? (
                   <Pause className="w-5 h-5 text-white" />
@@ -128,7 +189,7 @@ export const WifiAdScreen = ({ onComplete, sponsorName, onHome }: WifiAdScreenPr
               
               <button 
                 onClick={() => setIsMuted(!isMuted)}
-                className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors"
+                className="w-10 h-10 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center hover:bg-black/50 transition-colors"
               >
                 {isMuted ? (
                   <VolumeX className="w-5 h-5 text-white" />
