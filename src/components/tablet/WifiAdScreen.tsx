@@ -38,7 +38,8 @@ export const WifiAdScreen = ({ onComplete, userInterests = [], onHome }: WifiAdS
   const [progress, setProgress] = useState(0);
   const [adComplete, setAdComplete] = useState(false);
   
-  const adDuration = 10; // seconds (10-15 sn ideal)
+  // Tier'a göre dinamik reklam süresi
+  const adDuration = sponsor.tier === 'platinum' ? 15 : sponsor.tier === 'gold' ? 10 : 7;
   const remainingSeconds = Math.max(0, adDuration - Math.floor(progress / 100 * adDuration));
 
   useEffect(() => {
