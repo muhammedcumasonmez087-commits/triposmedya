@@ -8,11 +8,10 @@ import { QRReward } from '@/components/tablet/QRReward';
 import { WifiAdScreen } from '@/components/tablet/WifiAdScreen';
 import { WifiLoginScreen } from '@/components/tablet/WifiLoginScreen';
 import { WifiSuccessScreen } from '@/components/tablet/WifiSuccessScreen';
-import { WifiStatusPanel } from '@/components/tablet/WifiStatusPanel';
 import { GamesHub, Game } from '@/components/tablet/GamesHub';
 import { GamePlayer } from '@/components/tablet/GamePlayer';
 
-type Screen = 'hero' | 'explore' | 'feed' | 'games' | 'wifi-status';
+type Screen = 'hero' | 'explore' | 'feed' | 'games';
 type GameType = 'spin' | 'scratch' | null;
 type WifiStep = null | 'login' | 'ad' | 'success';
 
@@ -85,8 +84,7 @@ const Index = () => {
 
   // WiFi Flow Handlers
   const handleWifiRequest = () => {
-    // If already connected (simulated), show status panel
-    setCurrentScreen('wifi-status');
+    setWifiStep('login');
   };
 
   const handleWifiLogin = (data: { email: string; name: string }) => {
@@ -140,15 +138,6 @@ const Index = () => {
         />
       )}
 
-      {/* WiFi Status Panel */}
-      {currentScreen === 'wifi-status' && !wifiStep && (
-        <WifiStatusPanel
-          onBack={handleGoHome}
-          onHome={handleGoHome}
-          onExplore={handleExplore}
-          onGames={handleOpenGames}
-        />
-      )}
       
       {/* Game Player */}
       {currentScreen === 'games' && selectedGame && (
