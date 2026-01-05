@@ -8,6 +8,7 @@ import { AdDetailModal } from './AdDetailModal';
 import { EventDetailModal, EventData } from './EventDetailModal';
 import { ExploreMap } from './ExploreMap';
 import { CyprusGuide } from './CyprusGuide';
+import { CategoriesExplore } from './CategoriesExplore';
 
 // Import category images
 import categoryBeach from '@/assets/category-beach.jpg';
@@ -252,8 +253,9 @@ interface ExploreTabsProps {
 const tabItems = [
   { id: 'explore', label: 'KEŞFET' },
   { id: 'events', label: 'ETKİNLİKLER' },
-  { id: 'guide', label: 'KIBRIS REHBERİ' },
-  { id: 'more', label: 'HARİTA' },
+  { id: 'categories', label: 'KATEGORİLER' },
+  { id: 'more', label: 'DAHA FAZLA' },
+  { id: 'guide', label: 'ÖNERİLER' },
 ];
 
 // Main hero carousel ads
@@ -694,15 +696,15 @@ export const ExploreTabs = ({
               </motion.div>
             )}
 
-            {activeTab === 'guide' && (
+            {activeTab === 'categories' && (
               <motion.div
-                key="guide"
+                key="categories"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 className="flex flex-col h-full"
               >
-                <CyprusGuide />
+                <CategoriesExplore />
               </motion.div>
             )}
 
@@ -717,6 +719,18 @@ export const ExploreTabs = ({
                 <div className="flex-1 rounded-2xl overflow-hidden relative min-h-[500px]">
                   <ExploreMap />
                 </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'guide' && (
+              <motion.div
+                key="guide"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="flex flex-col h-full"
+              >
+                <CyprusGuide />
               </motion.div>
             )}
           </AnimatePresence>
