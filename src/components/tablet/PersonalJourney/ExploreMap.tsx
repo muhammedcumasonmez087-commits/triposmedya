@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Compass, Navigation, ChevronLeft, ChevronRight, Landmark, Waves, UtensilsCrossed, Castle, Star, X, Phone, Globe, Clock, ExternalLink } from 'lucide-react';
+import { MapPin, Compass, Navigation, ChevronLeft, ChevronRight, Landmark, Waves, UtensilsCrossed, Castle, Star, X, Phone, Globe, Clock, Smartphone } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import QRCode from 'react-qr-code';
 
 // Import images
 import heroCyprus from '@/assets/hero-cyprus.jpg';
@@ -274,7 +275,29 @@ const LocationDetailModal = ({
             )}
           </div>
 
-          {/* Action Buttons */}
+          {/* QR Code Section */}
+          {location.website && (
+            <div className="pt-3 border-t border-border/30">
+              <div className="flex items-center gap-4">
+                <div className="bg-white p-2 rounded-lg">
+                  <QRCode 
+                    value={`https://${location.website}`} 
+                    size={80}
+                    level="M"
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground mb-1">QR Kodu Tara</p>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Telefonunla tarayarak websiteye git
+                  </p>
+                  <p className="text-xs text-primary font-medium">{location.website}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Action Button */}
           <div className="flex gap-3 pt-3">
             <Button
               variant="outline"
@@ -285,10 +308,14 @@ const LocationDetailModal = ({
             </Button>
             <Button
               className="flex-1 gap-2"
-              onClick={() => window.open(location.googleMapsUrl, '_blank')}
+              onClick={() => {
+                // Copy location info to clipboard for saving
+                const locationInfo = `${location.name}\n${location.region}, Kuzey Kıbrıs\n${location.website ? `https://${location.website}` : location.googleMapsUrl}`;
+                navigator.clipboard.writeText(locationInfo);
+              }}
             >
-              <ExternalLink className="w-4 h-4" />
-              Haritada Gör
+              <Smartphone className="w-4 h-4" />
+              Cebine Kaydet
             </Button>
           </div>
         </div>
