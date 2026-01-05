@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronRight, Wifi, Gamepad2, Compass, X, Tag, MapPin, Home, Music, Info, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import QRCode from 'react-qr-code';
 import { JourneyTracker } from './JourneyTracker';
 
@@ -224,9 +224,16 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames, onExplore }: HeroS
   const [showAdDetail, setShowAdDetail] = useState<typeof premiumAds[0] | null>(null);
   const [adProgress, setAdProgress] = useState(0);
   const [activeNav, setActiveNav] = useState('home');
+  const [isDragging, setIsDragging] = useState(false);
+  
+  // Swipe için motion values
+  const dragX = useMotionValue(0);
+  const dragOpacity = useTransform(dragX, [-200, 0, 200], [0.5, 1, 0.5]);
 
-  // 10 saniyede bir reklam değiştir
+  // 10 saniyede bir reklam değiştir (sürükleme yoksa)
   useEffect(() => {
+    if (isDragging) return;
+    
     const progressInterval = setInterval(() => {
       setAdProgress(prev => {
         if (prev >= 100) {
@@ -238,30 +245,70 @@ export const HeroScreen = ({ onStart, onWifiRequest, onGames, onExplore }: HeroS
     }, 100);
     
     return () => clearInterval(progressInterval);
-  }, []);
+  }, [isDragging]);
+
+  // Swipe handler
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    setIsDragging(false);
+    const swipeThreshold = 50;
+    
+    if (info.offset.x < -swipeThreshold) {
+      // Sola kaydır - sonraki reklam
+      setCurrentAdIndex(prev => (prev + 1) % premiumAds.length);
+      setAdProgress(0);
+    } else if (info.offset.x > swipeThreshold) {
+      // Sağa kaydır - önceki reklam
+      setCurrentAdIndex(prev => (prev - 1 + premiumAds.length) % premiumAds.length);
+      setAdProgress(0);
+    }
+  };
 
   const currentAd = premiumAds[currentAdIndex];
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black">
-      {/* Full Screen Ad Background */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentAd.id}
-          className="absolute inset-0"
-          initial={{ opacity: 0, scale: 1.02 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.98 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${currentAd.image})` }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/40" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
-        </motion.div>
-      </AnimatePresence>
+      {/* Full Screen Ad Background - Swipeable */}
+      <motion.div
+        className="absolute inset-0 cursor-grab active:cursor-grabbing"
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.2}
+        onDragStart={() => setIsDragging(true)}
+        onDragEnd={handleDragEnd}
+        style={{ x: dragX }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentAd.id}
+            className="absolute inset-0"
+            initial={{ opacity: 0, scale: 1.02 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.8 }}
+            style={{ opacity: dragOpacity }}
+          >
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${currentAd.image})` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/40" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Swipe Hint */}
+        <div className="absolute bottom-32 left-1/2 -translate-x-1/2 flex items-center gap-2 text-white/40 pointer-events-none">
+          <motion.div
+            animate={{ x: [-5, 5, -5] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="flex items-center gap-2"
+          >
+            <ChevronRight className="w-4 h-4 rotate-180" />
+            <span className="text-xs tracking-wider">KAYDIR</span>
+            <ChevronRight className="w-4 h-4" />
+          </motion.div>
+        </div>
+      </motion.div>
 
       {/* Brand Header - Top Left */}
       <header className="absolute top-0 left-0 right-0 z-20 px-8 py-6">
