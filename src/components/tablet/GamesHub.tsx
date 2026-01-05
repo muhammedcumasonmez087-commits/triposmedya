@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Gamepad2, Trophy, Star, Flame, Clock, Search, Heart, Zap, Target, Puzzle, Dices, Crown, Sparkles } from 'lucide-react';
+import { Gamepad2, Trophy, Star, Flame, Clock, Search, Heart, Zap, Target, Puzzle, Dices, Crown, Sparkles, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { BottomNavBar, NavItemId } from './BottomNavBar';
 
 interface GamesHubProps {
   onBack: () => void;
   onPlayGame: (game: Game) => void;
+  onHome?: () => void;
+  onExplore?: () => void;
+  onWifi?: () => void;
 }
 
 export interface Game {
@@ -325,10 +329,30 @@ const games: Game[] = [
   },
 ];
 
-export const GamesHub = ({ onBack, onPlayGame }: GamesHubProps) => {
+export const GamesHub = ({ onBack, onPlayGame, onHome, onExplore, onWifi }: GamesHubProps) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredGame, setHoveredGame] = useState<string | null>(null);
+
+  const handleNavClick = (id: NavItemId) => {
+    switch (id) {
+      case 'home':
+        if (onHome) onHome();
+        else onBack();
+        break;
+      case 'explore':
+        if (onExplore) onExplore();
+        break;
+      case 'wifi':
+        if (onWifi) onWifi();
+        break;
+      case 'games':
+        // Already on games
+        break;
+      default:
+        break;
+    }
+  };
 
   const filteredGames = games.filter(game => {
     const matchesCategory = selectedCategory === 'all' || game.category === selectedCategory;
@@ -359,7 +383,7 @@ export const GamesHub = ({ onBack, onPlayGame }: GamesHubProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white flex flex-col">
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-float" />
@@ -378,7 +402,7 @@ export const GamesHub = ({ onBack, onPlayGame }: GamesHubProps) => {
                 size="icon"
                 className="text-white hover:bg-white/20 transition-all"
               >
-                <Home className="w-6 h-6" />
+                <ChevronLeft className="w-6 h-6" />
               </Button>
             </motion.div>
             <div className="flex items-center gap-3">
@@ -657,6 +681,14 @@ export const GamesHub = ({ onBack, onPlayGame }: GamesHubProps) => {
           </div>
         </motion.div>
       </div>
+
+      {/* Bottom Navigation Bar */}
+      <BottomNavBar
+        activeItem="games"
+        onNavClick={handleNavClick}
+        onBack={onBack}
+        showBackButton={true}
+      />
     </div>
   );
 };

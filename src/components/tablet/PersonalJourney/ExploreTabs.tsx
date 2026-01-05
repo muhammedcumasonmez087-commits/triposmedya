@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Calendar, Home, Compass, Gamepad2, Music, Wifi, MapPin, Mic2, Theater, PartyPopper, Trophy, BookOpen } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, Compass, Mic2, Theater, PartyPopper, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CategoryId, JourneyAd } from './types';
 import { journeyAds } from './journeyData';
@@ -9,6 +9,7 @@ import { EventDetailModal, EventData } from './EventDetailModal';
 import { ExploreMap } from './ExploreMap';
 import { CyprusGuide } from './CyprusGuide';
 import { CategoriesExplore } from './CategoriesExplore';
+import { BottomNavBar } from '../BottomNavBar';
 
 // Import category images
 import categoryBeach from '@/assets/category-beach.jpg';
@@ -337,7 +338,6 @@ export const ExploreTabs = ({
   earnedPoints
 }: ExploreTabsProps) => {
   const [activeTab, setActiveTab] = useState('explore');
-  const [activeNavItem, setActiveNavItem] = useState('home');
   const [selectedAd, setSelectedAd] = useState<JourneyAd | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [savedAds, setSavedAds] = useState<string[]>([]);
@@ -401,32 +401,6 @@ export const ExploreTabs = ({
   const handleEventSlideChange = (index: number) => {
     setCurrentEventIndex(index);
     setEventProgress(0);
-  };
-
-  // Handle bottom navigation
-  const handleNavClick = (navId: string) => {
-    setActiveNavItem(navId);
-    switch (navId) {
-      case 'home':
-        onHome();
-        break;
-      case 'games':
-        if (onGames) onGames();
-        else onPlayRewardGame();
-        break;
-      case 'wifi':
-        if (onWifi) onWifi();
-        break;
-      case 'explore':
-        setActiveTab('explore');
-        break;
-      case 'music':
-        // Music functionality - can be added later
-        break;
-      case 'location':
-        // Location functionality - can be added later
-        break;
-    }
   };
 
   const toggleSave = (adId: string) => {
@@ -738,22 +712,17 @@ export const ExploreTabs = ({
       </div>
 
       {/* Bottom Navigation Bar */}
-      <nav className="shrink-0 bg-card/95 backdrop-blur-xl border-t border-border/50 px-6 py-3">
-        <div className="flex items-center justify-around max-w-2xl mx-auto">
-          <BottomNavItem icon={<MapPin className="w-5 h-5" />} label="Lefkoşa" sublabel="Kalkış" active={activeNavItem === 'location'} onClick={() => handleNavClick('location')} />
-          <BottomNavItem icon={<Home className="w-5 h-5" />} label="Ana Sayfa" active={activeNavItem === 'home'} onClick={() => handleNavClick('home')} />
-          <BottomNavItem icon={<Gamepad2 className="w-5 h-5" />} label="Oyunlar" active={activeNavItem === 'games'} onClick={() => handleNavClick('games')} />
-          <button 
-            onClick={() => { setActiveTab('explore'); setActiveNavItem('explore'); }}
-            className="flex items-center gap-2 px-6 py-2 rounded-full bg-primary text-primary-foreground font-semibold text-sm"
-          >
-            <Compass className="w-5 h-5" />
-            KEŞFET
-          </button>
-          <BottomNavItem icon={<Music className="w-5 h-5" />} label="Müzik" active={activeNavItem === 'music'} onClick={() => handleNavClick('music')} />
-          <BottomNavItem icon={<Wifi className="w-5 h-5" />} label="WiFi" active={activeNavItem === 'wifi'} onClick={() => handleNavClick('wifi')} />
-        </div>
-      </nav>
+      <BottomNavBar
+        activeItem="explore"
+        onNavClick={(id) => {
+          if (id === 'home') onHome();
+          else if (id === 'games') onGames?.();
+          else if (id === 'wifi') onWifi?.();
+          else if (id === 'explore') setActiveTab('explore');
+        }}
+        onBack={onBack}
+        showBackButton={true}
+      />
 
       {/* Ad Detail Modal */}
       <AnimatePresence>
@@ -777,32 +746,6 @@ export const ExploreTabs = ({
     </div>
   );
 };
-
-// Bottom Navigation Item Component
-const BottomNavItem = ({ 
-  icon, 
-  label, 
-  sublabel, 
-  active = false,
-  onClick
-}: { 
-  icon: React.ReactNode; 
-  label: string; 
-  sublabel?: string; 
-  active?: boolean;
-  onClick?: () => void;
-}) => (
-  <button 
-    onClick={onClick}
-    className={`flex flex-col items-center gap-0.5 px-3 py-1 transition-colors ${
-      active ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-    }`}
-  >
-    {icon}
-    <span className="text-xs font-medium">{label}</span>
-    {sublabel && <span className="text-[10px] opacity-70">{sublabel}</span>}
-  </button>
-);
 
 // Upcoming Events Row Component
 const UpcomingEventsRow = ({ 
